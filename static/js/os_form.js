@@ -19,7 +19,7 @@
         <input type="hidden" name="item_origem_estoque[]" value="${origin}">
         <input class="item-cat" name="item_categoria[]" value="${esc(item.categoria || '')}" aria-label="Categoria" ${origin ? 'readonly title="Item vinculado ao estoque. Para trocar a peça, remova a linha e adicione outra pelo estoque."' : ''}>
       </td>
-      <td><input class="item-name" name="item_nome[]" value="${esc(item.item || '')}" required aria-label="Item" ${origin ? 'readonly title="Item vinculado ao estoque. Para trocar a peça, remova a linha e adicione outra pelo estoque."' : ''}></td>
+      <td><input class="item-name" name="item_nome[]" value="${esc(item.item || '')}" required aria-label="Item" ${origin ? 'title="Nome editável somente nesta OS. O vínculo e a baixa continuam sendo feitos pelo item original do estoque."' : ''}></td>
       <td><input class="item-qty" name="item_qtde[]" type="number" min="1" step="1" value="${qty}" aria-label="Quantidade"></td>
       <td><input class="item-price" name="item_preco[]" inputmode="decimal" value="${price.toFixed(2)}" aria-label="Preço unitário"></td>
       <td class="row-total">${money(qty*price)}</td>

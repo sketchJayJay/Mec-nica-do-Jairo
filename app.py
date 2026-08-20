@@ -42,7 +42,7 @@ from db import (
     transaction,
 )
 
-APP_VERSION = "2.0.3-web-sem-login"
+APP_VERSION = "2.0.4-web-sem-login"
 
 
 def create_app(test_config: dict | None = None) -> Flask:
