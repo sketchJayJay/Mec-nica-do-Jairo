@@ -18,8 +18,12 @@
         table.grid th { background:#f3f4f6; text-align:left; font-size:10px; }
         .row { display:flex; gap:12px; flex-wrap:wrap; }
         .col { flex:1; min-width:180px; }
-        .print-actions { position:fixed; right:18px; bottom:18px; z-index:99; }
-        .print-actions button { border:0; border-radius:8px; padding:10px 14px; cursor:pointer; font-weight:700; }
+        .print-actions { position:fixed; right:18px; bottom:18px; z-index:99; display:flex; gap:8px; align-items:center; }
+        .print-actions a, .print-actions button { border:0; border-radius:8px; padding:10px 14px; cursor:pointer; font-weight:700; font-family:Arial, Helvetica, sans-serif; font-size:14px; text-decoration:none; }
+        .print-actions .back-btn { background:#fff; color:#111827; border:1px solid #d1d5db; box-shadow:0 4px 14px rgba(0,0,0,.10); }
+        .print-actions .print-btn { background:#0b55c9; color:#fff; box-shadow:0 4px 14px rgba(11,85,201,.25); }
+        .print-actions .back-btn:hover { background:#f3f4f6; }
+        .print-actions .print-btn:hover { background:#073f96; }
         @media print {
             .print-actions { display:none !important; }
         }
@@ -27,7 +31,10 @@
 </head>
 <body>
     <!-- MECANICA_DO_JAIRO v1.2 (nobg) - MODELO ORIGINAL PRESERVADO -->
-    <div class="print-actions"><button onclick="window.print()">Imprimir</button></div>
+    <div class="print-actions">
+        <a class="back-btn" href="{{ url_for('os_view', servico_id=ordem.id) }}">← Voltar para a OS</a>
+        <button class="print-btn" type="button" onclick="window.print()">Imprimir</button>
+    </div>
 
     <div class="header" style="display:block; position:relative; padding-right:150px; min-height:0px; margin-bottom:0px;">
         <div class="brandwrap" style="display:flex; flex-direction:column; align-items:flex-start; gap:8px; max-width: calc(100% - 260px);">
