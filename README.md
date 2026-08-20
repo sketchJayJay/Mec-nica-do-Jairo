@@ -115,3 +115,8 @@ Fluxo: **Orçamentos → Novo orçamento → buscar item no estoque → ajustar 
 ## v12 - X para fechar
 - Botão X vermelho no canto superior direito.
 - Quando aberto pelo aplicativo Windows/PyWebView, fecha a janela inteira com um clique.
+
+
+## v13
+- Adicionado botão **← Voltar para o orçamento** na página de impressão.
+- Os botões continuam ocultos na impressão/PDF.
