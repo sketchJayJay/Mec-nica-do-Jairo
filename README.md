@@ -98,3 +98,8 @@ A partir da nova versão, peças escolhidas em **Buscar no estoque** recebem `es
 
 ## Modelo original da OS
 A impressão da Ordem de Serviço mantém o modelo original do programa desktop, incluindo logo, QR PIX, seções Cliente/Veículo/Serviço, tabela de itens e assinatura.
+
+
+## v9
+- A placa passou a ser opcional ao criar ou editar uma OS.
+- OS sem placa continuam vinculadas a um carro/cliente normalmente.

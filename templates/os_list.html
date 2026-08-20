@@ -12,7 +12,7 @@
 <tbody>{% for o in ordens %}<tr>
 <td><strong>#{{ o.id }}</strong><small>{{ o.data|datebr }}</small></td>
 <td>{{ o.nome }}<small>{{ o.telefone or '' }}</small></td>
-<td>{{ o.marca }} {{ o.modelo }}<small>{{ o.placa }}</small></td>
+<td>{{ o.marca }} {{ o.modelo }}<small>{{ o.placa or 'Sem placa' }}</small></td>
 <td><span class="badge status-{{ o.status|lower|replace(' ', '-') }}">{{ o.status }}</span></td>
 <td>{{ o.total|money }}</td>
 <td class="actions-cell"><a class="btn small" href="{{ url_for('os_view', servico_id=o.id) }}">Abrir</a><a class="btn small primary" href="{{ url_for('os_editar', servico_id=o.id) }}">Editar</a></td>

@@ -2,12 +2,12 @@
 {% block title %}OS #{{ ordem.id }} • Mecânica do Jairo{% endblock %}
 {% block content %}
 <div class="page-heading">
-<div><span class="eyebrow">Ordem de serviço #{{ ordem.id }}</span><h1>{{ ordem.nome }} • {{ ordem.placa }}</h1><p>{{ ordem.marca }} {{ ordem.modelo }} • {{ ordem.data|datebr }}</p></div>
+<div><span class="eyebrow">Ordem de serviço #{{ ordem.id }}</span><h1>{{ ordem.nome }}{% if ordem.placa %} • {{ ordem.placa }}{% endif %}</h1><p>{{ ordem.marca }} {{ ordem.modelo }} • {{ ordem.data|datebr }}</p></div>
 <div class="heading-actions"><a class="btn primary" href="{{ url_for('os_editar', servico_id=ordem.id) }}">Editar OS</a><a class="btn" target="_blank" href="{{ url_for('os_print', servico_id=ordem.id) }}">Imprimir</a><a class="btn" href="{{ url_for('os_list') }}">Voltar</a></div>
 </div>
 <div class="detail-grid">
 <section class="panel"><div class="panel-head"><h2>Cliente e carro</h2><span class="badge status-{{ ordem.status|lower|replace(' ', '-') }}">{{ ordem.status }}</span></div>
-<dl class="details"><div><dt>Cliente</dt><dd>{{ ordem.nome }}</dd></div><div><dt>Telefone</dt><dd>{{ ordem.telefone or '—' }}</dd></div><div><dt>Carro</dt><dd>{{ ordem.marca }} {{ ordem.modelo }}</dd></div><div><dt>Placa / Ano</dt><dd>{{ ordem.placa }} • {{ ordem.ano or '—' }}</dd></div><div><dt>KM da OS</dt><dd>{{ ordem.km_atual or 0 }} km</dd></div><div><dt>Próxima manutenção</dt><dd>{{ ordem.proxima_manut_km or 0 }} km</dd></div></dl>
+<dl class="details"><div><dt>Cliente</dt><dd>{{ ordem.nome }}</dd></div><div><dt>Telefone</dt><dd>{{ ordem.telefone or '—' }}</dd></div><div><dt>Carro</dt><dd>{{ ordem.marca }} {{ ordem.modelo }}</dd></div><div><dt>Placa / Ano</dt><dd>{{ ordem.placa or 'Sem placa' }} • {{ ordem.ano or '—' }}</dd></div><div><dt>KM da OS</dt><dd>{{ ordem.km_atual or 0 }} km</dd></div><div><dt>Próxima manutenção</dt><dd>{{ ordem.proxima_manut_km or 0 }} km</dd></div></dl>
 {% if ordem.descricao %}<div class="description-box"><strong>Observações</strong><p>{{ ordem.descricao|e|replace('\n','<br>')|safe }}</p></div>{% endif %}
 </section>
 <section class="panel total-panel"><span>Total da OS</span><strong>{{ total|money }}</strong><small>{{ items|length }} linha(s) de item/serviço</small><a class="btn primary wide" href="{{ url_for('os_editar', servico_id=ordem.id) }}">Alterar somente o que precisar</a></section>

@@ -13,7 +13,7 @@
 <section class="panel">
 <div class="panel-head"><div><h2>Carros deste cliente</h2><p>Marca, modelo, placa e quilometragem.</p></div></div>
 <div class="table-wrap"><table><thead><tr><th>Carro</th><th>Placa</th><th>Ano</th><th>KM</th><th></th></tr></thead><tbody>
-{% for v in veiculos %}<tr><td><strong>{{ v.marca }} {{ v.modelo }}</strong></td><td>{{ v.placa }}</td><td>{{ v.ano or '—' }}</td><td>{{ v.km_atual or 0 }}</td><td class="actions-cell"><a class="btn small" href="{{ url_for('veiculo_editar', veiculo_id=v.id) }}">Editar carro</a></td></tr>{% else %}<tr><td colspan="5" class="empty">Nenhum carro vinculado.</td></tr>{% endfor %}
+{% for v in veiculos %}<tr><td><strong>{{ v.marca }} {{ v.modelo }}</strong></td><td>{{ v.placa or 'Sem placa' }}</td><td>{{ v.ano or '—' }}</td><td>{{ v.km_atual or 0 }}</td><td class="actions-cell"><a class="btn small" href="{{ url_for('veiculo_editar', veiculo_id=v.id) }}">Editar carro</a></td></tr>{% else %}<tr><td colspan="5" class="empty">Nenhum carro vinculado.</td></tr>{% endfor %}
 </tbody></table></div>
 </section>
 {% endblock %}

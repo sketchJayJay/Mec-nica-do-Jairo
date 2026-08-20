@@ -26,7 +26,7 @@
         {% for r in recent %}
           <tr>
             <td><strong>#{{ r.id }}</strong><small>{{ r.data|datebr }}</small></td>
-            <td>{{ r.nome }}<small>{{ r.marca }} {{ r.modelo }} • {{ r.placa }}</small></td>
+            <td>{{ r.nome }}<small>{{ r.marca }} {{ r.modelo }}{% if r.placa %} • {{ r.placa }}{% endif %}</small></td>
             <td><span class="badge status-{{ r.status|lower|replace(' ', '-') }}">{{ r.status }}</span></td>
             <td>{{ r.total|money }}</td>
             <td class="actions-cell"><a class="btn small" href="{{ url_for('os_view', servico_id=r.id) }}">Abrir</a></td>

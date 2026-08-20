@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>OS {{ ordem.placa }} #{{ ordem.id }}</title>
+    <title>OS{% if ordem.placa %} {{ ordem.placa }}{% endif %} #{{ ordem.id }}</title>
     <style>
         @page { margin: 16mm; }
         body { font-family: Arial, Helvetica, sans-serif; margin:0; padding:16mm; color:#111827; }

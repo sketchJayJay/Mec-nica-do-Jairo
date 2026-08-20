@@ -42,7 +42,7 @@ from db import (
     transaction,
 )
 
-APP_VERSION = "2.0.4-web-sem-login"
+APP_VERSION = "2.0.5-web-sem-login"
 
 
 def create_app(test_config: dict | None = None) -> Flask:
@@ -286,13 +286,14 @@ def create_app(test_config: dict | None = None) -> Flask:
             cliente_id = con.execute("SELECT last_insert_rowid()").fetchone()[0]
 
         placa = form.get("placa", "").strip().upper()
-        if not placa:
-            raise ValueError("Informe a placa do carro.")
+        # A placa é opcional na OS. Quando vazia, gravamos NULL para que
+        # vários carros sem placa possam existir mesmo com o índice UNIQUE.
+        placa_db = placa or None
         values = (
             cliente_id,
             form.get("marca", "").strip(),
             form.get("modelo", "").strip(),
-            placa,
+            placa_db,
             form.get("ano", "").strip(),
             as_int(form.get("veiculo_km_atual")),
             as_int(form.get("km_troca_corr")),
@@ -300,7 +301,9 @@ def create_app(test_config: dict | None = None) -> Flask:
             as_int(form.get("km_corr_proxima")),
         )
         if veiculo_id and con.execute("SELECT 1 FROM veiculos WHERE id=?", (veiculo_id,)).fetchone():
-            conflict = con.execute("SELECT id FROM veiculos WHERE placa=? AND id<>?", (placa, veiculo_id)).fetchone()
+            conflict = None
+            if placa:
+                conflict = con.execute("SELECT id FROM veiculos WHERE placa=? AND id<>?", (placa, veiculo_id)).fetchone()
             if conflict:
                 raise ValueError("Essa placa já pertence a outro veículo cadastrado.")
             con.execute(
@@ -309,7 +312,9 @@ def create_app(test_config: dict | None = None) -> Flask:
                 values + (veiculo_id,),
             )
         else:
-            existing = con.execute("SELECT id FROM veiculos WHERE placa=?", (placa,)).fetchone()
+            # Só reaproveita veículo existente quando uma placa foi informada.
+            # Sem placa, cria um novo cadastro de carro ligado ao cliente.
+            existing = con.execute("SELECT id FROM veiculos WHERE placa=?", (placa,)).fetchone() if placa else None
             if existing:
                 veiculo_id = int(existing[0])
                 con.execute(

@@ -17,7 +17,7 @@
 <label>Telefone<input name="cliente_telefone" id="cliente_telefone" value="{{ ordem.telefone if ordem else '' }}"></label>
 <label>Marca<input name="marca" id="marca" value="{{ ordem.marca if ordem else '' }}"></label>
 <label>Modelo / nome do carro<input name="modelo" id="modelo" value="{{ ordem.modelo if ordem else '' }}"></label>
-<label>Placa<input name="placa" id="placa" required value="{{ ordem.placa if ordem else '' }}"></label>
+<label>Placa <small style="font-weight:500;color:#667085">(opcional)</small><input name="placa" id="placa" placeholder="Pode deixar em branco" value="{{ ordem.placa or '' if ordem else '' }}"></label>
 <label>Ano<input name="ano" id="ano" value="{{ ordem.ano if ordem else '' }}"></label>
 <label>KM atual do carro<input name="veiculo_km_atual" id="veiculo_km_atual" inputmode="numeric" value="{{ ordem.veiculo_km_atual if ordem else 0 }}"></label>
 <label>Intervalo correia<input name="km_troca_corr" id="km_troca_corr" inputmode="numeric" value="{{ ordem.km_troca_corr if ordem else 0 }}"></label>
