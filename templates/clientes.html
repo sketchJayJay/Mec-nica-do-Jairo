@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Clientes • Mecânica do Jairo{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">Cadastros</span><h1>Clientes e carros</h1><p>Pesquise pelo nome ou telefone e edite os veículos vinculados.</p></div></div>
+<form class="searchbar" method="get"><input name="q" value="{{ q }}" placeholder="Buscar cliente ou telefone..."><button class="btn primary">Buscar</button>{% if q %}<a class="btn" href="{{ url_for('clientes') }}">Limpar</a>{% endif %}</form>
+<section class="panel">
+  <div class="table-wrap"><table>
+    <thead><tr><th>Cliente</th><th>Telefone</th><th>Carros</th><th></th></tr></thead>
+    <tbody>{% for c in clientes %}<tr><td><strong>{{ c.nome }}</strong></td><td>{{ c.telefone or '—' }}</td><td>{{ c.veiculos }}</td><td class="actions-cell"><a class="btn small" href="{{ url_for('cliente_editar', cliente_id=c.id) }}">Abrir cadastro</a></td></tr>{% else %}<tr><td colspan="4" class="empty">Nada encontrado.</td></tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar item' if item else 'Novo item' }} • Mecânica do Jairo{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">Estoque</span><h1>{{ 'Editar item' if item else 'Novo item' }}</h1><p>{% if item %}Pode corrigir o nome ou descrição que foi digitado errado.{% else %}Cadastre uma nova peça ou produto.{% endif %}</p></div><a class="btn" href="{{ url_for('estoque') }}">Voltar</a></div>
+<section class="panel form-panel"><form method="post" class="form-grid">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<label class="span-2">Nome / descrição do item<input name="item" required value="{{ item.item if item else '' }}"></label>
+<label>Categoria<input name="categoria" value="{{ item.categoria if item else '' }}"></label>
+<label>Quantidade<input name="qtde" type="number" min="0" value="{{ item.qtde if item else 0 }}"></label>
+<label>Preço de venda (R$)<input name="preco" inputmode="decimal" value="{{ '%.2f'|format(item.preco or 0) if item else '0,00' }}"></label>
+<div class="span-all"><button class="btn primary" type="submit">Salvar item</button></div>
+</form></section>
+{% if item %}<form method="post" action="{{ url_for('estoque_excluir', item_id=item.id) }}" class="danger-zone" onsubmit="return confirm('Excluir este item do estoque?')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn danger" type="submit">Excluir item</button></form>{% endif %}
+{% endblock %}

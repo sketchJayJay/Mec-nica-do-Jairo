@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <title>{% block title %}Mecânica do Jairo{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  {% if session.get('logged_in') %}
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('dashboard') }}">
+      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Mecânica do Jairo">
+      <span><strong>Mecânica do Jairo</strong><small>Sistema da oficina</small></span>
+    </a>
+    <button class="menu-toggle" type="button" aria-label="Abrir menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
+    <nav class="nav">
+      <a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">Início</a>
+      <a href="{{ url_for('os_list') }}" class="{% if request.endpoint and request.endpoint.startswith('os_') %}active{% endif %}">Ordens de serviço</a>
+      <a href="{{ url_for('estoque') }}" class="{% if request.endpoint and request.endpoint.startswith('estoque') %}active{% endif %}">Estoque</a>
+      <a href="{{ url_for('clientes') }}" class="{% if request.endpoint and (request.endpoint.startswith('cliente') or request.endpoint.startswith('veiculo')) %}active{% endif %}">Clientes</a>
+      <a href="{{ url_for('relatorios') }}" class="{% if request.endpoint == 'relatorios' %}active{% endif %}">Relatórios</a>
+      <form method="post" action="{{ url_for('logout') }}" class="nav-logout">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit">Sair</button>
+      </form>
+    </nav>
+  </header>
+  {% endif %}
+
+  <main class="page {% if not session.get('logged_in') %}page-login{% endif %}">
+    {% if session.get('logged_in') and AUTH_DEFAULT %}
+      <div class="alert warning security-warning"><strong>Segurança:</strong> o login ainda está no padrão admin/admin. Troque APP_USER, APP_PASSWORD e SECRET_KEY nas variáveis do Coolify.</div>
+    {% endif %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-stack">
+        {% for category, message in messages %}
+          <div class="alert {{ category }}">{{ message }}</div>
+        {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  {% if session.get('logged_in') %}
+  <footer class="footer">Mecânica do Jairo • versão {{ APP_VERSION }} • agora as atualizações entram pelo deploy do Coolify</footer>
+  {% endif %}
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

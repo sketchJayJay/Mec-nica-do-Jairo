@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Estoque • Mecânica do Jairo{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">Estoque</span><h1>Peças e produtos</h1><p>Agora dá para corrigir nome/descrição, quantidade e preço de qualquer item.</p></div><div class="heading-actions"><a class="btn primary" href="{{ url_for('estoque_novo') }}">+ Novo item</a><a class="btn" target="_blank" href="{{ url_for('estoque_print') }}">Imprimir estoque completo</a></div></div>
+<form class="searchbar searchbar-wide" method="get"><input name="q" value="{{ q }}" placeholder="Buscar item..."><select name="categoria"><option value="">Todas as categorias</option>{% for c in categorias %}<option value="{{ c.categoria }}" {% if categoria==c.categoria %}selected{% endif %}>{{ c.categoria }}</option>{% endfor %}</select><button class="btn primary">Buscar</button>{% if q or categoria %}<a class="btn" href="{{ url_for('estoque') }}">Limpar</a>{% endif %}</form>
+<div class="summary-line"><span><strong>{{ items|length }}</strong> item(ns) na tela</span><span>Valor total do estoque atual: <strong>{{ total_valor|money }}</strong></span></div>
+<section class="panel"><div class="table-wrap"><table><thead><tr><th>Item</th><th>Categoria</th><th>Qtd.</th><th>Preço</th><th>Total</th><th></th></tr></thead><tbody>
+{% for i in items %}<tr class="{% if i.qtde <= 1 %}low-row{% endif %}"><td><strong>{{ i.item }}</strong><small>ID {{ i.id }}</small></td><td>{{ i.categoria or '—' }}</td><td><span class="qty {% if i.qtde <= 1 %}low{% endif %}">{{ i.qtde }}</span></td><td>{{ i.preco|money }}</td><td>{{ (i.qtde*i.preco)|money }}</td><td class="actions-cell"><a class="btn small primary" href="{{ url_for('estoque_editar', item_id=i.id) }}">Editar</a></td></tr>{% else %}<tr><td colspan="6" class="empty">Nada encontrado.</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}

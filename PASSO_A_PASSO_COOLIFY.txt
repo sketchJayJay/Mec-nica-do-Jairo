@@ -1,0 +1,59 @@
+MECÂNICA DO JAIRO - SUBIR NO COOLIFY
+
+IMPORTANTE
+Use um repositório PRIVADO no GitHub, porque este pacote contém o banco real da oficina.
+
+1) Extraia o ZIP no computador.
+
+2) Crie um repositório PRIVADO no GitHub e envie TODO o conteúdo desta pasta para a raiz do repositório.
+   Na raiz precisam aparecer, entre outros:
+   - Dockerfile
+   - docker-compose.yaml
+   - app.py
+   - db.py
+   - requirements.txt
+   - seed/
+   - templates/
+   - static/
+
+3) No Coolify, crie um novo recurso pelo Git Repository.
+
+4) Selecione Docker Compose.
+
+5) Compose file:
+   /docker-compose.yaml
+
+6) Adicione estas variáveis no Coolify:
+   APP_USER=admin
+   APP_PASSWORD=COLOQUE_UMA_SENHA_FORTE
+   SECRET_KEY=COLOQUE_UMA_CHAVE_GRANDE_E_ALEATORIA
+
+7) Faça Deploy.
+
+8) Configure o domínio para a porta interna 8000.
+
+9) Abra o domínio e entre com o usuário/senha definidos nas variáveis.
+
+BANCO / DADOS
+O arquivo enviado oficina.db já está dentro de seed/oficina.db.
+No primeiro deploy ele será copiado automaticamente para /data/oficina.db.
+O volume mecanica_jairo_data mantém o banco mesmo depois de novos deploys.
+
+NÃO REMOVA O VOLUME AO ATUALIZAR O SISTEMA.
+
+BACKUP
+Dentro do sistema existe o botão "Baixar backup".
+Use ele antes de alterações grandes ou atualizações.
+
+ALTERAÇÕES FEITAS
+- OS finalizada continua editável.
+- Dá para alterar somente um item da OS.
+- Estoque de itens novos vinculados à OS é ajustado por diferença.
+- Nome/descrição do item do estoque pode ser corrigido.
+- Quantidade e preço do estoque podem ser editados.
+- Impressão do estoque completo com preços.
+- Edição de clientes e carros.
+- Impressão e reimpressão de OS.
+- Backup do banco pelo navegador.
+- Layout responsivo para celular.
+- Atualizações futuras são feitas pelo deploy do Coolify, sem instalador do Windows.

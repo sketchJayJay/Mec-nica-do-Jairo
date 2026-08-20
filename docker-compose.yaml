@@ -1,0 +1,24 @@
+services:
+  mecanica-jairo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_PATH: /data/oficina.db
+      APP_USER: ${APP_USER:-admin}
+      APP_PASSWORD: ${APP_PASSWORD:-admin}
+      SECRET_KEY: ${SECRET_KEY:-troque-esta-chave-no-coolify}
+    volumes:
+      - mecanica_jairo_data:/data
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+volumes:
+  mecanica_jairo_data:

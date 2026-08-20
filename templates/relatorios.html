@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Relatórios • Mecânica do Jairo{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">Relatórios</span><h1>Visão da oficina</h1><p>Resumo mensal, itens usados e histórico dos ajustes de estoque feitos pela versão web.</p></div><a class="btn" href="{{ url_for('backup_database') }}">Baixar backup do banco</a></div>
+<div class="two-col">
+<section class="panel"><div class="panel-head"><div><h2>Últimos meses</h2><p>Quantidade de OS e valor dos itens/serviços registrados.</p></div></div><div class="table-wrap"><table><thead><tr><th>Mês</th><th>OS</th><th>Valor</th></tr></thead><tbody>{% for r in por_mes %}<tr><td>{{ r.mes }}</td><td>{{ r.os_count }}</td><td>{{ r.valor|money }}</td></tr>{% endfor %}</tbody></table></div></section>
+<section class="panel"><div class="panel-head"><div><h2>Itens mais usados</h2><p>Somatório histórico das linhas de OS.</p></div></div><div class="table-wrap"><table><thead><tr><th>Item</th><th>Qtd.</th><th>Valor</th></tr></thead><tbody>{% for r in top_items %}<tr><td>{{ r.item }}</td><td>{{ r.quantidade }}</td><td>{{ r.valor|money }}</td></tr>{% endfor %}</tbody></table></div></section>
+</div>
+<section class="panel"><div class="panel-head"><div><h2>Movimentações automáticas do estoque</h2><p>Auditoria criada a partir desta versão. O histórico antigo permanece intacto.</p></div></div><div class="table-wrap"><table><thead><tr><th>Data</th><th>Item</th><th>Tipo</th><th>Qtd.</th><th>Saldo</th><th>OS</th></tr></thead><tbody>{% for m in movements %}<tr><td>{{ m.data|datebr }}</td><td>{{ m.item or ('Item #' ~ m.estoque_id) }}</td><td>{{ m.tipo }}</td><td>{{ m.quantidade }}</td><td>{{ m.saldo_antes }} → {{ m.saldo_depois }}</td><td>{{ '#' ~ m.servico_id if m.servico_id else '—' }}</td></tr>{% else %}<tr><td colspan="6" class="empty">Ainda não há movimentações da versão web.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

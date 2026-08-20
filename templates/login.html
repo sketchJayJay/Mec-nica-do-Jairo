@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Entrar • Mecânica do Jairo{% endblock %}
+{% block content %}
+<section class="login-shell">
+  <div class="login-card">
+    <img class="login-logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="Mecânica do Jairo">
+    <h1>Acesso da oficina</h1>
+    <p>Entre para acessar OS, clientes, carros e estoque.</p>
+    <form method="post" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Usuário<input name="usuario" autocomplete="username" required autofocus></label>
+      <label>Senha<input name="senha" type="password" autocomplete="current-password" required></label>
+      <button class="btn primary wide" type="submit">Entrar</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

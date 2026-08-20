@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar OS #' ~ ordem.id if ordem else 'Nova OS' }} • Mecânica do Jairo{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">{{ 'Editar ordem de serviço' if ordem else 'Nova ordem de serviço' }}</span><h1>{{ 'OS #' ~ ordem.id if ordem else 'Cadastrar serviço' }}</h1><p>{% if ordem %}Edite só o item que estiver errado. A OS pode ser alterada mesmo estando finalizada.{% else %}Cadastre cliente, carro, peças e mão de obra.{% endif %}</p></div><a class="btn" href="{{ url_for('os_view', servico_id=ordem.id) if ordem else url_for('os_list') }}">Cancelar</a></div>
+<form method="post" id="os-form">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<input type="hidden" name="cliente_id" id="cliente_id" value="{{ ordem.cliente_id if ordem else '' }}">
+<input type="hidden" name="veiculo_id" id="veiculo_id" value="{{ ordem.veiculo_id if ordem else '' }}">
+
+<section class="panel form-panel">
+<div class="section-title"><span>1</span><div><h2>Cliente e carro</h2><p>Busque um cadastro existente ou preencha para criar um novo.</p></div></div>
+<div class="lookup-box">
+<label>Buscar cliente, telefone ou placa<input id="client-search" autocomplete="off" placeholder="Comece a digitar..."></label><div id="client-results" class="lookup-results"></div>
+</div>
+<div class="form-grid">
+<label class="span-2">Nome do cliente<input name="cliente_nome" id="cliente_nome" required value="{{ ordem.nome if ordem else '' }}"></label>
+<label>Telefone<input name="cliente_telefone" id="cliente_telefone" value="{{ ordem.telefone if ordem else '' }}"></label>
+<label>Marca<input name="marca" id="marca" value="{{ ordem.marca if ordem else '' }}"></label>
+<label>Modelo / nome do carro<input name="modelo" id="modelo" value="{{ ordem.modelo if ordem else '' }}"></label>
+<label>Placa<input name="placa" id="placa" required value="{{ ordem.placa if ordem else '' }}"></label>
+<label>Ano<input name="ano" id="ano" value="{{ ordem.ano if ordem else '' }}"></label>
+<label>KM atual do carro<input name="veiculo_km_atual" id="veiculo_km_atual" inputmode="numeric" value="{{ ordem.veiculo_km_atual if ordem else 0 }}"></label>
+<label>Intervalo correia<input name="km_troca_corr" id="km_troca_corr" inputmode="numeric" value="{{ ordem.km_troca_corr if ordem else 0 }}"></label>
+<label>Correia trocada em<input name="km_corr_trocada" id="km_corr_trocada" inputmode="numeric" value="{{ ordem.km_corr_trocada if ordem else 0 }}"></label>
+<label>Próxima correia<input name="km_corr_proxima" id="km_corr_proxima" inputmode="numeric" value="{{ ordem.km_corr_proxima if ordem else 0 }}"></label>
+</div></section>
+
+<section class="panel form-panel">
+<div class="section-title"><span>2</span><div><h2>Dados da OS</h2><p>Status, quilometragem e observações.</p></div></div>
+<div class="form-grid">
+<label>Data / hora<input name="data" value="{{ ordem.data if ordem else now }}"></label>
+<label>Status<select name="status">{% set current_status = ordem.status if ordem else 'Aberta' %}{% for s in ['Aberta','Em andamento','Finalizada'] %}<option {% if current_status==s %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></label>
+<label>KM desta OS<input name="km_atual" id="km_atual" inputmode="numeric" value="{{ ordem.km_atual if ordem else 0 }}"></label>
+<label>Intervalo do óleo<select name="intervalo_km" id="intervalo_km">{% set intv = ordem.intervalo_km if ordem else 10000 %}{% for n in [0,5000,7500,10000,15000] %}<option value="{{ n }}" {% if intv==n %}selected{% endif %}>{{ n }} km</option>{% endfor %}</select></label>
+<label>Próxima manutenção<input name="proxima_manut_km" id="proxima_manut_km" inputmode="numeric" value="{{ ordem.proxima_manut_km if ordem else 10000 }}"></label>
+<label class="span-all">Descrição / observações<textarea name="descricao" rows="4">{{ ordem.descricao if ordem else '' }}</textarea></label>
+</div></section>
+
+<section class="panel form-panel items-editor">
+<div class="section-title"><span>3</span><div><h2>Peças e mão de obra</h2><p>Para peças, busque no estoque. Em OS antigas, itens sem vínculo são preservados e não mexem no saldo automaticamente.</p></div></div>
+<div class="item-toolbar"><button type="button" class="btn primary" id="open-stock">+ Buscar no estoque</button><button type="button" class="btn" id="add-labor">+ Mão de obra / item manual</button></div>
+<div class="table-wrap"><table id="items-table"><thead><tr><th>Categoria</th><th>Item</th><th>Qtd.</th><th>R$ unit.</th><th>Total</th><th></th></tr></thead><tbody></tbody><tfoot><tr><td colspan="4">Total da OS</td><td id="grand-total">R$ 0,00</td><td></td></tr></tfoot></table></div>
+</section>
+
+<div class="savebar"><div><strong>{{ 'Salvar alterações da OS #' ~ ordem.id if ordem else 'Criar ordem de serviço' }}</strong><small>O estoque é ajustado automaticamente apenas nos itens vinculados.</small></div><button class="btn primary large" type="submit">Salvar OS</button></div>
+</form>
+
+<div class="modal" id="stock-modal" aria-hidden="true"><div class="modal-card"><div class="modal-head"><div><h2>Buscar no estoque</h2><p>Selecione a peça e informe a quantidade.</p></div><button type="button" class="icon-btn" data-close-modal>×</button></div><input id="stock-search" class="modal-search" placeholder="Digite o nome da peça ou categoria..." autocomplete="off"><div id="stock-results" class="stock-results"></div></div></div>
+
+<script id="initial-items" type="application/json">{{ items|tojson }}</script>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/os_form.js') }}"></script>{% endblock %}

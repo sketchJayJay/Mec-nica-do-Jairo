@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Editar carro • Mecânica do Jairo{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">Carro de {{ veiculo.cliente_nome }}</span><h1>{{ veiculo.marca }} {{ veiculo.modelo }}</h1><p>Corrija nome/modelo, placa, ano e dados de manutenção.</p></div><a class="btn" href="{{ url_for('cliente_editar', cliente_id=veiculo.cliente_id) }}">Voltar ao cliente</a></div>
+<section class="panel form-panel"><form method="post" class="form-grid">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<label>Marca<input name="marca" value="{{ veiculo.marca or '' }}"></label>
+<label>Modelo / nome do carro<input name="modelo" value="{{ veiculo.modelo or '' }}"></label>
+<label>Placa<input name="placa" value="{{ veiculo.placa or '' }}" required></label>
+<label>Ano<input name="ano" value="{{ veiculo.ano or '' }}"></label>
+<label>KM atual<input name="km_atual" inputmode="numeric" value="{{ veiculo.km_atual or 0 }}"></label>
+<label>Intervalo correia (km)<input name="km_troca_corr" inputmode="numeric" value="{{ veiculo.km_troca_corr or 0 }}"></label>
+<label>Correia trocada em (km)<input name="km_corr_trocada" inputmode="numeric" value="{{ veiculo.km_corr_trocada or 0 }}"></label>
+<label>Próxima correia (km)<input name="km_corr_proxima" inputmode="numeric" value="{{ veiculo.km_corr_proxima or 0 }}"></label>
+<div class="span-all"><button class="btn primary" type="submit">Salvar alterações do carro</button></div>
+</form></section>
+{% endblock %}

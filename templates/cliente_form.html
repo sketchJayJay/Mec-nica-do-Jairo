@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}{{ cliente.nome }} • Mecânica do Jairo{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">Cliente #{{ cliente.id }}</span><h1>{{ cliente.nome }}</h1><p>Edite os dados do cliente e abra o cadastro de cada carro.</p></div><a class="btn" href="{{ url_for('clientes') }}">Voltar</a></div>
+<section class="panel form-panel">
+<form method="post" class="form-grid">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<label class="span-2">Nome<input name="nome" value="{{ cliente.nome }}" required></label>
+<label>Telefone<input name="telefone" value="{{ cliente.telefone or '' }}"></label>
+<div class="span-all"><button class="btn primary" type="submit">Salvar cliente</button></div>
+</form>
+</section>
+<section class="panel">
+<div class="panel-head"><div><h2>Carros deste cliente</h2><p>Marca, modelo, placa e quilometragem.</p></div></div>
+<div class="table-wrap"><table><thead><tr><th>Carro</th><th>Placa</th><th>Ano</th><th>KM</th><th></th></tr></thead><tbody>
+{% for v in veiculos %}<tr><td><strong>{{ v.marca }} {{ v.modelo }}</strong></td><td>{{ v.placa }}</td><td>{{ v.ano or '—' }}</td><td>{{ v.km_atual or 0 }}</td><td class="actions-cell"><a class="btn small" href="{{ url_for('veiculo_editar', veiculo_id=v.id) }}">Editar carro</a></td></tr>{% else %}<tr><td colspan="5" class="empty">Nenhum carro vinculado.</td></tr>{% endfor %}
+</tbody></table></div>
+</section>
+{% endblock %}
