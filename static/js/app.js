@@ -20,7 +20,8 @@
       // Quando aberto pelo aplicativo Windows (PyWebView), fecha de verdade.
       try {
         if (window.pywebview && window.pywebview.api && window.pywebview.api.fechar) {
-          await window.pywebview.api.fechar();
+          // Não aguardamos a resposta: o app nativo agenda o próprio encerramento.
+          window.pywebview.api.fechar();
           return;
         }
       } catch (_) {}

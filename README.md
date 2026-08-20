@@ -120,3 +120,7 @@ Fluxo: **Orçamentos → Novo orçamento → buscar item no estoque → ajustar 
 ## v13
 - Adicionado botão **← Voltar para o orçamento** na página de impressão.
 - Os botões continuam ocultos na impressão/PDF.
+
+## v14
+- Corrigido o botão X do aplicativo Windows para não aguardar o encerramento nativo via ponte JavaScript.
+- Evita travamento ao fechar o programa em modo PyWebView.
