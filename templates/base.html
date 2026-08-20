@@ -32,7 +32,6 @@
 
   <main class="page {% if not session.get('logged_in') %}page-login{% endif %}">
     {% if session.get('logged_in') and AUTH_DEFAULT %}
-      <div class="alert warning security-warning"><strong>Segurança:</strong> o login ainda está no padrão admin/admin. Troque APP_USER, APP_PASSWORD e SECRET_KEY nas variáveis do Coolify.</div>
     {% endif %}
 
     {% with messages = get_flashed_messages(with_categories=true) %}
