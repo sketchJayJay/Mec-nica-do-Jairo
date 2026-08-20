@@ -29,8 +29,7 @@
       <a href="{{ url_for('clientes') }}" class="{% if request.endpoint and (request.endpoint.startswith('cliente') or request.endpoint.startswith('veiculo')) %}active{% endif %}">Clientes</a>
       <a href="{{ url_for('relatorios') }}" class="{% if request.endpoint == 'relatorios' %}active{% endif %}">Relatórios</a>
     </nav>
-    <button type="button" id="close-program" class="window-close" title="Fechar programa" aria-label="Fechar programa">✕</button>
-  </header>
+</header>
 
   <main class="page">
 

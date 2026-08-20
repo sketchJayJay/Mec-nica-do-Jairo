@@ -124,3 +124,9 @@ Fluxo: **Orçamentos → Novo orçamento → buscar item no estoque → ajustar 
 ## v14
 - Corrigido o botão X do aplicativo Windows para não aguardar o encerramento nativo via ponte JavaScript.
 - Evita travamento ao fechar o programa em modo PyWebView.
+
+
+## v15
+- Removido o X interno da página.
+- O fechamento passa a ser feito pelo X nativo da janela do Edge em modo aplicativo.
+- Evita o PyWebView, que estava travando neste notebook.
