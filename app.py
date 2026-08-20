@@ -43,7 +43,7 @@ from db import (
     transaction,
 )
 
-APP_VERSION = "2.1.0-web-orcamentos"
+APP_VERSION = "2.2.0-x-fechar-app"
 
 
 def create_app(test_config: dict | None = None) -> Flask:

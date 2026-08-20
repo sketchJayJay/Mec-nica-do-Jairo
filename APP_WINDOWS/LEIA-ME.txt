@@ -1,0 +1,12 @@
+MECÂNICA DO JAIRO - APLICATIVO WINDOWS COM X PARA FECHAR
+
+1. Deixe esta pasta em um local fixo do notebook.
+2. Execute CONFIGURAR_ENDERECO.bat e informe a URL do sistema no Coolify.
+3. Execute INSTALAR_APLICATIVO_WINDOWS.bat uma vez.
+4. Use o atalho "Mecânica do Jairo" criado no Desktop.
+
+O aplicativo abre em tela cheia, sem barras do navegador.
+O X vermelho no canto superior direito do próprio sistema fecha a janela inteira com um clique.
+
+Observação:
+O X de um site comum não pode encerrar o navegador à força por segurança. Por isso o atalho usa uma pequena janela de aplicativo (PyWebView), que permite ao botão X fechar de verdade.

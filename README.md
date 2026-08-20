@@ -110,3 +110,8 @@ A impressão da Ordem de Serviço mantém o modelo original do programa desktop,
 Esta versão inclui um módulo separado de **Orçamentos**. Ele pode puxar nome, categoria e preço dos itens cadastrados no estoque, mas **não baixa, não reserva e não repõe quantidades**. Criar, editar ou excluir um orçamento não gera movimentação de estoque.
 
 Fluxo: **Orçamentos → Novo orçamento → buscar item no estoque → ajustar nome/quantidade/preço → salvar → Imprimir / PDF**.
+
+
+## v12 - X para fechar
+- Botão X vermelho no canto superior direito.
+- Quando aberto pelo aplicativo Windows/PyWebView, fecha a janela inteira com um clique.

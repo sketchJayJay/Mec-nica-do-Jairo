@@ -13,18 +13,29 @@
 
   const closeProgramBtn = document.getElementById('close-program');
   if (closeProgramBtn) {
-    closeProgramBtn.addEventListener('click', () => {
-      try { window.close(); } catch (_) {}
+    closeProgramBtn.addEventListener('click', async () => {
+      closeProgramBtn.disabled = true;
+      closeProgramBtn.textContent = '…';
+
+      // Quando aberto pelo aplicativo Windows (PyWebView), fecha de verdade.
+      try {
+        if (window.pywebview && window.pywebview.api && window.pywebview.api.fechar) {
+          await window.pywebview.api.fechar();
+          return;
+        }
+      } catch (_) {}
+
+      // Fallback para janelas que o navegador permite fechar via JavaScript.
+      try {
+        window.open('', '_self');
+        window.close();
+      } catch (_) {}
+
       setTimeout(() => {
-        document.body.innerHTML = `
-          <div style="min-height:100vh;display:grid;place-items:center;background:#0b1220;color:#fff;font-family:Inter,Arial,sans-serif;text-align:center;padding:30px">
-            <div>
-              <div style="font-size:54px;margin-bottom:14px">✓</div>
-              <h1 style="margin:0 0 8px;font-size:28px">Programa encerrado</h1>
-              <p style="margin:0;color:#b8c4d6;font-size:15px">Se esta janela continuar aberta, pressione <strong>Alt + F4</strong>.</p>
-            </div>
-          </div>`;
-      }, 300);
+        closeProgramBtn.disabled = false;
+        closeProgramBtn.textContent = '✕';
+        alert('Para o X fechar o programa diretamente, abra a oficina pelo atalho “Mecânica do Jairo” criado pelo instalador do aplicativo Windows.');
+      }, 500);
     });
   }
 
