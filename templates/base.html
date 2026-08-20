@@ -28,7 +28,7 @@
       <a href="{{ url_for('estoque') }}" class="{% if request.endpoint and request.endpoint.startswith('estoque') %}active{% endif %}">Estoque</a>
       <a href="{{ url_for('clientes') }}" class="{% if request.endpoint and (request.endpoint.startswith('cliente') or request.endpoint.startswith('veiculo')) %}active{% endif %}">Clientes</a>
       <a href="{{ url_for('relatorios') }}" class="{% if request.endpoint == 'relatorios' %}active{% endif %}">Relatórios</a>
-      <a href="#" id="fullscreen-toggle" class="nav-fullscreen" title="Alternar tela cheia">⛶ Tela cheia</a>
+      <button type="button" id="close-program" class="nav-close" title="Fechar o programa">✕ Fechar programa</button>
       <form method="post" action="{{ url_for('logout') }}" class="nav-logout">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <button type="submit">Sair</button>

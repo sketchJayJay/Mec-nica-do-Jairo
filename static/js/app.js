@@ -11,47 +11,23 @@
     });
   }, 4500);
 
-  const fullscreenBtn = document.getElementById('fullscreen-toggle');
-  const updateFullscreenLabel = () => {
-    if (!fullscreenBtn) return;
-    fullscreenBtn.textContent = document.fullscreenElement ? '↙ Sair da tela cheia' : '⛶ Tela cheia';
-  };
+  const closeProgramBtn = document.getElementById('close-program');
 
-  const enterFullscreen = async () => {
-    if (document.fullscreenElement) return;
-    const el = document.documentElement;
-    if (!el.requestFullscreen) return;
-    try {
-      await el.requestFullscreen({ navigationUI: 'hide' });
-    } catch (_) {
-      try { await el.requestFullscreen(); } catch (_) {}
-    }
-  };
+  if (closeProgramBtn) {
+    closeProgramBtn.addEventListener('click', () => {
+      try { window.close(); } catch (_) {}
 
-  if (fullscreenBtn) {
-    fullscreenBtn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      if (document.fullscreenElement) {
-        try { await document.exitFullscreen(); } catch (_) {}
-      } else {
-        await enterFullscreen();
-      }
-      updateFullscreenLabel();
+      setTimeout(() => {
+        document.body.innerHTML = `
+          <div style="min-height:100vh;display:grid;place-items:center;background:#0b1220;color:#fff;font-family:Inter,Arial,sans-serif;text-align:center;padding:30px">
+            <div>
+              <div style="font-size:54px;margin-bottom:14px">✓</div>
+              <h1 style="margin:0 0 8px;font-size:28px">Programa encerrado</h1>
+              <p style="margin:0;color:#b8c4d6;font-size:15px">Se esta janela continuar aberta, pressione <strong>Alt + F4</strong>.</p>
+            </div>
+          </div>`;
+      }, 350);
     });
-  }
-  document.addEventListener('fullscreenchange', updateFullscreenLabel);
-  updateFullscreenLabel();
-
-  // Quando instalado como aplicativo, o manifest pede modo fullscreen.
-  // Em navegadores que ainda exigem um gesto do usuário, a primeira interação
-  // tenta completar a entrada em tela cheia automaticamente.
-  const installedMode = window.matchMedia('(display-mode: standalone)').matches ||
-                        window.matchMedia('(display-mode: fullscreen)').matches ||
-                        window.navigator.standalone === true;
-  if (installedMode && document.body.classList.contains('app-shell') && !document.fullscreenElement) {
-    const firstGesture = () => enterFullscreen();
-    document.addEventListener('pointerdown', firstGesture, { once: true, capture: true });
-    document.addEventListener('keydown', firstGesture, { once: true, capture: true });
   }
 
   if ('serviceWorker' in navigator) {
