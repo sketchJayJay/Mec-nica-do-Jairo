@@ -6,8 +6,6 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_PATH: /data/oficina.db
-      APP_USER: ${APP_USER:-admin}
-      APP_PASSWORD: ${APP_PASSWORD:-admin}
       SECRET_KEY: ${SECRET_KEY:-troque-esta-chave-no-coolify}
     volumes:
       - mecanica_jairo_data:/data

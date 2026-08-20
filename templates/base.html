@@ -14,8 +14,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
   {% block head %}{% endblock %}
 </head>
-<body class="{% if session.get('logged_in') %}app-shell{% else %}guest-shell{% endif %}">
-  {% if session.get('logged_in') %}
+<body class="app-shell">
   <header class="topbar">
     <a class="brand" href="{{ url_for('dashboard') }}">
       <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Mecânica do Jairo">
@@ -29,17 +28,10 @@
       <a href="{{ url_for('clientes') }}" class="{% if request.endpoint and (request.endpoint.startswith('cliente') or request.endpoint.startswith('veiculo')) %}active{% endif %}">Clientes</a>
       <a href="{{ url_for('relatorios') }}" class="{% if request.endpoint == 'relatorios' %}active{% endif %}">Relatórios</a>
       <button type="button" id="close-program" class="nav-close" title="Fechar o programa">✕ Fechar programa</button>
-      <form method="post" action="{{ url_for('logout') }}" class="nav-logout">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <button type="submit">Sair</button>
-      </form>
     </nav>
   </header>
-  {% endif %}
 
-  <main class="page {% if not session.get('logged_in') %}page-login{% endif %}">
-    {% if session.get('logged_in') and AUTH_DEFAULT %}
-    {% endif %}
+  <main class="page">
 
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
@@ -54,9 +46,7 @@
     {% block content %}{% endblock %}
   </main>
 
-  {% if session.get('logged_in') %}
   <footer class="footer">Mecânica do Jairo • versão {{ APP_VERSION }} • agora as atualizações entram pelo deploy do Coolify</footer>
-  {% endif %}
   <script src="{{ url_for('static', filename='js/app.js') }}"></script>
   {% block scripts %}{% endblock %}
 </body>

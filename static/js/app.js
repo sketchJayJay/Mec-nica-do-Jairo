@@ -12,11 +12,9 @@
   }, 4500);
 
   const closeProgramBtn = document.getElementById('close-program');
-
   if (closeProgramBtn) {
     closeProgramBtn.addEventListener('click', () => {
       try { window.close(); } catch (_) {}
-
       setTimeout(() => {
         document.body.innerHTML = `
           <div style="min-height:100vh;display:grid;place-items:center;background:#0b1220;color:#fff;font-family:Inter,Arial,sans-serif;text-align:center;padding:30px">
@@ -26,7 +24,7 @@
               <p style="margin:0;color:#b8c4d6;font-size:15px">Se esta janela continuar aberta, pressione <strong>Alt + F4</strong>.</p>
             </div>
           </div>`;
-      }, 350);
+      }, 300);
     });
   }
 

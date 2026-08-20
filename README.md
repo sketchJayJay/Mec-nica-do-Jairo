@@ -48,8 +48,8 @@ No Coolify:
 2. Escolha **Docker Compose**.
 3. O arquivo está na raiz e se chama exatamente `docker-compose.yaml`.
 4. Configure as variáveis:
-   - `APP_USER`
-   - `APP_PASSWORD`
+   - `LOGIN_REMOVIDO`
+   - `LOGIN_REMOVIDO`
    - `SECRET_KEY`
 5. Faça o deploy.
 6. A aplicação escuta na porta `8000`.

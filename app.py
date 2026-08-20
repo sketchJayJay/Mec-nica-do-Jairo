@@ -42,7 +42,7 @@ from db import (
     transaction,
 )
 
-APP_VERSION = "2.0.2-web"
+APP_VERSION = "2.0.3-web-sem-login"
 
 
 def create_app(test_config: dict | None = None) -> Flask:
@@ -90,20 +90,11 @@ def create_app(test_config: dict | None = None) -> Flask:
 
     @app.context_processor
     def inject_globals():
-        return {
-            "APP_VERSION": APP_VERSION,
-            "AUTH_DEFAULT": os.environ.get("APP_USER", "admin") == "admin"
-            and os.environ.get("APP_PASSWORD", "admin") == "admin",
-        }
+        return {"APP_VERSION": APP_VERSION}
 
     def login_required(fn):
-        @wraps(fn)
-        def wrapped(*args, **kwargs):
-            if not session.get("logged_in"):
-                return redirect(url_for("login", next=request.path))
-            return fn(*args, **kwargs)
-
-        return wrapped
+        # O sistema fica acessível diretamente, sem tela de login.
+        return fn
 
     @app.route("/manifest.webmanifest")
     def manifest():
@@ -127,30 +118,13 @@ def create_app(test_config: dict | None = None) -> Flask:
 
     @app.route("/login", methods=["GET", "POST"])
     def login():
-        if request.method == "POST":
-            user = request.form.get("usuario", "").strip()
-            password = request.form.get("senha", "")
-            expected_user = os.environ.get("APP_USER", "admin")
-            expected_password = os.environ.get("APP_PASSWORD", "admin")
-            expected_hash = os.environ.get("APP_PASSWORD_HASH", "").strip()
-            ok_password = (
-                check_password_hash(expected_hash, password)
-                if expected_hash
-                else secrets.compare_digest(password, expected_password)
-            )
-            if secrets.compare_digest(user, expected_user) and ok_password:
-                session.clear()
-                session["logged_in"] = True
-                session["user"] = user
-                return redirect(request.args.get("next") or url_for("dashboard"))
-            flash("Usuário ou senha inválidos.", "danger")
-        return render_template("login.html")
+        # Compatibilidade com favoritos/atalhos antigos.
+        return redirect(url_for("dashboard"))
 
-    @app.route("/logout", methods=["POST"])
-    @login_required
+    @app.route("/logout", methods=["GET", "POST"])
     def logout():
-        session.clear()
-        return redirect(url_for("login"))
+        return redirect(url_for("dashboard"))
+
 
     @app.route("/")
     @login_required

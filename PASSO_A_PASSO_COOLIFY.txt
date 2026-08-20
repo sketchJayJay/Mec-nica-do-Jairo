@@ -24,8 +24,8 @@ Use um repositório PRIVADO no GitHub, porque este pacote contém o banco real d
    /docker-compose.yaml
 
 6) Adicione estas variáveis no Coolify:
-   APP_USER=admin
-   APP_PASSWORD=COLOQUE_UMA_SENHA_FORTE
+   LOGIN_REMOVIDO=admin
+   LOGIN_REMOVIDO=COLOQUE_UMA_SENHA_FORTE
    SECRET_KEY=COLOQUE_UMA_CHAVE_GRANDE_E_ALEATORIA
 
 7) Faça Deploy.
