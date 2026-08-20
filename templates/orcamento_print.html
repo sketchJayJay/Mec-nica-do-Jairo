@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orçamento #{{ orcamento.id }}{% if orcamento.placa %} • {{ orcamento.placa }}{% endif %}</title>
+<style>
+@page{margin:16mm}body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:16mm;color:#111827}.muted{color:#555}h1,h2,h3{margin:0}.row{display:flex;gap:12px;flex-wrap:wrap}.col{flex:1;min-width:180px}.title{margin:12px 0 8px}table.grid{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px}table.grid th,table.grid td{border:1px solid #e5e7eb;padding:6px}table.grid th{background:#f3f4f6;text-align:left;font-size:10px}.print-actions{position:fixed;right:18px;bottom:18px;z-index:99}.print-actions button{border:0;border-radius:8px;padding:10px 14px;cursor:pointer;font-weight:700;background:#0b55c9;color:#fff}.notice{margin:14px 0;padding:9px 11px;background:#f6f8fb;border:1px solid #e5e7eb;border-radius:7px;font-size:12px}@media print{.print-actions{display:none!important}}
+</style></head>
+<body>
+<div class="print-actions"><button onclick="window.print()">Imprimir / Salvar PDF</button></div>
+<div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ddd;padding-bottom:8px">
+<img src="{{ url_for('static', filename='img/logo_os_original.png') }}" alt="Logo" style="height:150px;object-fit:contain">
+<div style="text-align:right"><h1 style="font-size:28px">ORÇAMENTO</h1><div class="muted">Nº {{ orcamento.id }}</div><div class="muted">{{ orcamento.data|dateonlybr }}</div></div>
+</div>
+<div class="notice"><strong>Documento de orçamento.</strong> A emissão deste orçamento não representa baixa ou reserva de peças no estoque.</div>
+<h2>Cliente</h2><div class="row"><div class="col"><strong>Nome:</strong><br>{{ orcamento.nome }}</div><div class="col"><strong>Telefone:</strong><br>{{ orcamento.telefone or '' }}</div></div>
+<h2 style="margin-top:12px">Veículo</h2><div class="row"><div class="col"><strong>Marca/Modelo:</strong><br>{{ orcamento.marca or '' }} {{ orcamento.modelo or '' }}</div><div class="col"><strong>Placa:</strong><br>{{ orcamento.placa or 'Sem placa' }}</div><div class="col"><strong>Ano:</strong><br>{{ orcamento.ano or '' }}</div></div>
+{% if orcamento.descricao %}<p style="white-space:pre-wrap;margin-top:14px"><strong>Observações:</strong><br>{{ orcamento.descricao }}</p>{% endif %}
+{% if items %}<h2 style="margin-top:14px">Itens</h2><table class="grid"><thead><tr><th>Categoria</th><th>Item</th><th style="text-align:right">Qtde</th><th style="text-align:right">Valor unit.</th><th style="text-align:right">Subtotal</th></tr></thead><tbody>
+{% for i in items %}<tr><td>{{ i.categoria or '' }}</td><td>{{ i.item }}</td><td style="text-align:right">{{ i.qtde }}</td><td style="text-align:right">{{ i.valor_unit|money }}</td><td style="text-align:right">{{ ((i.qtde or 0)*(i.valor_unit or 0))|money }}</td></tr>{% endfor %}
+<tr><td colspan="4" style="text-align:right"><strong>Total</strong></td><td style="text-align:right"><strong>{{ total|money }}</strong></td></tr></tbody></table>{% endif %}
+<div class="muted" style="font-size:11px;margin-top:18px;text-align:center">Orçamento emitido pela Mecânica do Jairo.</div>
+</body></html>

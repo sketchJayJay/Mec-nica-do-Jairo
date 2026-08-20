@@ -34,6 +34,7 @@ from db import (
     connect,
     db_path,
     fetch_os_items,
+    fetch_orcamento_items,
     init_db,
     now_str,
     parse_items_from_form,
@@ -42,7 +43,7 @@ from db import (
     transaction,
 )
 
-APP_VERSION = "2.0.5-web-sem-login"
+APP_VERSION = "2.1.0-web-orcamentos"
 
 
 def create_app(test_config: dict | None = None) -> Flask:
@@ -134,6 +135,7 @@ def create_app(test_config: dict | None = None) -> Flask:
                 "clientes": con.execute("SELECT COUNT(*) FROM clientes").fetchone()[0],
                 "veiculos": con.execute("SELECT COUNT(*) FROM veiculos").fetchone()[0],
                 "os": con.execute("SELECT COUNT(*) FROM servicos").fetchone()[0],
+                "orcamentos": con.execute("SELECT COUNT(*) FROM orcamentos").fetchone()[0],
                 "estoque": con.execute("SELECT COUNT(*) FROM estoque").fetchone()[0],
                 "baixo": con.execute("SELECT COUNT(*) FROM estoque WHERE qtde <= 1").fetchone()[0],
             }
@@ -450,6 +452,152 @@ def create_app(test_config: dict | None = None) -> Flask:
             abort(404)
         total = sum(int(i["qtde"] or 0) * float(i["valor_unit"] or 0) for i in items)
         return render_template("os_print.html", ordem=ordem, items=items, total=total)
+
+    # ---------------- Orçamentos ----------------
+    # Orçamento é separado da OS: pode usar itens do estoque como referência de nome/preço,
+    # mas NUNCA baixa, reserva ou repõe quantidade no estoque.
+    @app.route("/orcamentos")
+    @login_required
+    def orcamentos_list():
+        q = request.args.get("q", "").strip()
+        status = request.args.get("status", "").strip()
+        like = f"%{q}%"
+        with connect() as con:
+            rows = con.execute(
+                """SELECT o.id, o.data, o.status, c.nome, c.telefone,
+                          v.id veiculo_id, v.marca, v.modelo, v.placa,
+                          COALESCE(SUM(i.qtde*i.valor_unit),0) total
+                   FROM orcamentos o
+                   JOIN veiculos v ON v.id=o.veiculo_id
+                   JOIN clientes c ON c.id=v.cliente_id
+                   LEFT JOIN itens_orcamento i ON i.orcamento_id=o.id
+                   WHERE (?='' OR c.nome LIKE ? OR v.placa LIKE ? OR CAST(o.id AS TEXT) LIKE ?)
+                     AND (?='' OR o.status=?)
+                   GROUP BY o.id
+                   ORDER BY o.id DESC LIMIT 500""",
+                (q, like, like, like, status, status),
+            ).fetchall()
+        return render_template("orcamentos_list.html", orcamentos=rows, q=q, status=status)
+
+    def _load_orcamento(orcamento_id: int):
+        with connect() as con:
+            row = con.execute(
+                """SELECT o.*, v.cliente_id, v.marca, v.modelo, v.placa, v.ano,
+                          v.km_atual AS veiculo_km_atual,
+                          COALESCE(v.km_troca_corr,0) km_troca_corr,
+                          COALESCE(v.km_corr_trocada,0) km_corr_trocada,
+                          COALESCE(v.km_corr_proxima,0) km_corr_proxima,
+                          c.nome, c.telefone
+                   FROM orcamentos o
+                   JOIN veiculos v ON v.id=o.veiculo_id
+                   JOIN clientes c ON c.id=v.cliente_id
+                   WHERE o.id=?""",
+                (orcamento_id,),
+            ).fetchone()
+            if not row:
+                return None, []
+            items = fetch_orcamento_items(con, orcamento_id)
+        return row, items
+
+    @app.route("/orcamentos/novo", methods=["GET", "POST"])
+    @login_required
+    def orcamento_novo():
+        if request.method == "POST":
+            items = parse_items_from_form(request.form)
+            try:
+                with transaction() as con:
+                    _, veiculo_id = _upsert_client_vehicle(con, request.form)
+                    con.execute(
+                        """INSERT INTO orcamentos(veiculo_id,descricao,data,status,updated_at)
+                           VALUES(?,?,?,?,?)""",
+                        (
+                            veiculo_id,
+                            request.form.get("descricao", "").strip(),
+                            request.form.get("data", "").strip() or now_str(),
+                            request.form.get("status", "Rascunho"),
+                            now_str(),
+                        ),
+                    )
+                    oid = int(con.execute("SELECT last_insert_rowid()").fetchone()[0])
+                    # IMPORTANTE: não chama reconcile_stock_for_os.
+                    for item in items:
+                        con.execute(
+                            """INSERT INTO itens_orcamento(orcamento_id,categoria,item,qtde,valor_unit,estoque_id)
+                               VALUES(?,?,?,?,?,?)""",
+                            (oid, item["categoria"], item["item"], item["qtde"], item["valor_unit"], item["estoque_id"]),
+                        )
+                flash(f"Orçamento #{oid} criado. O estoque não foi alterado.", "success")
+                return redirect(url_for("orcamento_view", orcamento_id=oid))
+            except (ValueError, sqlite3.IntegrityError) as exc:
+                flash(str(exc), "danger")
+        return render_template("orcamento_form.html", orcamento=None, items=[], now=now_str())
+
+    @app.route("/orcamentos/<int:orcamento_id>")
+    @login_required
+    def orcamento_view(orcamento_id):
+        orcamento, items = _load_orcamento(orcamento_id)
+        if not orcamento:
+            abort(404)
+        total = sum(int(i["qtde"] or 0) * float(i["valor_unit"] or 0) for i in items)
+        return render_template("orcamento_view.html", orcamento=orcamento, items=items, total=total)
+
+    @app.route("/orcamentos/<int:orcamento_id>/editar", methods=["GET", "POST"])
+    @login_required
+    def orcamento_editar(orcamento_id):
+        orcamento, old_items = _load_orcamento(orcamento_id)
+        if not orcamento:
+            abort(404)
+        if request.method == "POST":
+            new_items = parse_items_from_form(request.form)
+            try:
+                with transaction() as con:
+                    _, veiculo_id = _upsert_client_vehicle(con, request.form, int(orcamento["veiculo_id"]))
+                    con.execute(
+                        """UPDATE orcamentos SET veiculo_id=?, descricao=?, data=?, status=?, updated_at=?
+                           WHERE id=?""",
+                        (
+                            veiculo_id,
+                            request.form.get("descricao", "").strip(),
+                            request.form.get("data", "").strip() or now_str(),
+                            request.form.get("status", "Rascunho"),
+                            now_str(),
+                            orcamento_id,
+                        ),
+                    )
+                    con.execute("DELETE FROM itens_orcamento WHERE orcamento_id=?", (orcamento_id,))
+                    # Editar orçamento também não movimenta estoque.
+                    for item in new_items:
+                        con.execute(
+                            """INSERT INTO itens_orcamento(orcamento_id,categoria,item,qtde,valor_unit,estoque_id)
+                               VALUES(?,?,?,?,?,?)""",
+                            (orcamento_id, item["categoria"], item["item"], item["qtde"], item["valor_unit"], item["estoque_id"]),
+                        )
+                flash(f"Orçamento #{orcamento_id} atualizado sem alterar o estoque.", "success")
+                return redirect(url_for("orcamento_view", orcamento_id=orcamento_id))
+            except (ValueError, sqlite3.IntegrityError) as exc:
+                flash(str(exc), "danger")
+        return render_template("orcamento_form.html", orcamento=orcamento, items=old_items, now=now_str())
+
+    @app.route("/orcamentos/<int:orcamento_id>/excluir", methods=["POST"])
+    @login_required
+    def orcamento_excluir(orcamento_id):
+        orcamento, _ = _load_orcamento(orcamento_id)
+        if not orcamento:
+            abort(404)
+        with transaction() as con:
+            con.execute("DELETE FROM itens_orcamento WHERE orcamento_id=?", (orcamento_id,))
+            con.execute("DELETE FROM orcamentos WHERE id=?", (orcamento_id,))
+        flash(f"Orçamento #{orcamento_id} excluído. O estoque permaneceu igual.", "success")
+        return redirect(url_for("orcamentos_list"))
+
+    @app.route("/orcamentos/<int:orcamento_id>/imprimir")
+    @login_required
+    def orcamento_print(orcamento_id):
+        orcamento, items = _load_orcamento(orcamento_id)
+        if not orcamento:
+            abort(404)
+        total = sum(int(i["qtde"] or 0) * float(i["valor_unit"] or 0) for i in items)
+        return render_template("orcamento_print.html", orcamento=orcamento, items=items, total=total)
 
     # ---------------- Estoque ----------------
     @app.route("/estoque")

@@ -5,12 +5,14 @@
   <div><span class="eyebrow">Painel da oficina</span><h1>Bom trabalho por aí 🔧</h1><p>Resumo do sistema e atalhos para o dia a dia.</p></div>
   <div class="heading-actions">
     <a class="btn primary" href="{{ url_for('os_nova') }}">+ Nova OS</a>
+    <a class="btn" href="{{ url_for('orcamento_novo') }}">+ Orçamento</a>
     <a class="btn" href="{{ url_for('backup_database') }}">Baixar backup</a>
   </div>
 </div>
 
 <section class="stat-grid">
   <a class="stat-card" href="{{ url_for('os_list') }}"><span>Ordens de serviço</span><strong>{{ counts.os }}</strong><small>Abrir e editar, inclusive finalizadas</small></a>
+  <a class="stat-card" href="{{ url_for('orcamentos_list') }}"><span>Orçamentos</span><strong>{{ counts.orcamentos }}</strong><small>Não movimentam o estoque</small></a>
   <a class="stat-card" href="{{ url_for('clientes') }}"><span>Clientes</span><strong>{{ counts.clientes }}</strong><small>{{ counts.veiculos }} carros cadastrados</small></a>
   <a class="stat-card" href="{{ url_for('estoque') }}"><span>Itens de estoque</span><strong>{{ counts.estoque }}</strong><small>{{ counts.baixo }} com 1 unidade ou menos</small></a>
   <a class="stat-card accent" href="{{ url_for('estoque_print') }}"><span>Relação do estoque</span><strong>Imprimir</strong><small>Todos os itens, quantidades e preços</small></a>

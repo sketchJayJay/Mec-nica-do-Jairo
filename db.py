@@ -121,6 +121,26 @@ def init_db() -> None:
                 qtde INTEGER DEFAULT 0,
                 preco REAL DEFAULT 0
             );
+            CREATE TABLE IF NOT EXISTS orcamentos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                veiculo_id INTEGER NOT NULL,
+                descricao TEXT,
+                data TEXT,
+                status TEXT NOT NULL DEFAULT 'Rascunho',
+                updated_at TEXT,
+                FOREIGN KEY (veiculo_id) REFERENCES veiculos(id)
+            );
+            CREATE TABLE IF NOT EXISTS itens_orcamento (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                orcamento_id INTEGER NOT NULL,
+                categoria TEXT,
+                item TEXT NOT NULL,
+                qtde INTEGER DEFAULT 1,
+                valor_unit REAL DEFAULT 0,
+                estoque_id INTEGER,
+                FOREIGN KEY (orcamento_id) REFERENCES orcamentos(id) ON DELETE CASCADE,
+                FOREIGN KEY (estoque_id) REFERENCES estoque(id)
+            );
             CREATE TABLE IF NOT EXISTS movimentos_estoque (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 estoque_id INTEGER,
@@ -167,10 +187,14 @@ def init_db() -> None:
             CREATE INDEX IF NOT EXISTS idx_itens_servico_sid ON itens_servico(servico_id);
             CREATE INDEX IF NOT EXISTS idx_itens_estoque_id ON itens_servico(estoque_id);
             CREATE INDEX IF NOT EXISTS idx_estoque_item ON estoque(item COLLATE NOCASE);
+            CREATE INDEX IF NOT EXISTS idx_orcamentos_data ON orcamentos(data);
+            CREATE INDEX IF NOT EXISTS idx_orcamentos_veiculo ON orcamentos(veiculo_id);
+            CREATE INDEX IF NOT EXISTS idx_itens_orcamento_oid ON itens_orcamento(orcamento_id);
+            CREATE INDEX IF NOT EXISTS idx_itens_orcamento_estoque ON itens_orcamento(estoque_id);
             """
         )
         con.execute(
-            "INSERT OR REPLACE INTO app_meta(chave, valor) VALUES('schema_version', '2')"
+            "INSERT OR REPLACE INTO app_meta(chave, valor) VALUES('schema_version', '3')"
         )
         con.commit()
 
@@ -338,5 +362,15 @@ def fetch_os_items(con: sqlite3.Connection, servico_id: int) -> list[dict]:
                   estoque_id, COALESCE(origem_estoque, 0) AS origem_estoque
            FROM itens_servico WHERE servico_id=? ORDER BY id""",
         (servico_id,),
+    ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def fetch_orcamento_items(con: sqlite3.Connection, orcamento_id: int) -> list[dict]:
+    """Itens de orçamento. O vínculo com estoque serve só para referência/preço; nunca movimenta saldo."""
+    rows = con.execute(
+        """SELECT id, orcamento_id, categoria, item, qtde, valor_unit, estoque_id
+           FROM itens_orcamento WHERE orcamento_id=? ORDER BY id""",
+        (orcamento_id,),
     ).fetchall()
     return [dict(r) for r in rows]

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Orçamento #{{ orcamento.id }} • Mecânica do Jairo{% endblock %}
+{% block content %}
+<div class="page-heading">
+<div><span class="eyebrow">Orçamento #{{ orcamento.id }}</span><h1>{{ orcamento.nome }}{% if orcamento.placa %} • {{ orcamento.placa }}{% endif %}</h1><p>{{ orcamento.marca }} {{ orcamento.modelo }} • {{ orcamento.data|datebr }}</p></div>
+<div class="heading-actions"><a class="btn primary" href="{{ url_for('orcamento_editar', orcamento_id=orcamento.id) }}">Editar</a><a class="btn" target="_blank" href="{{ url_for('orcamento_print', orcamento_id=orcamento.id) }}">Imprimir / PDF</a><a class="btn" href="{{ url_for('orcamentos_list') }}">Voltar</a></div>
+</div>
+<div class="alert success"><strong>Estoque preservado:</strong> este documento é somente um orçamento. Nenhum item foi baixado ou reservado.</div>
+<div class="detail-grid">
+<section class="panel"><div class="panel-head"><h2>Cliente e carro</h2><span class="badge">{{ orcamento.status }}</span></div>
+<dl class="details"><div><dt>Cliente</dt><dd>{{ orcamento.nome }}</dd></div><div><dt>Telefone</dt><dd>{{ orcamento.telefone or '—' }}</dd></div><div><dt>Carro</dt><dd>{{ orcamento.marca }} {{ orcamento.modelo }}</dd></div><div><dt>Placa / Ano</dt><dd>{{ orcamento.placa or 'Sem placa' }} • {{ orcamento.ano or '—' }}</dd></div></dl>
+{% if orcamento.descricao %}<div class="description-box"><strong>Observações</strong><p>{{ orcamento.descricao|e|replace('\n','<br>')|safe }}</p></div>{% endif %}
+</section>
+<section class="panel total-panel"><span>Total do orçamento</span><strong>{{ total|money }}</strong><small>{{ items|length }} linha(s)</small><a class="btn primary wide" target="_blank" href="{{ url_for('orcamento_print', orcamento_id=orcamento.id) }}">Abrir para enviar / salvar PDF</a></section>
+</div>
+<section class="panel"><div class="panel-head"><div><h2>Itens</h2><p>Os itens abaixo não alteram a quantidade do estoque.</p></div></div>
+<div class="table-wrap"><table><thead><tr><th>Categoria</th><th>Item</th><th>Qtd.</th><th>Unitário</th><th>Total</th></tr></thead><tbody>
+{% for i in items %}<tr><td>{{ i.categoria }}</td><td><strong>{{ i.item }}</strong>{% if i.estoque_id %}<small>Preço/nome puxado do estoque, sem baixa</small>{% endif %}</td><td>{{ i.qtde }}</td><td>{{ i.valor_unit|money }}</td><td>{{ (i.qtde*i.valor_unit)|money }}</td></tr>{% else %}<tr><td colspan="5" class="empty">Sem itens.</td></tr>{% endfor %}
+</tbody><tfoot><tr><td colspan="4">Total</td><td>{{ total|money }}</td></tr></tfoot></table></div></section>
+<form method="post" action="{{ url_for('orcamento_excluir', orcamento_id=orcamento.id) }}" onsubmit="return confirm('Excluir o orçamento #{{ orcamento.id }}?')" class="danger-zone"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn danger" type="submit">Excluir orçamento</button></form>
+{% endblock %}

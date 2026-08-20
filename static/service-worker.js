@@ -1,4 +1,4 @@
-const CACHE = 'mecanica-jairo-v5';
+const CACHE = 'mecanica-jairo-v10';
 const SHELL = [
   '/static/css/app.css',
   '/static/js/app.js',

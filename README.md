@@ -103,3 +103,10 @@ A impressão da Ordem de Serviço mantém o modelo original do programa desktop,
 ## v9
 - A placa passou a ser opcional ao criar ou editar uma OS.
 - OS sem placa continuam vinculadas a um carro/cliente normalmente.
+
+
+## Orçamentos sem baixa de estoque
+
+Esta versão inclui um módulo separado de **Orçamentos**. Ele pode puxar nome, categoria e preço dos itens cadastrados no estoque, mas **não baixa, não reserva e não repõe quantidades**. Criar, editar ou excluir um orçamento não gera movimentação de estoque.
+
+Fluxo: **Orçamentos → Novo orçamento → buscar item no estoque → ajustar nome/quantidade/preço → salvar → Imprimir / PDF**.

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar orçamento #' ~ orcamento.id if orcamento else 'Novo orçamento' }} • Mecânica do Jairo{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div>
+    <span class="eyebrow">{{ 'Editar orçamento' if orcamento else 'Novo orçamento' }}</span>
+    <h1>{{ 'Orçamento #' ~ orcamento.id if orcamento else 'Criar orçamento' }}</h1>
+    <p>Use peças do estoque apenas como referência de nome e preço. <strong>Nenhuma quantidade será baixada do estoque.</strong></p>
+  </div>
+  <a class="btn" href="{{ url_for('orcamento_view', orcamento_id=orcamento.id) if orcamento else url_for('orcamentos_list') }}">Cancelar</a>
+</div>
+
+<div class="alert warning"><strong>Somente orçamento:</strong> adicionar, editar ou excluir itens aqui não altera o estoque da oficina.</div>
+
+<form method="post" id="orcamento-form">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<input type="hidden" name="cliente_id" id="cliente_id" value="{{ orcamento.cliente_id if orcamento else '' }}">
+<input type="hidden" name="veiculo_id" id="veiculo_id" value="{{ orcamento.veiculo_id if orcamento else '' }}">
+
+<section class="panel form-panel">
+<div class="section-title"><span>1</span><div><h2>Cliente e carro</h2><p>Busque um cadastro existente ou preencha para criar um novo.</p></div></div>
+<div class="lookup-box">
+<label>Buscar cliente, telefone ou placa<input id="client-search" autocomplete="off" placeholder="Comece a digitar..."></label><div id="client-results" class="lookup-results"></div>
+</div>
+<div class="form-grid">
+<label class="span-2">Nome do cliente<input name="cliente_nome" id="cliente_nome" required value="{{ orcamento.nome if orcamento else '' }}"></label>
+<label>Telefone<input name="cliente_telefone" id="cliente_telefone" value="{{ orcamento.telefone if orcamento else '' }}"></label>
+<label>Marca<input name="marca" id="marca" value="{{ orcamento.marca if orcamento else '' }}"></label>
+<label>Modelo / nome do carro<input name="modelo" id="modelo" value="{{ orcamento.modelo if orcamento else '' }}"></label>
+<label>Placa <small style="font-weight:500;color:#667085">(opcional)</small><input name="placa" id="placa" placeholder="Pode deixar em branco" value="{{ orcamento.placa or '' if orcamento else '' }}"></label>
+<label>Ano<input name="ano" id="ano" value="{{ orcamento.ano if orcamento else '' }}"></label>
+<label>KM atual do carro<input name="veiculo_km_atual" id="veiculo_km_atual" inputmode="numeric" value="{{ orcamento.veiculo_km_atual if orcamento else 0 }}"></label>
+<input type="hidden" name="km_troca_corr" id="km_troca_corr" value="{{ orcamento.km_troca_corr if orcamento else 0 }}">
+<input type="hidden" name="km_corr_trocada" id="km_corr_trocada" value="{{ orcamento.km_corr_trocada if orcamento else 0 }}">
+<input type="hidden" name="km_corr_proxima" id="km_corr_proxima" value="{{ orcamento.km_corr_proxima if orcamento else 0 }}">
+</div></section>
+
+<section class="panel form-panel">
+<div class="section-title"><span>2</span><div><h2>Dados do orçamento</h2><p>Informações que aparecerão para o cliente.</p></div></div>
+<div class="form-grid">
+<label>Data / hora<input name="data" value="{{ orcamento.data if orcamento else now }}"></label>
+<label>Status<select name="status">{% set current_status = orcamento.status if orcamento else 'Rascunho' %}{% for s in ['Rascunho','Enviado','Aprovado','Recusado'] %}<option {% if current_status==s %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></label>
+<label class="span-all">Descrição / observações<textarea name="descricao" rows="4" placeholder="Ex.: orçamento sujeito à disponibilidade das peças...">{{ orcamento.descricao if orcamento else '' }}</textarea></label>
+</div></section>
+
+<section class="panel form-panel items-editor">
+<div class="section-title"><span>3</span><div><h2>Itens do orçamento</h2><p>Busque no estoque para puxar nome e preço, ou adicione um item manual. O estoque não será movimentado.</p></div></div>
+<div class="item-toolbar"><button type="button" class="btn primary" id="open-stock">+ Buscar no estoque</button><button type="button" class="btn" id="add-labor">+ Item manual / mão de obra</button></div>
+<div class="table-wrap"><table id="items-table"><thead><tr><th>Categoria</th><th>Item</th><th>Qtd.</th><th>R$ unit.</th><th>Total</th><th></th></tr></thead><tbody></tbody><tfoot><tr><td colspan="4">Total do orçamento</td><td id="grand-total">R$ 0,00</td><td></td></tr></tfoot></table></div>
+</section>
+
+<div class="savebar"><div><strong>{{ 'Salvar orçamento #' ~ orcamento.id if orcamento else 'Salvar orçamento' }}</strong><small>Nenhum item deste orçamento baixa o estoque.</small></div><button class="btn primary large" type="submit">Salvar orçamento</button></div>
+</form>
+
+<div class="modal" id="stock-modal" aria-hidden="true"><div class="modal-card"><div class="modal-head"><div><h2>Buscar item no estoque</h2><p>O item será copiado para o orçamento, sem baixar quantidade.</p></div><button type="button" class="icon-btn" data-close-modal>×</button></div><input id="stock-search" class="modal-search" placeholder="Digite o nome da peça ou categoria..." autocomplete="off"><div id="stock-results" class="stock-results"></div></div></div>
+<script id="initial-items" type="application/json">{{ items|tojson }}</script>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/orcamento_form.js') }}"></script>{% endblock %}

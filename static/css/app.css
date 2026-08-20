@@ -14,3 +14,5 @@
 
 .nav-close{border:0;background:transparent;color:#cbd5e1;text-decoration:none;padding:10px 12px;border-radius:9px;font:inherit;cursor:pointer;white-space:nowrap}
 .nav-close:hover{background:#3a1820!important;color:#fff!important}
+
+.status-rascunho{background:#f2f4f7;color:#475467}.status-enviado{background:#eff8ff;color:#175cd3}.status-aprovado{background:#ecfdf3;color:#067647}.status-recusado{background:#fef3f2;color:#b42318}

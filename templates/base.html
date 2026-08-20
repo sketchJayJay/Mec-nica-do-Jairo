@@ -24,6 +24,7 @@
     <nav class="nav">
       <a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">Início</a>
       <a href="{{ url_for('os_list') }}" class="{% if request.endpoint and request.endpoint.startswith('os_') %}active{% endif %}">Ordens de serviço</a>
+      <a href="{{ url_for('orcamentos_list') }}" class="{% if request.endpoint and request.endpoint.startswith('orcamento') %}active{% endif %}">Orçamentos</a>
       <a href="{{ url_for('estoque') }}" class="{% if request.endpoint and request.endpoint.startswith('estoque') %}active{% endif %}">Estoque</a>
       <a href="{{ url_for('clientes') }}" class="{% if request.endpoint and (request.endpoint.startswith('cliente') or request.endpoint.startswith('veiculo')) %}active{% endif %}">Clientes</a>
       <a href="{{ url_for('relatorios') }}" class="{% if request.endpoint == 'relatorios' %}active{% endif %}">Relatórios</a>
