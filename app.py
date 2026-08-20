@@ -41,7 +41,7 @@ from db import (
     transaction,
 )
 
-APP_VERSION = "2.0.0-web"
+APP_VERSION = "2.0.1-web"
 
 
 def create_app(test_config: dict | None = None) -> Flask:
@@ -71,6 +71,21 @@ def create_app(test_config: dict | None = None) -> Flask:
             except ValueError:
                 continue
         return str(v)
+
+    @app.template_filter("dateonlybr")
+    def _dateonlybr(v):
+        if not v:
+            return "—"
+        raw = str(v).strip()
+        for fmt in ("%Y-%m-%d %H:%M", "%Y-%m-%d", "%d/%m/%Y %H:%M", "%d/%m/%Y"):
+            try:
+                return datetime.strptime(raw, fmt).strftime("%d/%m/%Y")
+            except ValueError:
+                continue
+        try:
+            return datetime.strptime(raw[:10], "%Y-%m-%d").strftime("%d/%m/%Y")
+        except ValueError:
+            return raw
 
     @app.context_processor
     def inject_globals():

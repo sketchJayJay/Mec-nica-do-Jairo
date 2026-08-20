@@ -1,9 +1,115 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OS #{{ ordem.id }}</title><style>
-@page{size:A4;margin:10mm}*{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#111;margin:0;font-size:12px}.head{display:flex;gap:20px;align-items:center;border-bottom:3px solid #0b55c9;padding-bottom:10px}.head img{width:180px;height:115px;object-fit:contain}.head h1{margin:0;font-size:26px}.head p{margin:5px 0}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}.box{border:1px solid #bbb;border-radius:6px;padding:8px}.box span{display:block;color:#666;font-size:10px;text-transform:uppercase}.box strong{font-size:12px}.obs{border:1px solid #bbb;border-radius:6px;padding:10px;margin:10px 0;white-space:pre-wrap}table{width:100%;border-collapse:collapse;margin-top:14px}th,td{border:1px solid #bbb;padding:7px}th{background:#eef3fb;text-align:left}td.num,th.num{text-align:right}tfoot{font-weight:bold}.total{font-size:18px}.actions{margin:15px 0}@media print{.actions{display:none}}
-</style></head><body>
-<div class="actions"><button onclick="window.print()">Imprimir / Salvar PDF</button></div>
-<div class="head"><img src="{{ url_for('static', filename='img/logo.png') }}"><div><h1>ORDEM DE SERVIÇO #{{ ordem.id }}</h1><p><strong>Status:</strong> {{ ordem.status }}</p><p>{{ ordem.data|datebr }}</p></div></div>
-<div class="grid"><div class="box"><span>Cliente</span><strong>{{ ordem.nome }}</strong></div><div class="box"><span>Telefone</span><strong>{{ ordem.telefone or '—' }}</strong></div><div class="box"><span>Carro</span><strong>{{ ordem.marca }} {{ ordem.modelo }}</strong></div><div class="box"><span>Placa / Ano</span><strong>{{ ordem.placa }} • {{ ordem.ano or '—' }}</strong></div><div class="box"><span>KM da OS</span><strong>{{ ordem.km_atual or 0 }} km</strong></div><div class="box"><span>Próxima manutenção</span><strong>{{ ordem.proxima_manut_km or 0 }} km</strong></div><div class="box"><span>Correia próxima</span><strong>{{ ordem.km_corr_proxima or 0 }} km</strong></div><div class="box"><span>OS</span><strong>#{{ ordem.id }}</strong></div></div>
-{% if ordem.descricao %}<div class="obs"><strong>OBSERVAÇÕES</strong><br>{{ ordem.descricao }}</div>{% endif %}
-<table><thead><tr><th>Categoria</th><th>Item / serviço</th><th class="num">Qtd.</th><th class="num">Unitário</th><th class="num">Total</th></tr></thead><tbody>{% for i in items %}<tr><td>{{ i.categoria }}</td><td>{{ i.item }}</td><td class="num">{{ i.qtde }}</td><td class="num">{{ i.valor_unit|money }}</td><td class="num">{{ (i.qtde*i.valor_unit)|money }}</td></tr>{% endfor %}</tbody><tfoot><tr><td colspan="4" class="num total">TOTAL</td><td class="num total">{{ total|money }}</td></tr></tfoot></table>
-</body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OS {{ ordem.placa }} #{{ ordem.id }}</title>
+    <style>
+        @page { margin: 16mm; }
+        body { font-family: Arial, Helvetica, sans-serif; margin:0; padding:16mm; color:#111827; }
+        .header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:0px; }
+        .empresa { font-size:13px; line-height:1.45; }
+        .empresa b { font-size:16px; }
+        h1,h2,h3 { margin:0; }
+        .title { margin:12px 0 8px; }
+        .muted { color:#555; }
+        table.grid { width:100%; border-collapse:collapse; font-size:11px; margin-top:0px; }
+        table.grid th, table.grid td { border:1px solid #e5e7eb; padding:4px; }
+        table.grid th { background:#f3f4f6; text-align:left; font-size:10px; }
+        .row { display:flex; gap:12px; flex-wrap:wrap; }
+        .col { flex:1; min-width:180px; }
+        .print-actions { position:fixed; right:18px; bottom:18px; z-index:99; }
+        .print-actions button { border:0; border-radius:8px; padding:10px 14px; cursor:pointer; font-weight:700; }
+        @media print {
+            .print-actions { display:none !important; }
+        }
+    </style>
+</head>
+<body>
+    <!-- MECANICA_DO_JAIRO v1.2 (nobg) - MODELO ORIGINAL PRESERVADO -->
+    <div class="print-actions"><button onclick="window.print()">Imprimir</button></div>
+
+    <div class="header" style="display:block; position:relative; padding-right:150px; min-height:0px; margin-bottom:0px;">
+        <div class="brandwrap" style="display:flex; flex-direction:column; align-items:flex-start; gap:8px; max-width: calc(100% - 260px);">
+            <div class="logo" style="display:block; margin-bottom:0px;">
+                <img src="{{ url_for('static', filename='img/logo_os_original.png') }}" alt="Logo" style="height:200px;display:block;object-fit:contain;margin:0;padding:0;">
+            </div>
+        </div>
+        <div class="qr" style="position:absolute; right:0; top:0;">
+            <img src="{{ url_for('static', filename='img/qr_pix_original.png') }}" alt="PIX QR" style="height:200px;display:block;">
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="title">
+        <h2>Ordem de Serviço</h2>
+        <div class="muted">{{ ordem.data|dateonlybr }}</div>
+    </div>
+
+    <h2>Cliente</h2>
+    <div class="row">
+        <div class="col"><strong>Nome:</strong><br>{{ ordem.nome }}</div>
+        <div class="col"><strong>Telefone:</strong><br>{{ ordem.telefone or '' }}</div>
+    </div>
+
+    <h2>Veículo</h2>
+    <div class="row">
+        <div class="col"><strong>Marca/Modelo:</strong><br>{{ ordem.marca or '' }} {{ ordem.modelo or '' }}</div>
+        <div class="col"><strong>Placa:</strong><br>{{ ordem.placa or '' }}</div>
+        <div class="col"><strong>Ano:</strong><br>{{ ordem.ano or '' }}</div>
+    </div>
+
+    <h2>Serviço</h2>
+    <div class="row">
+        <div class="col"><strong>KM atual(troca de óleo):</strong><br>{{ ordem.km_atual or 0 }}</div>
+        <div class="col"><strong>KM atual:</strong><br>{{ ordem.veiculo_km_atual or 0 }}</div>
+        <div class="col"><strong>Intervalo (km):</strong><br>{{ ordem.intervalo_km or 0 }}</div>
+        <div class="col"><strong>Próxima manutenção:</strong><br>{{ ordem.proxima_manut_km or 0 }}</div>
+        {% if ordem.km_corr_proxima %}
+        <div class="col"><strong>Próxima troca da correia:</strong><br>{{ ordem.km_corr_proxima }}</div>
+        {% endif %}
+    </div>
+
+    {% if ordem.descricao %}
+    <p style="white-space: pre-wrap; margin-top: 6px;">{{ ordem.descricao }}</p>
+    {% endif %}
+
+    {% if items %}
+    <h2>Itens</h2>
+    <table class="grid">
+        <thead>
+            <tr>
+                <th>Categoria</th>
+                <th>Item</th>
+                <th style="text-align:right">Qtde</th>
+                <th style="text-align:right">Valor unit.</th>
+                <th style="text-align:right">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in items %}
+            <tr>
+                <td>{{ i.categoria or '' }}</td>
+                <td>{{ i.item }}</td>
+                <td style="text-align:right">{{ i.qtde }}</td>
+                <td style="text-align:right">{{ '%.2f'|format(i.valor_unit or 0) }}</td>
+                <td style="text-align:right">{{ '%.2f'|format((i.qtde or 0) * (i.valor_unit or 0)) }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="4" style="text-align:right"><strong>Total</strong></td>
+                <td style="text-align:right"><strong>{{ '%.2f'|format(total or 0) }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+    {% endif %}
+
+    <div style="margin-top:40px; text-align:center;">
+        <div style="width:60%; margin:0 auto; border-top:1px solid #e5e7eb; padding-top:6px;">
+            Assinatura do cliente
+        </div>
+        <div class="muted" style="font-size:12px; margin-top:6px;">Data: {{ ordem.data|dateonlybr }}</div>
+    </div>
+</body>
+</html>

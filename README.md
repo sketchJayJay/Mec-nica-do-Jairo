@@ -94,3 +94,7 @@ Acesse `http://localhost:8000`.
 O programa Windows baixava estoque por nome/categoria e não salvava uma referência segura do produto em `itens_servico`. Por isso a nova versão não tenta adivinhar automaticamente qual produto pertence a cada uma das milhares de linhas históricas. Isso evita corromper o saldo atual.
 
 A partir da nova versão, peças escolhidas em **Buscar no estoque** recebem `estoque_id`, e alterações futuras passam a ser exatas.
+
+
+## Modelo original da OS
+A impressão da Ordem de Serviço mantém o modelo original do programa desktop, incluindo logo, QR PIX, seções Cliente/Veículo/Serviço, tabela de itens e assinatura.
