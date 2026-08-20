@@ -4,11 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b1220">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="{{ url_for('manifest') }}">
+  <link rel="icon" sizes="192x192" href="{{ url_for('static', filename='img/icon-192.png') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon-192.png') }}">
   <title>{% block title %}Mecânica do Jairo{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
   {% block head %}{% endblock %}
 </head>
-<body>
+<body class="{% if session.get('logged_in') %}app-shell{% else %}guest-shell{% endif %}">
   {% if session.get('logged_in') %}
   <header class="topbar">
     <a class="brand" href="{{ url_for('dashboard') }}">
@@ -22,6 +28,7 @@
       <a href="{{ url_for('estoque') }}" class="{% if request.endpoint and request.endpoint.startswith('estoque') %}active{% endif %}">Estoque</a>
       <a href="{{ url_for('clientes') }}" class="{% if request.endpoint and (request.endpoint.startswith('cliente') or request.endpoint.startswith('veiculo')) %}active{% endif %}">Clientes</a>
       <a href="{{ url_for('relatorios') }}" class="{% if request.endpoint == 'relatorios' %}active{% endif %}">Relatórios</a>
+      <a href="#" id="fullscreen-toggle" class="nav-fullscreen" title="Alternar tela cheia">⛶ Tela cheia</a>
       <form method="post" action="{{ url_for('logout') }}" class="nav-logout">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <button type="submit">Sair</button>

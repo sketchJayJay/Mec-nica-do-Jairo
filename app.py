@@ -19,6 +19,7 @@ from flask import (
     render_template,
     request,
     send_file,
+    send_from_directory,
     session,
     url_for,
 )
@@ -41,7 +42,7 @@ from db import (
     transaction,
 )
 
-APP_VERSION = "2.0.1-web"
+APP_VERSION = "2.0.2-web"
 
 
 def create_app(test_config: dict | None = None) -> Flask:
@@ -103,6 +104,17 @@ def create_app(test_config: dict | None = None) -> Flask:
             return fn(*args, **kwargs)
 
         return wrapped
+
+    @app.route("/manifest.webmanifest")
+    def manifest():
+        return send_from_directory(app.static_folder, "manifest.webmanifest", mimetype="application/manifest+json")
+
+    @app.route("/service-worker.js")
+    def service_worker():
+        response = send_from_directory(app.static_folder, "service-worker.js", mimetype="application/javascript")
+        response.headers["Service-Worker-Allowed"] = "/"
+        response.headers["Cache-Control"] = "no-cache"
+        return response
 
     @app.route("/health")
     def health():
