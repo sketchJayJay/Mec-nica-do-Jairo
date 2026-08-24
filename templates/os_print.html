@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>OS{% if ordem.placa %} {{ ordem.placa }}{% endif %} #{{ ordem.id }}</title>
     <style>
-        @page { margin: 16mm; }
+        @page { size: auto; margin: 0; }
         body { font-family: Arial, Helvetica, sans-serif; margin:0; padding:16mm; color:#111827; }
         .header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:0px; }
         .empresa { font-size:13px; line-height:1.45; }
@@ -25,6 +25,9 @@
         .print-actions .back-btn:hover { background:#f3f4f6; }
         .print-actions .print-btn:hover { background:#073f96; }
         @media print {
+            @page { size: auto; margin: 0; }
+            html, body { margin:0 !important; }
+            body { padding:16mm !important; }
             .print-actions { display:none !important; }
         }
     </style>

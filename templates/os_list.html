@@ -15,7 +15,7 @@
 <td>{{ o.marca }} {{ o.modelo }}<small>{{ o.placa or 'Sem placa' }}</small></td>
 <td><span class="badge status-{{ o.status|lower|replace(' ', '-') }}">{{ o.status }}</span></td>
 <td>{{ o.total|money }}</td>
-<td class="actions-cell"><a class="btn small" href="{{ url_for('os_view', servico_id=o.id) }}">Abrir</a><a class="btn small primary" href="{{ url_for('os_editar', servico_id=o.id) }}">Editar</a></td>
+<td class="actions-cell"><a class="btn small" href="{{ url_for('os_view', servico_id=o.id) }}">Abrir</a><a class="btn small primary" href="{{ url_for('os_editar', servico_id=o.id) }}">Editar</a><form method="post" action="{{ url_for('os_excluir', servico_id=o.id) }}" style="display:inline" onsubmit="return confirm('Excluir a OS/nota #{{ o.id }}? Os itens vinculados serão devolvidos ao estoque.')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn small danger" type="submit">Excluir</button></form></td>
 </tr>{% else %}<tr><td colspan="6" class="empty">Nenhuma OS encontrada.</td></tr>{% endfor %}</tbody>
 </table></div></section>
 {% endblock %}

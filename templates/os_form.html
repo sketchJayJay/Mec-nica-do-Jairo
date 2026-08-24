@@ -20,9 +20,9 @@
 <label>Placa <small style="font-weight:500;color:#667085">(opcional)</small><input name="placa" id="placa" placeholder="Pode deixar em branco" value="{{ ordem.placa or '' if ordem else '' }}"></label>
 <label>Ano<input name="ano" id="ano" value="{{ ordem.ano if ordem else '' }}"></label>
 <label>KM atual do carro<input name="veiculo_km_atual" id="veiculo_km_atual" inputmode="numeric" value="{{ ordem.veiculo_km_atual if ordem else 0 }}"></label>
-<label>Intervalo correia<input name="km_troca_corr" id="km_troca_corr" inputmode="numeric" value="{{ ordem.km_troca_corr if ordem else 0 }}"></label>
-<label>Correia trocada em<input name="km_corr_trocada" id="km_corr_trocada" inputmode="numeric" value="{{ ordem.km_corr_trocada if ordem else 0 }}"></label>
-<label>Próxima correia<input name="km_corr_proxima" id="km_corr_proxima" inputmode="numeric" value="{{ ordem.km_corr_proxima if ordem else 0 }}"></label>
+<label>Intervalo da correia (km)<input name="km_troca_corr" id="km_troca_corr" type="number" min="0" step="1" inputmode="numeric" value="{{ ordem.km_troca_corr if ordem else 0 }}"></label>
+<label>Correia trocada em (km)<input name="km_corr_trocada" id="km_corr_trocada" type="number" min="0" step="1" inputmode="numeric" value="{{ ordem.km_corr_trocada if ordem else 0 }}"></label>
+<label>Próxima troca da correia <small style="font-weight:500;color:#667085">(automático)</small><input name="km_corr_proxima" id="km_corr_proxima" type="number" min="0" step="1" inputmode="numeric" value="{{ ordem.km_corr_proxima if ordem else 0 }}" readonly></label>
 </div></section>
 
 <section class="panel form-panel">
@@ -30,9 +30,9 @@
 <div class="form-grid">
 <label>Data / hora<input name="data" value="{{ ordem.data if ordem else now }}"></label>
 <label>Status<select name="status">{% set current_status = ordem.status if ordem else 'Aberta' %}{% for s in ['Aberta','Em andamento','Finalizada'] %}<option {% if current_status==s %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></label>
-<label>KM desta OS<input name="km_atual" id="km_atual" inputmode="numeric" value="{{ ordem.km_atual if ordem else 0 }}"></label>
-<label>Intervalo do óleo<select name="intervalo_km" id="intervalo_km">{% set intv = ordem.intervalo_km if ordem else 10000 %}{% for n in [0,5000,7500,10000,15000] %}<option value="{{ n }}" {% if intv==n %}selected{% endif %}>{{ n }} km</option>{% endfor %}</select></label>
-<label>Próxima manutenção<input name="proxima_manut_km" id="proxima_manut_km" inputmode="numeric" value="{{ ordem.proxima_manut_km if ordem else 10000 }}"></label>
+<label>KM desta OS / troca de óleo<input name="km_atual" id="km_atual" type="number" min="0" step="1" inputmode="numeric" value="{{ ordem.km_atual if ordem else 0 }}"></label>
+<label>Intervalo da troca de óleo (km)<input name="intervalo_km" id="intervalo_km" type="number" min="0" step="1" inputmode="numeric" value="{{ ordem.intervalo_km if ordem else 10000 }}" placeholder="Ex.: 10000"></label>
+<label>Próxima troca de óleo <small style="font-weight:500;color:#667085">(automático)</small><input name="proxima_manut_km" id="proxima_manut_km" type="number" min="0" step="1" inputmode="numeric" value="{{ ordem.proxima_manut_km if ordem else 10000 }}" readonly></label>
 <label class="span-all">Descrição / observações<textarea name="descricao" rows="4">{{ ordem.descricao if ordem else '' }}</textarea></label>
 </div></section>
 

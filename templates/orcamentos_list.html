@@ -15,7 +15,14 @@
 <td>{{ o.marca }} {{ o.modelo }}<small>{{ o.placa or 'Sem placa' }}</small></td>
 <td><span class="badge status-{{ o.status|lower|replace(' ', '-') }}">{{ o.status }}</span></td>
 <td>{{ o.total|money }}</td>
-<td class="actions-cell"><a class="btn small" href="{{ url_for('orcamento_view', orcamento_id=o.id) }}">Abrir</a><a class="btn small" href="{{ url_for('orcamento_editar', orcamento_id=o.id) }}">Editar</a></td>
+<td class="actions-cell">
+<a class="btn small" href="{{ url_for('orcamento_view', orcamento_id=o.id) }}">Abrir</a>
+<a class="btn small" href="{{ url_for('orcamento_editar', orcamento_id=o.id) }}">Editar</a>
+<form class="inline-form" method="post" action="{{ url_for('orcamento_excluir', orcamento_id=o.id) }}" onsubmit="return confirm('Tem certeza que deseja excluir o orçamento #{{ o.id }}? Essa ação não pode ser desfeita.')">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<button class="btn small danger" type="submit">Excluir</button>
+</form>
+</td>
 </tr>{% else %}<tr><td colspan="6" class="empty">Nenhum orçamento cadastrado.</td></tr>{% endfor %}</tbody>
 </table></div></section>
 {% endblock %}

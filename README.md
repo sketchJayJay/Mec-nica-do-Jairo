@@ -130,3 +130,18 @@ Fluxo: **Orçamentos → Novo orçamento → buscar item no estoque → ajustar 
 - Removido o X interno da página.
 - O fechamento passa a ser feito pelo X nativo da janela do Edge em modo aplicativo.
 - Evita o PyWebView, que estava travando neste notebook.
+
+
+## v16 - Excluir orçamento
+- Adicionado botão **Excluir** diretamente na lista de orçamentos.
+- Adicionado botão **Excluir** no cabeçalho ao abrir um orçamento.
+- A exclusão pede confirmação antes de apagar.
+- Excluir orçamento não altera o estoque.
+
+
+## v17 — cálculo automático e impressão
+- Troca de óleo: ao informar KM atual e intervalo, a próxima troca é calculada automaticamente.
+- Correia: ao informar KM da última troca e intervalo, a próxima troca é calculada automaticamente.
+- Intervalo do óleo agora aceita qualquer valor em km, não apenas opções fixas.
+- Impressão da OS usa margem de página zero do navegador para evitar o endereço/`www` no rodapé.
+- Adicionado botão **Excluir** diretamente na lista de OS/nota, com confirmação e devolução de estoque pelos vínculos existentes.

@@ -291,6 +291,11 @@ def create_app(test_config: dict | None = None) -> Flask:
         # A placa é opcional na OS. Quando vazia, gravamos NULL para que
         # vários carros sem placa possam existir mesmo com o índice UNIQUE.
         placa_db = placa or None
+        corr_intervalo = as_int(form.get("km_troca_corr"))
+        corr_trocada = as_int(form.get("km_corr_trocada"))
+        # Próxima troca da correia é sempre calculada automaticamente quando
+        # existe intervalo, inclusive quando a troca foi registrada em 0 km.
+        corr_proxima = corr_trocada + corr_intervalo if corr_intervalo > 0 else corr_trocada
         values = (
             cliente_id,
             form.get("marca", "").strip(),
@@ -298,9 +303,9 @@ def create_app(test_config: dict | None = None) -> Flask:
             placa_db,
             form.get("ano", "").strip(),
             as_int(form.get("veiculo_km_atual")),
-            as_int(form.get("km_troca_corr")),
-            as_int(form.get("km_corr_trocada")),
-            as_int(form.get("km_corr_proxima")),
+            corr_intervalo,
+            corr_trocada,
+            corr_proxima,
         )
         if veiculo_id and con.execute("SELECT 1 FROM veiculos WHERE id=?", (veiculo_id,)).fetchone():
             conflict = None
@@ -344,7 +349,7 @@ def create_app(test_config: dict | None = None) -> Flask:
                     _, veiculo_id = _upsert_client_vehicle(con, request.form)
                     km = as_int(request.form.get("km_atual"))
                     intervalo = as_int(request.form.get("intervalo_km"))
-                    proxima = as_int(request.form.get("proxima_manut_km"), km + intervalo if intervalo else km)
+                    proxima = km + intervalo if intervalo > 0 else km
                     con.execute(
                         """INSERT INTO servicos(veiculo_id,descricao,km_atual,intervalo_km,
                            proxima_manut_km,data,status,updated_at) VALUES(?,?,?,?,?,?,?,?)""",
@@ -395,7 +400,7 @@ def create_app(test_config: dict | None = None) -> Flask:
                     _, veiculo_id = _upsert_client_vehicle(con, request.form, int(ordem["veiculo_id"]))
                     km = as_int(request.form.get("km_atual"))
                     intervalo = as_int(request.form.get("intervalo_km"))
-                    proxima = as_int(request.form.get("proxima_manut_km"), km + intervalo if intervalo else km)
+                    proxima = km + intervalo if intervalo > 0 else km
                     reconcile_stock_for_os(con, servico_id, old_items, new_items)
                     con.execute(
                         """UPDATE servicos SET veiculo_id=?, descricao=?, km_atual=?, intervalo_km=?,

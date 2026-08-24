@@ -41,10 +41,30 @@
 
   document.getElementById('add-labor')?.addEventListener('click',()=>addRow({categoria:'Mão de obra',item:'Serviço',qtde:1,valor_unit:0,estoque_id:null,origem_estoque:0}));
 
-  // Próxima troca de óleo automática
-  const km = document.getElementById('km_atual'), intv = document.getElementById('intervalo_km'), prox = document.getElementById('proxima_manut_km');
-  function calcProx(){ const a=parseInt(km?.value||'0',10)||0, b=parseInt(intv?.value||'0',10)||0; if(prox) prox.value=b>0?a+b:a; }
-  km?.addEventListener('input',calcProx); intv?.addEventListener('change',calcProx);
+  // Próximas trocas automáticas.
+  // Óleo: KM da troca atual + intervalo informado.
+  const km = document.getElementById('km_atual');
+  const intv = document.getElementById('intervalo_km');
+  const prox = document.getElementById('proxima_manut_km');
+  function calcProxOleo(){
+    const atual=parseInt(km?.value||'0',10)||0;
+    const intervalo=parseInt(intv?.value||'0',10)||0;
+    if(prox) prox.value=intervalo>0 ? atual+intervalo : atual;
+  }
+  km?.addEventListener('input',calcProxOleo);
+  intv?.addEventListener('input',calcProxOleo);
+
+  // Correia: KM em que a correia foi trocada + intervalo informado.
+  const corrIntervalo=document.getElementById('km_troca_corr');
+  const corrTrocada=document.getElementById('km_corr_trocada');
+  const corrProxima=document.getElementById('km_corr_proxima');
+  function calcProxCorreia(){
+    const trocada=parseInt(corrTrocada?.value||'0',10)||0;
+    const intervalo=parseInt(corrIntervalo?.value||'0',10)||0;
+    if(corrProxima) corrProxima.value=intervalo>0 ? trocada+intervalo : trocada;
+  }
+  corrIntervalo?.addEventListener('input',calcProxCorreia);
+  corrTrocada?.addEventListener('input',calcProxCorreia);
 
   // Modal de estoque
   const modal=document.getElementById('stock-modal'), search=document.getElementById('stock-search'), results=document.getElementById('stock-results');
@@ -87,7 +107,7 @@
   cresults?.addEventListener('click',e=>{
     const el=e.target.closest('.lookup-item[data-idx]'); if(!el)return; const x=cresults._data[Number(el.dataset.idx)]; if(!x)return;
     const set=(id,v)=>{const n=document.getElementById(id);if(n)n.value=v??''};
-    set('cliente_id',x.cliente_id);set('veiculo_id',x.veiculo_id||'');set('cliente_nome',x.nome);set('cliente_telefone',x.telefone);set('marca',x.marca);set('modelo',x.modelo);set('placa',x.placa);set('ano',x.ano);set('veiculo_km_atual',x.km_atual||0);set('km_troca_corr',x.km_troca_corr||0);set('km_corr_trocada',x.km_corr_trocada||0);set('km_corr_proxima',x.km_corr_proxima||0);
+    set('cliente_id',x.cliente_id);set('veiculo_id',x.veiculo_id||'');set('cliente_nome',x.nome);set('cliente_telefone',x.telefone);set('marca',x.marca);set('modelo',x.modelo);set('placa',x.placa);set('ano',x.ano);set('veiculo_km_atual',x.km_atual||0);set('km_troca_corr',x.km_troca_corr||0);set('km_corr_trocada',x.km_corr_trocada||0);set('km_corr_proxima',x.km_corr_proxima||0);calcProxCorreia();
     csearch.value=x.nome+(x.placa?' • '+x.placa:'');cresults.classList.remove('open');
   });
   document.addEventListener('click',e=>{if(!e.target.closest('.lookup-box'))cresults?.classList.remove('open')});

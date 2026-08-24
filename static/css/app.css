@@ -21,3 +21,7 @@
 
 
 @media(max-width:760px){.menu-toggle{order:2}.brand{order:1}.nav{order:4}}
+
+.inline-form{display:inline-flex;margin:0}
+.actions-cell .inline-form{margin-left:4px;vertical-align:middle}
+.heading-actions .inline-form{display:inline-flex}

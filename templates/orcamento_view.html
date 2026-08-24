@@ -3,7 +3,15 @@
 {% block content %}
 <div class="page-heading">
 <div><span class="eyebrow">Orçamento #{{ orcamento.id }}</span><h1>{{ orcamento.nome }}{% if orcamento.placa %} • {{ orcamento.placa }}{% endif %}</h1><p>{{ orcamento.marca }} {{ orcamento.modelo }} • {{ orcamento.data|datebr }}</p></div>
-<div class="heading-actions"><a class="btn primary" href="{{ url_for('orcamento_editar', orcamento_id=orcamento.id) }}">Editar</a><a class="btn" target="_blank" href="{{ url_for('orcamento_print', orcamento_id=orcamento.id) }}">Imprimir / PDF</a><a class="btn" href="{{ url_for('orcamentos_list') }}">Voltar</a></div>
+<div class="heading-actions">
+<a class="btn primary" href="{{ url_for('orcamento_editar', orcamento_id=orcamento.id) }}">Editar</a>
+<a class="btn" target="_blank" href="{{ url_for('orcamento_print', orcamento_id=orcamento.id) }}">Imprimir / PDF</a>
+<form class="inline-form" method="post" action="{{ url_for('orcamento_excluir', orcamento_id=orcamento.id) }}" onsubmit="return confirm('Tem certeza que deseja excluir o orçamento #{{ orcamento.id }}? Essa ação não pode ser desfeita.')">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<button class="btn danger" type="submit">Excluir</button>
+</form>
+<a class="btn" href="{{ url_for('orcamentos_list') }}">Voltar</a>
+</div>
 </div>
 <div class="alert success"><strong>Estoque preservado:</strong> este documento é somente um orçamento. Nenhum item foi baixado ou reservado.</div>
 <div class="detail-grid">
