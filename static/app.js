@@ -1,4 +1,5 @@
-// BOTAO_ADICIONAR_ITEM_MODAL_20260831
+// FLUXO_SELECIONAR_QTD_ADICIONAR_20260831
+// baseado em BOTAO_ADICIONAR_ITEM_MODAL_20260831
 // BUSCA_ESTOQUE_MODAL_TOPO_FUNCIONANDO_20260831
 // BUSCA_ESTOQUE_MAIS_VISIVEL_20260831
 // BOTAO_SALVAR_CADASTRO_E_BUSCA_ESTOQUE_COMPLETA_20260831
@@ -90,7 +91,7 @@ async function searchEstoque(q){
         </div>
         <div class="result-side">
           <div class="result-price">${moneyBR(Number(r.preco || 0))}</div>
-          <span class="result-use">Adicionar item</span>
+          <span class="result-use">Usar</span>
         </div>
       </button>`).join('') || '<div class="empty">Nenhum item achado. Tente outra palavra, categoria ou deixe vazio para ver o estoque.</div>');
   }catch(err){
@@ -99,24 +100,26 @@ async function searchEstoque(q){
   }
 }
 function pickEstoque(r){
-  // BOTAO_ADICIONAR_ITEM_MODAL_20260831
-  // Agora o clique no card é claramente o ato de adicionar o item na OS.
+  // FLUXO_SELECIONAR_QTD_ADICIONAR_20260831
+  // Primeiro seleciona o item; depois o usuário informa quantidade e clica em Adicionar item.
   const cat = r.categoria || 'Outros';
   const nome = r.item || '';
   const valor = Number(r.preco || 0).toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2});
   if(!nome){ return; }
-  if(typeof addItemRowOldReal === 'function'){
-    addItemRowOldReal(cat, nome, '1', valor, '1');
-    const label = document.getElementById('selectedItemLabel');
-    if(label) label.textContent = `${nome} adicionado na OS`;
-    const status = document.getElementById('estoqueStatus');
-    if(status) status.textContent = `Item adicionado: ${nome}. Pode adicionar outro ou fechar a busca.`;
-  } else {
-    document.getElementById('itemCategoria').value = cat;
-    document.getElementById('itemNome').value = nome;
-    document.getElementById('itemValor').value = valor;
-    document.getElementById('itemQtde').focus();
-  }
+  const set = (id,v) => { const el=document.getElementById(id); if(el) el.value = v || ''; };
+  set('itemCategoria', cat);
+  set('itemNome', nome);
+  set('itemValor', valor);
+  set('itemQtde', '1');
+  set('itemBaixa', '1');
+  const label = document.getElementById('selectedItemLabel');
+  if(label) label.textContent = `${nome} selecionado`;
+  const status = document.getElementById('estoqueStatus');
+  if(status) status.textContent = `Item selecionado: ${nome}. Agora informe a quantidade e clique em Adicionar item.`;
+  const panel = document.getElementById('selectedStockPanel');
+  if(panel) panel.classList.add('selected-stock-active');
+  const q = document.getElementById('itemQtde');
+  if(q){ q.focus(); q.select?.(); }
 }
 function addItemFromInputs(){
   const cat = document.getElementById('itemCategoria').value || 'Outros';

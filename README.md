@@ -24,3 +24,8 @@ Versão: BUSCA_ESTOQUE_MODAL_TOPO_FUNCIONANDO_20260831
 Versão: BOTAO_ADICIONAR_ITEM_MODAL_20260831
 - Cards da busca exibem botão "Adicionar item".
 - Clique no card adiciona direto na OS e mostra confirmação.
+
+
+Versão: FLUXO_SELECIONAR_QTD_ADICIONAR_20260831
+- Botão Usar apenas seleciona o item do estoque.
+- Usuário escolhe quantidade e clica em Adicionar item.

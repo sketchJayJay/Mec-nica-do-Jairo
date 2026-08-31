@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-<!-- BOTAO_ADICIONAR_ITEM_MODAL_20260831
+<!-- FLUXO_SELECIONAR_QTD_ADICIONAR_20260831
+     baseado em BOTAO_ADICIONAR_ITEM_MODAL_20260831
    BUSCA_ESTOQUE_MODAL_TOPO_FUNCIONANDO_20260831 -->
 <!-- BUSCA_ESTOQUE_MAIS_VISIVEL_20260831 -->
 <style>
@@ -93,7 +94,15 @@
 .jairo-old-real-form .result-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:0 0 auto;}
 .jairo-old-real-form .result-price{font-size:19px;font-weight:800;color:#0f2f57;white-space:nowrap;}
 .jairo-old-real-form .result-use{display:inline-flex;align-items:center;justify-content:center;padding:7px 12px;border-radius:999px;background:#0f766e;color:#fff;font-size:13px;font-weight:700;white-space:nowrap;}
-.jairo-old-real-form .manual-item-line{display:grid;grid-template-columns:1fr 1.35fr 105px 150px 170px;gap:8px;margin-top:10px;padding-top:10px;border-top:1px dashed #d9e4ef;}
+
+.jairo-old-real-form .manual-item-line{display:grid;grid-template-columns:170px 1fr 125px 155px 160px 210px;gap:8px;align-items:end;margin-top:10px;padding:12px;border:1px solid #cfe3f7;border-radius:8px;background:#f6fbff;}
+.jairo-old-real-form .manual-item-line label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:700;color:#304a69;}
+.jairo-old-real-form .manual-item-line input,.jairo-old-real-form .manual-item-line select{width:100%;height:40px;}
+.jairo-old-real-form .manual-item-line #itemNome{font-weight:700;}
+.jairo-old-real-form .manual-item-line .modal-add-selected{height:42px;min-height:42px;background:#0f766e!important;color:#fff!important;border-color:#0f766e!important;font-weight:800!important;}
+.jairo-old-real-form .selected-stock-panel{opacity:.72;}
+.jairo-old-real-form .selected-stock-panel.selected-stock-active{opacity:1;box-shadow:0 0 0 2px rgba(15,118,110,.12);}
+
 
 .jairo-old-real-form .results-list .result-item{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#f7f7f7;border:1px solid #e0e0e0;border-radius:4px;padding:8px 10px;margin-bottom:6px;}
 .jairo-old-real-form .table-area{grid-row:2;grid-column:1 / 3;min-height:0;overflow:auto;background:#fff;border:0;align-self:stretch;}
@@ -182,8 +191,16 @@
 .jairo-old-real-form .result-meta{font-size:14px;color:#55667c;font-weight:600;}
 .jairo-old-real-form .result-side{display:flex;flex-direction:column;align-items:flex-end;gap:7px;flex:0 0 auto;}
 .jairo-old-real-form .result-price{font-size:20px;font-weight:900;color:#0f2f57;white-space:nowrap;}
-.jairo-old-real-form .result-use{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:999px;background:#0f766e;color:#fff;font-size:13px;font-weight:800;white-space:nowrap;}
-.jairo-old-real-form .manual-item-line{display:grid;grid-template-columns:1fr 1.35fr 105px 150px 170px;gap:8px;margin-top:10px;padding-top:10px;border-top:1px dashed #d9e4ef;}
+.jairo-old-real-form .result-use{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:999px;background:#245b92;color:#fff;font-size:13px;font-weight:800;white-space:nowrap;}
+
+.jairo-old-real-form .manual-item-line{display:grid;grid-template-columns:170px 1fr 125px 155px 160px 210px;gap:8px;align-items:end;margin-top:10px;padding:12px;border:1px solid #cfe3f7;border-radius:8px;background:#f6fbff;}
+.jairo-old-real-form .manual-item-line label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:700;color:#304a69;}
+.jairo-old-real-form .manual-item-line input,.jairo-old-real-form .manual-item-line select{width:100%;height:40px;}
+.jairo-old-real-form .manual-item-line #itemNome{font-weight:700;}
+.jairo-old-real-form .manual-item-line .modal-add-selected{height:42px;min-height:42px;background:#0f766e!important;color:#fff!important;border-color:#0f766e!important;font-weight:800!important;}
+.jairo-old-real-form .selected-stock-panel{opacity:.72;}
+.jairo-old-real-form .selected-stock-panel.selected-stock-active{opacity:1;box-shadow:0 0 0 2px rgba(15,118,110,.12);}
+
 .jairo-old-real-form .error-box{background:#fff0f0;border:1px solid #ffc9c9;color:#7a1515;font-weight:700;padding:12px;border-radius:7px;}
 @media(max-width:900px){.jairo-old-real-form .stock-picker{top:90px!important;left:10px!important;right:10px!important;bottom:10px!important;}}
 
@@ -285,12 +302,23 @@
         </div>
         <div id="estoqueStatus" class="estoque-status">Mostrando itens do estoque</div>
         <div id="estoqueResultados" class="results-list"></div>
-        <div class="manual-item-line">
-          <input id="itemCategoria" placeholder="Categoria">
-          <input id="itemNome" placeholder="Item">
-          <input id="itemQtde" value="1" inputmode="decimal" placeholder="Qtde">
-          <input id="itemValor" placeholder="Unitário (R$)" inputmode="decimal">
-          <select id="itemBaixa"><option value="1">Baixar estoque</option><option value="0">Não baixar</option></select>
+        <div class="manual-item-line selected-stock-panel" id="selectedStockPanel">
+          <label>Categoria
+            <input id="itemCategoria" placeholder="Categoria" readonly>
+          </label>
+          <label>Item selecionado
+            <input id="itemNome" placeholder="Clique em Usar em um item acima" readonly>
+          </label>
+          <label>Quantidade
+            <input id="itemQtde" value="1" inputmode="decimal" placeholder="Qtde">
+          </label>
+          <label>Unitário (R$)
+            <input id="itemValor" placeholder="Unitário (R$)" inputmode="decimal">
+          </label>
+          <label>Estoque
+            <select id="itemBaixa"><option value="1">Baixar estoque</option><option value="0">Não baixar</option></select>
+          </label>
+          <button class="old-btn modal-add-selected" type="button" onclick="addSelectedItemOldReal()">Adicionar item</button>
         </div>
       </div>
       <div class="table-area">
@@ -365,19 +393,26 @@ function clearEstoqueBuscaOldReal(){
   searchEstoque('');
 }
 window.pickEstoque = function(r){
-  // BOTAO_ADICIONAR_ITEM_MODAL_20260831
-  // Para o pessoal não achar que só selecionou, o botão do card adiciona direto na OS.
+  // FLUXO_SELECIONAR_QTD_ADICIONAR_20260831
+  // Clicar em Usar apenas seleciona. Depois informa quantidade e clica em Adicionar item.
   const cat = r.categoria || 'Outros';
   const nome = r.item || '';
   const valor = Number(r.preco || 0).toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2});
   if(!nome) return;
-  addItemRowOldReal(cat, nome, '1', valor, '1');
+  const set = (id,v) => { const el=document.getElementById(id); if(el) el.value = v || ''; };
+  set('itemCategoria', cat);
+  set('itemNome', nome);
+  set('itemValor', valor);
+  set('itemQtde', '1');
+  set('itemBaixa', '1');
   const label = document.getElementById('selectedItemLabel');
-  if(label) label.textContent = `${nome} adicionado na OS`;
+  if(label) label.textContent = `${nome} selecionado`;
   const status = document.getElementById('estoqueStatus');
-  if(status) status.textContent = `Item adicionado: ${nome}. Pode adicionar outro ou fechar a busca.`;
-  const busca = document.getElementById('estoqueBusca');
-  if(busca) busca.focus();
+  if(status) status.textContent = `Item selecionado: ${nome}. Agora informe a quantidade e clique em Adicionar item.`;
+  const panel = document.getElementById('selectedStockPanel');
+  if(panel) panel.classList.add('selected-stock-active');
+  const q = document.getElementById('itemQtde');
+  if(q){ q.focus(); q.select?.(); }
 };
 function addSelectedItemOldReal(){
   const nome = document.getElementById('itemNome')?.value || '';
@@ -396,7 +431,9 @@ function addSelectedItemOldReal(){
   const q = document.getElementById('itemQtde'); if(q) q.value='1';
   const b = document.getElementById('estoqueBusca'); if(b) b.value='';
   const r = document.getElementById('estoqueResultados'); if(r) r.innerHTML='';
-  const label = document.getElementById('selectedItemLabel'); if(label) label.textContent='Nenhum item selecionado';
+  const label = document.getElementById('selectedItemLabel'); if(label) label.textContent='Item adicionado. Pode escolher outro.';
+  const status = document.getElementById('estoqueStatus'); if(status) status.textContent='Item adicionado na OS. Escolha outro item ou feche a busca.';
+  const panel = document.getElementById('selectedStockPanel'); if(panel) panel.classList.remove('selected-stock-active');
 }
 function addItemRowOldReal(cat,nome,qtde,valor,baixa){
   const tbody = document.querySelector('#itensTable tbody');
