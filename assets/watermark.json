@@ -1,0 +1,10 @@
+{
+  "enabled": false,
+  "logo_path": "..\\logo_watermark.png",
+  "text": "Mecânica do Jairo",
+  "height": 42,
+  "opacity": 0.8,
+  "position": "bottom-right",
+  "click_url": "",
+  "mode": "statusbar"
+}

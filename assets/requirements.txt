@@ -1,0 +1,7 @@
+# Dependências para empacotamento
+pillow>=10.4.0,<11
+imageio>=2.34
+imageio-ffmpeg>=0.5
+sv-ttk>=2.6
+# ttkbootstrap é opcional; remova se não usar
+ttkbootstrap>=1.14.2

@@ -1,0 +1,34 @@
+ATUALIZAÇÃO FEITA NO PROGRAMA DA MECÂNICA DO JAIRO
+
+O arquivo principal atualizado está aqui:
+OS_APP_JAIRO_ATUALIZADO_ESTOQUE_EDITAR.py
+
+Também deixei uma cópia com o nome original do sistema, para facilitar substituir na pasta antiga:
+OS_APP_FINAL_HOME_CANVAS_BG_GLASS_STOCKBAIXA_PATCH21_EDIT_FIX_TUPLAS_20250901_200214.py
+
+O que foi alterado:
+1. Editar OS pronta sem refazer a nota inteira.
+   - Ao abrir uma OS em "Editar na aba Cadastro" e salvar, ele atualiza a mesma OS.
+   - O estoque é ajustado novamente: devolve os itens antigos e baixa os itens novos.
+
+2. Estoque com botão "Editar item".
+   - Dá para corrigir nome escrito errado, categoria, quantidade e preço.
+   - Duplo clique no produto também abre a edição completa.
+
+3. Estoque com botão "Imprimir estoque".
+   - Gera uma página HTML com todos os itens, quantidade, preço e total estimado.
+   - Abre no navegador para imprimir.
+
+4. Corrigida a baixa dupla de estoque.
+   - Antes, selecionar item no estoque já podia dar baixa antes de salvar a OS.
+   - Agora baixa só quando salvar a OS.
+
+Importante:
+Não coloquei um EXE novo porque compilar EXE do Windows precisa ser feito no Windows com PyInstaller.
+Para testar no computador: instale as dependências do requirements.txt e rode o arquivo .py.
+
+ATUALIZAÇÃO EXTRA — MARCA E VEÍCULO/MODELO
+- Adicionada lista completa de marcas com modelos de veículos já cadastrados.
+- Campo Marca agora permite escolher na lista ou digitar uma marca nova.
+- Campo Veículo/Modelo mostra opções conforme a marca escolhida e também permite digitar quando não estiver listado.
+- A edição completa da OS também recebeu Marca e Veículo/Modelo em formato de lista.
