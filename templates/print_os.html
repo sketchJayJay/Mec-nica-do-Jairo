@@ -1,10 +1,107 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>OS #{{ os.id }}</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
-<body class="print-page" onload="window.print()">
-<section class="print-sheet receipt">
-  <div class="receipt-head"><img src="{{ url_for('static', filename='assets/logo.png') }}" onerror="this.style.display='none'" alt="Logo"><div><h2>Oficina do Jairo</h2><p>Ordem de Serviço / Nota</p></div><strong>#{{ os.id }}</strong></div>
-  <div class="info-grid"><div><b>Cliente</b><span>{{ os.nome }}</span></div><div><b>Telefone</b><span>{{ os.telefone or '—' }}</span></div><div><b>Veículo</b><span>{{ os.marca }} {{ os.modelo }}</span></div><div><b>Placa/Ano</b><span>{{ os.placa or '—' }} • {{ os.ano or '—' }}</span></div><div><b>KM atual</b><span>{{ br_int(os.km_atual) }} km</span></div><div><b>Próx. óleo</b><span>{{ br_int(os.proxima_manut_km) }} km</span></div><div><b>Próx. correia</b><span>{{ br_int(os.km_corr_proxima) }} km</span></div><div><b>Data</b><span>{{ os.data or '—' }}</span></div></div>
-  <h3>Descrição</h3><p class="description">{{ os.descricao or '—' }}</p>
-  <table><thead><tr><th>Categoria</th><th>Item</th><th>Qtd</th><th>Valor</th><th>Total</th></tr></thead><tbody>{% for it in itens %}<tr><td>{{ it.categoria }}</td><td>{{ it.item }}</td><td>{{ br_int(it.qtde) }}</td><td>{{ br_money(it.valor_unit) }}</td><td>{{ br_money((it.qtde or 0)*(it.valor_unit or 0)) }}</td></tr>{% endfor %}</tbody><tfoot><tr><td colspan="4">Total</td><td>{{ br_money(total) }}</td></tr></tfoot></table>
-  {% if os.observacoes %}<h3>Observações</h3><p>{{ os.observacoes }}</p>{% endif %}
-  <div class="signatures"><span>Assinatura do cliente</span><span>Assinatura da oficina</span></div>
-</section></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <title>OS #{{ os.id }}</title>
+    <style>
+        /* RESTAURA_MODELO_ANTIGO_IMPRESSAO_OS_20260831 */
+        @page { margin: 16mm; }
+        body { font-family: Arial, Helvetica, sans-serif; margin:0; padding:16mm; color:#111827; }
+        .header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:0px; }
+        .empresa { font-size:13px; line-height:1.45; }
+        .empresa b { font-size:16px; }
+        h1,h2,h3 { margin:0; }
+        .title { margin:12px 0 8px; }
+        .muted { color:#555; }
+        table.grid { width:100%; border-collapse:collapse; font-size:11px; margin-top:0px; }
+        table.grid th, table.grid td { border:1px solid #e5e7eb; padding:4px; }
+        table.grid th { background:#f3f4f6; text-align:left; font-size:10px; }
+        .row { display:flex; gap:12px; flex-wrap:wrap; }
+        .col { flex:1; min-width:180px; }
+        hr { border:0; border-top:1px solid #e5e7eb; margin:0 0 12px; }
+        p { font-size:13px; line-height:1.4; }
+        .logo img { height:200px; display:block; object-fit:contain; margin:0; padding:0; }
+        .qr img { height:200px; display:block; }
+        @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+    </style>
+</head>
+<body onload="window.print()">
+    <!-- MECANICA_DO_JAIRO v1.2 (nobg) - modelo antigo restaurado -->
+    <div class="header" style="display:block; position:relative; padding-right:150px; min-height:0px; margin-bottom:0px;">
+        <div class="brandwrap" style="display:flex; flex-direction:column; align-items:flex-start; gap:8px; max-width: calc(100% - 260px);">
+            <div class="logo" style="display:block; margin-bottom:0px;">
+                <img src="{{ url_for('static', filename='assets/print_logo_old.png') }}" alt="Logo" onerror="this.style.display='none'">
+            </div>
+        </div>
+        <div class="qr" style="position:absolute; right:0; top:0;">
+            <img src="{{ url_for('static', filename='assets/print_qr_pix_old.png') }}" alt="PIX QR" onerror="this.style.display='none'">
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="title">
+        <h2>Ordem de Serviço</h2>
+        <div class="muted">{{ os.data or '—' }}</div>
+    </div>
+
+    <h2>Cliente</h2>
+    <div class="row">
+      <div class="col"><strong>Nome:</strong><br>{{ os.nome or '' }}</div>
+      <div class="col"><strong>Telefone:</strong><br>{{ os.telefone or '' }}</div>
+    </div>
+
+    <h2>Veículo</h2>
+    <div class="row">
+      <div class="col"><strong>Marca/Modelo:</strong><br>{{ (os.marca or '') ~ ' ' ~ (os.modelo or '') }}</div>
+      <div class="col"><strong>Placa:</strong><br>{{ os.placa or '' }}</div>
+      <div class="col"><strong>Ano:</strong><br>{{ os.ano or '' }}</div>
+    </div>
+
+    <h2>Serviço</h2>
+    <div class="row">
+      <div class="col"><strong>KM atual(troca de óleo):</strong><br>{{ br_int(os.km_atual) }}</div>
+      <div class="col"><strong>KM atual:</strong><br>{{ br_int(os.km_veiculo or 0) }}</div>
+      <div class="col"><strong>Intervalo (km):</strong><br>{{ br_int(os.intervalo_km) }}</div>
+      <div class="col"><strong>Próxima manutenção:</strong><br>{{ br_int(os.proxima_manut_km) }}</div>
+      <div class="col"><strong>Próxima troca da correia:</strong><br>{{ br_int(os.km_corr_proxima) }}</div>
+    </div>
+
+    <p style="white-space: pre-wrap; margin-top: 6px;">{% if os.descricao %}{{ os.descricao }}<br>{% endif %}Correia dentada — Intervalo: {{ br_int(os.km_troca_corr) }} km, Trocada em: {{ br_int(os.km_corr_trocada) }} km, Próxima: {{ br_int(os.km_corr_proxima) }} km<br>Próxima troca de óleo: {{ br_int(os.proxima_manut_km) }} km</p>
+
+    <h2>Itens</h2>
+    <table class="grid">
+        <thead>
+            <tr>
+                <th>Categoria</th>
+                <th>Item</th>
+                <th style="text-align:right">Qtde</th>
+                <th style="text-align:right">Valor unit.</th>
+                <th style="text-align:right">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for it in itens %}
+            <tr>
+                <td>{{ it.categoria }}</td>
+                <td>{{ it.item }}</td>
+                <td style="text-align:right">{{ ('%.2f'|format(it.qtde or 0)).rstrip('0').rstrip('.') }}</td>
+                <td style="text-align:right">{{ '%.2f'|format(it.valor_unit or 0) }}</td>
+                <td style="text-align:right">{{ '%.2f'|format((it.qtde or 0) * (it.valor_unit or 0)) }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="4" style="text-align:right"><strong>Total</strong></td>
+                <td style="text-align:right"><strong>{{ '%.2f'|format(total or 0) }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top:40px; text-align:center;">
+        <div style="width:60%; margin:0 auto; border-top:1px solid #e5e7eb; padding-top:6px;">
+            Assinatura do cliente
+        </div>
+        <div class="muted" style="font-size:12px; margin-top:6px;">Data: {{ os.data or '—' }}</div>
+    </div>
+</body>
+</html>
