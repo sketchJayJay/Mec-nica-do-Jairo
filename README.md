@@ -10,3 +10,8 @@ Correção do fluxo do estoque na OS:
 Banco/volume mantidos:
 - /data/oficina.db
 - mecanica-jairo-data:/data
+
+
+Versão: EXCLUIR_ITEM_LINHA_EDITAR_OS_20260831
+- Adiciona botão Excluir em cada linha dos itens da OS, inclusive ao editar OS salva.
+- O item só é removido de verdade do banco quando clicar em Salvar alterações da OS.

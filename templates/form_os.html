@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<!-- EXCLUIR_ITEM_LINHA_EDITAR_OS_20260831 -->
 <!-- REMOVER_ITEM_SELECIONADO_20260831
      FLUXO_SELECIONAR_QTD_ADICIONAR_20260831
      baseado em BOTAO_ADICIONAR_ITEM_MODAL_20260831
@@ -207,6 +208,12 @@
 .jairo-old-real-form .error-box{background:#fff0f0;border:1px solid #ffc9c9;color:#7a1515;font-weight:700;padding:12px;border-radius:7px;}
 @media(max-width:900px){.jairo-old-real-form .stock-picker{top:90px!important;left:10px!important;right:10px!important;bottom:10px!important;}}
 
+
+/* EXCLUIR_ITEM_LINHA_EDITAR_OS_20260831 */
+.jairo-old-real-form .itens-table th.action-col,.jairo-old-real-form .itens-table td.action-col{width:105px;text-align:center;}
+.jairo-old-real-form .row-delete-btn{height:30px;min-height:30px;border:1px solid #dc2626;border-radius:5px;background:#fff;color:#dc2626;font-weight:700;padding:0 10px;cursor:pointer;}
+.jairo-old-real-form .row-delete-btn:hover{background:#fee2e2;}
+
 </style>
 <form method="post" class="jairo-old-real-form" id="osForm">
   {% if not os %}
@@ -328,7 +335,7 @@
       <div class="table-area">
         <table id="itensTable" class="itens-table">
           <thead>
-            <tr><th>Categoria</th><th>Item</th><th>Qtde</th><th>Unitário (R$)</th><th>Total (R$)</th></tr>
+            <tr><th>Categoria</th><th>Item</th><th>Qtde</th><th>Unitário (R$)</th><th>Total (R$)</th><th class="action-col no-print">Ação</th></tr>
           </thead>
           <tbody>
             {% for it in itens %}
@@ -338,6 +345,7 @@
               <td><input name="item_qtde[]" value="{{ it.qtde }}" inputmode="decimal" oninput="recalcItens()"></td>
               <td><input name="item_valor[]" value="{{ ('%.2f'|format(it.valor_unit or 0)).replace('.', ',') }}" inputmode="decimal" oninput="recalcItens()"></td>
               <td class="row-total">{{ br_money((it.qtde or 0) * (it.valor_unit or 0)) }}</td>
+              <td class="action-col no-print"><button class="row-delete-btn" type="button" onclick="deleteItemRowOldReal(this, event)">Excluir</button></td>
             </tr>
             {% endfor %}
           </tbody>
@@ -458,7 +466,8 @@ function addItemRowOldReal(cat,nome,qtde,valor,baixa){
     <td><input name="item_nome[]" value="${escapeHtml(nome)}"><input type="hidden" name="item_baixa[]" value="${escapeHtml(baixa)}"></td>
     <td><input name="item_qtde[]" value="${escapeHtml(qtde)}" inputmode="decimal" oninput="recalcItens()"></td>
     <td><input name="item_valor[]" value="${escapeHtml(valor)}" inputmode="decimal" oninput="recalcItens()"></td>
-    <td class="row-total">R$ 0,00</td>`;
+    <td class="row-total">R$ 0,00</td>
+    <td class="action-col no-print"><button class="row-delete-btn" type="button" onclick="deleteItemRowOldReal(this, event)">Excluir</button></td>`;
   tbody.appendChild(tr);
   selectOldRealRow(tr);
   recalcItens();
@@ -475,8 +484,20 @@ function selectOldRealRow(tr){
   OLD_REAL_SELECTED_ROW = tr;
   tr.classList.add('selected-row');
 }
+function deleteItemRowOldReal(btn, ev){
+  if(ev) ev.stopPropagation();
+  const tr = btn?.closest('tr');
+  if(!tr) return;
+  const item = tr.querySelector('[name="item_nome[]"]')?.value || 'este item';
+  if(!confirm(`Excluir ${item} da OS?`)) return;
+  tr.remove();
+  if(OLD_REAL_SELECTED_ROW === tr) OLD_REAL_SELECTED_ROW = null;
+  recalcItens();
+}
 function removeSelectedOldReal(){
   if(OLD_REAL_SELECTED_ROW){
+    const item = OLD_REAL_SELECTED_ROW.querySelector('[name="item_nome[]"]')?.value || 'este item';
+    if(!confirm(`Excluir ${item} da OS?`)) return;
     OLD_REAL_SELECTED_ROW.remove();
     OLD_REAL_SELECTED_ROW=null;
     recalcItens();
