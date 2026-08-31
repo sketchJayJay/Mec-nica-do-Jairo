@@ -1,3 +1,4 @@
+// BUSCA_ESTOQUE_MODAL_TOPO_FUNCIONANDO_20260831
 // BUSCA_ESTOQUE_MAIS_VISIVEL_20260831
 // BOTAO_SALVAR_CADASTRO_E_BUSCA_ESTOQUE_COMPLETA_20260831
 // EDITAR_OS_SEM_SOBREPOR_20260831
@@ -53,38 +54,48 @@ let estoqueTimer;
 function setupEstoqueSearch(){
   const input = document.getElementById('estoqueBusca');
   if(!input) return;
-  input.addEventListener('input', () => {
+  const run = () => {
     clearTimeout(estoqueTimer);
-    estoqueTimer = setTimeout(() => searchEstoque(input.value), 250);
-  });
+    estoqueTimer = setTimeout(() => searchEstoque(input.value), 120);
+  };
+  input.addEventListener('input', run);
+  input.addEventListener('keyup', run);
+  input.addEventListener('change', run);
 }
 async function searchEstoque(q){
   const box = document.getElementById('estoqueResultados');
   const status = document.getElementById('estoqueStatus');
   if(!box) return;
   const query = String(q || '').trim();
-  box.innerHTML = '<div class="empty">Carregando itens do estoque...</div>';
+  box.innerHTML = '<div class="empty estoque-loading">Carregando itens do estoque...</div>';
   if(status) status.textContent = query ? `Buscando por: ${query}` : 'Mostrando itens do estoque';
-  const res = await fetch('/api/estoque?q=' + encodeURIComponent(query));
-  const rows = await res.json();
-  const header = query
-    ? `${rows.length} item(ns) encontrado(s) para "${escapeHtml(query)}"`
-    : `${rows.length} item(ns) do estoque para escolher`;
-  if(status) status.textContent = header;
-  box.innerHTML = (rows.map(r => `
-    <button type="button" class="result-item-card" onclick='pickEstoque(${JSON.stringify(r).replaceAll("'", "&#39;")})'>
-      <div class="result-main">
-        <div class="result-title">${escapeHtml(r.item || '')}</div>
-        <div class="result-sub">
-          <span class="result-badge">${escapeHtml(r.categoria || 'Sem categoria')}</span>
-          <span class="result-meta">Qtde: ${escapeHtml(r.qtde ?? 0)}</span>
+  try{
+    const res = await fetch('/api/estoque?q=' + encodeURIComponent(query), {cache:'no-store'});
+    if(!res.ok){ throw new Error('HTTP ' + res.status); }
+    const rows = await res.json();
+    const header = query
+      ? `${rows.length} item(ns) encontrado(s) para "${escapeHtml(query)}"`
+      : `${rows.length} item(ns) do estoque para escolher`;
+    if(status) status.textContent = header;
+    box.innerHTML = (rows.map(r => `
+      <button type="button" class="result-item-card" onclick='pickEstoque(${JSON.stringify(r).replaceAll("'", "&#39;")})'>
+        <div class="result-main">
+          <div class="result-title">${escapeHtml(r.item || '')}</div>
+          <div class="result-sub">
+            <span class="result-badge">${escapeHtml(r.categoria || 'Sem categoria')}</span>
+            <span class="result-meta">Qtde: ${escapeHtml(r.qtde ?? 0)}</span>
+            <span class="result-meta">ID: ${escapeHtml(r.id ?? '')}</span>
+          </div>
         </div>
-      </div>
-      <div class="result-side">
-        <div class="result-price">${moneyBR(Number(r.preco || 0))}</div>
-        <span class="result-use">Usar este item</span>
-      </div>
-    </button>`).join('') || '<div class="empty">Nenhum item achado. Tente outra palavra, categoria ou deixe vazio para ver o estoque.</div>');
+        <div class="result-side">
+          <div class="result-price">${moneyBR(Number(r.preco || 0))}</div>
+          <span class="result-use">Usar este item</span>
+        </div>
+      </button>`).join('') || '<div class="empty">Nenhum item achado. Tente outra palavra, categoria ou deixe vazio para ver o estoque.</div>');
+  }catch(err){
+    if(status) status.textContent = 'Erro ao buscar estoque';
+    box.innerHTML = `<div class="empty error-box">Não consegui buscar no estoque. Erro: ${escapeHtml(err.message || err)}. Veja os logs do Coolify.</div>`;
+  }
 }
 function pickEstoque(r){
   document.getElementById('itemCategoria').value = r.categoria || 'Outros';

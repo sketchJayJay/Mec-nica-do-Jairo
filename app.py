@@ -1,3 +1,4 @@
+# BUSCA_ESTOQUE_MODAL_TOPO_FUNCIONANDO_20260831
 # BUSCA_ESTOQUE_MAIS_VISIVEL_20260831
 # BOTAO_SALVAR_CADASTRO_E_BUSCA_ESTOQUE_COMPLETA_20260831
 # BOTAO_SALVAR_EDICAO_OS_20260831
@@ -698,9 +699,7 @@ def api_modelos(marca):
 
 @app.route("/api/estoque")
 def api_estoque():
-    # BUSCA_ESTOQUE_COMPLETA_20260831
-    # Busca mais larga para a tela de OS: quando digitar "correia",
-    # precisa aparecer TODAS as correias/itens relacionados, não apenas uma linha.
+    # BUSCA_ESTOQUE_MODAL_TOPO_FUNCIONANDO_20260831
     q = (request.args.get("q") or "").strip()
 
     def norm(s):
@@ -711,25 +710,34 @@ def api_estoque():
 
     nq = norm(q)
     tokens = [t for t in nq.split() if t]
+
     with connect_db() as con:
         rows = con.execute(
-            "SELECT id, item, categoria, qtde, preco FROM estoque ORDER BY item COLLATE NOCASE, categoria COLLATE NOCASE"
+            """SELECT id, item, categoria, qtde, preco
+               FROM estoque
+               ORDER BY categoria COLLATE NOCASE, item COLLATE NOCASE"""
         ).fetchall()
 
     data = [dict(r) for r in rows]
-    if tokens:
-        filtered = []
-        for r in data:
-            hay = norm(f"{r.get('item','')} {r.get('categoria','')}")
-            if all(t in hay for t in tokens):
-                filtered.append(r)
-        # Se a busca digitada for só uma palavra, também tenta correspondência parcial mais simples.
-        if not filtered and nq:
-            filtered = [r for r in data if nq in norm(f"{r.get('item','')} {r.get('categoria','')}")]
-        data = filtered
 
-    # Retorna bastante resultado e deixa o scroll no seletor do estoque.
-    return jsonify(data[:150])
+    if tokens:
+        scored = []
+        for r in data:
+            item_n = norm(r.get("item", ""))
+            cat_n = norm(r.get("categoria", ""))
+            hay = f"{item_n} {cat_n}"
+            if all(t in hay for t in tokens):
+                score = 0
+                if item_n.startswith(nq): score += 100
+                if nq in item_n: score += 50
+                if cat_n.startswith(nq): score += 25
+                if nq in cat_n: score += 15
+                score += max(0, 10 - len(item_n)//12)
+                scored.append((score, r))
+        scored.sort(key=lambda x: (-x[0], norm(x[1].get("categoria", "")), norm(x[1].get("item", ""))))
+        data = [r for _, r in scored]
+
+    return jsonify(data[:300])
 
 
 @app.route("/api/clientes")
