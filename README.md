@@ -39,7 +39,7 @@ Esta versão foi ajustada para ficar parecida com o sistema antigo/novo das tela
 O banco fica em:
 
 ```txt
-/app/data/jairo_oficina.db
+/data/oficina.db
 ```
 
 No Coolify, mantenha um volume persistente em:
@@ -67,3 +67,7 @@ Depois de subir no GitHub:
 2. Clique em Save
 3. Clique em Reload Compose File
 4. Faça Force Redeploy
+
+
+## Banco restaurado
+Este pacote usa `DB_PATH=/data/oficina.db`, que foi o banco maior encontrado no volume antigo. Não apagar volumes antigos antes de validar os dados.

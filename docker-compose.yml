@@ -5,13 +5,13 @@ services:
     expose:
       - "8080"
     volumes:
-      # Usa o volume antigo que já aparece no Coolify como *_mecanica-jairo-data
-      # Assim os dados antigos voltam a aparecer no sistema.
+      # Usa o banco antigo cheio encontrado no terminal: /data/oficina.db
+      # Não apagar volumes antigos antes de confirmar os dados.
       - mecanica-jairo-data:/data
     environment:
       - PORT=8080
       - DATA_DIR=/data
-      - DB_PATH=/data/jairo_oficina.db
+      - DB_PATH=/data/oficina.db
       - SECRET_KEY=troque-essa-chave-depois
 
 volumes:
