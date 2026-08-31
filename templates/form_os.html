@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<!-- CORRIGE_BUSCA_ITEM_PAROU_20260831 -->
 <!-- EXCLUIR_ITEM_LINHA_EDITAR_OS_20260831 -->
 <!-- REMOVER_ITEM_SELECIONADO_20260831
      FLUXO_SELECIONAR_QTD_ADICIONAR_20260831
@@ -429,7 +430,6 @@ window.pickEstoque = function(r){
 function clearSelectedStockOldReal(){
   ['itemCategoria','itemNome','itemValor'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
   const q = document.getElementById('itemQtde'); if(q) q.value='1';
-  const baixa = document.getElementById('itemBaixa'); if(baixa) baixa.value='1';
   const baixa = document.getElementById('itemBaixa'); if(baixa) baixa.value='1';
   const label = document.getElementById('selectedItemLabel'); if(label) label.textContent='Nenhum item selecionado';
   const status = document.getElementById('estoqueStatus'); if(status) status.textContent='Seleção removida. Escolha outro item no estoque.';
