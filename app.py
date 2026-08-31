@@ -219,18 +219,62 @@ def ensure_db():
             );
             """
         )
-        # migrações simples caso suba em banco antigo
-        for table, col, spec in [
-            ("servicos", "km_troca_corr", "REAL DEFAULT 0"),
-            ("servicos", "km_corr_trocada", "REAL DEFAULT 0"),
-            ("servicos", "km_corr_proxima", "REAL DEFAULT 0"),
-            ("servicos", "observacoes", "TEXT"),
+        # migrações simples caso suba em banco antigo.
+        # O banco antigo do Jairo já tinha clientes/OS/estoque, mas algumas colunas
+        # novas do layout web não existiam. Sem isso aparece erro tipo:
+        # "no such column: updated_at".
+        migrations = [
+            ("clientes", "telefone", "TEXT"),
+            ("clientes", "created_at", "TEXT DEFAULT CURRENT_TIMESTAMP"),
+            ("clientes", "updated_at", "TEXT"),
+
+            ("veiculos", "marca", "TEXT"),
+            ("veiculos", "modelo", "TEXT"),
+            ("veiculos", "placa", "TEXT"),
+            ("veiculos", "ano", "TEXT"),
+            ("veiculos", "km_atual", "REAL DEFAULT 0"),
             ("veiculos", "km_troca_corr", "REAL DEFAULT 0"),
             ("veiculos", "km_corr_trocada", "REAL DEFAULT 0"),
             ("veiculos", "km_corr_proxima", "REAL DEFAULT 0"),
+            ("veiculos", "created_at", "TEXT DEFAULT CURRENT_TIMESTAMP"),
+            ("veiculos", "updated_at", "TEXT"),
+
+            ("servicos", "descricao", "TEXT"),
+            ("servicos", "km_atual", "REAL DEFAULT 0"),
+            ("servicos", "intervalo_km", "REAL DEFAULT 10000"),
+            ("servicos", "proxima_manut_km", "REAL DEFAULT 0"),
+            ("servicos", "km_troca_corr", "REAL DEFAULT 0"),
+            ("servicos", "km_corr_trocada", "REAL DEFAULT 0"),
+            ("servicos", "km_corr_proxima", "REAL DEFAULT 0"),
+            ("servicos", "data", "TEXT"),
+            ("servicos", "observacoes", "TEXT"),
+            ("servicos", "created_at", "TEXT DEFAULT CURRENT_TIMESTAMP"),
+            ("servicos", "updated_at", "TEXT"),
+
+            ("itens_servico", "categoria", "TEXT"),
+            ("itens_servico", "qtde", "REAL DEFAULT 1"),
+            ("itens_servico", "valor_unit", "REAL DEFAULT 0"),
             ("itens_servico", "baixa_estoque", "INTEGER DEFAULT 1"),
             ("itens_servico", "estoque_id", "INTEGER"),
-        ]:
+
+            ("estoque", "categoria", "TEXT"),
+            ("estoque", "qtde", "REAL DEFAULT 0"),
+            ("estoque", "preco", "REAL DEFAULT 0"),
+            ("estoque", "created_at", "TEXT DEFAULT CURRENT_TIMESTAMP"),
+            ("estoque", "updated_at", "TEXT"),
+
+            ("estoque_movimentos", "servico_id", "INTEGER"),
+            ("estoque_movimentos", "estoque_id", "INTEGER"),
+            ("estoque_movimentos", "item", "TEXT"),
+            ("estoque_movimentos", "categoria", "TEXT"),
+            ("estoque_movimentos", "qtde", "REAL DEFAULT 0"),
+            ("estoque_movimentos", "tipo", "TEXT DEFAULT 'baixa'"),
+            ("estoque_movimentos", "created_at", "TEXT DEFAULT CURRENT_TIMESTAMP"),
+        ]
+        for table, col, spec in migrations:
+            cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table,))
+            if not cur.fetchone():
+                continue
             cur.execute(f"PRAGMA table_info({table})")
             cols = [r[1] for r in cur.fetchall()]
             if col not in cols:
