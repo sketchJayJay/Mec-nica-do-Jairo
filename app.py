@@ -1,3 +1,4 @@
+# BOTAO_SALVAR_CADASTRO_E_BUSCA_ESTOQUE_COMPLETA_20260831
 # BOTAO_SALVAR_EDICAO_OS_20260831
 # EDITAR_OS_SEM_SOBREPOR_20260831
 # CADASTRO_ANTIGO_REAL_AJUSTE_ALINHAMENTO_20260831
@@ -696,16 +697,38 @@ def api_modelos(marca):
 
 @app.route("/api/estoque")
 def api_estoque():
+    # BUSCA_ESTOQUE_COMPLETA_20260831
+    # Busca mais larga para a tela de OS: quando digitar "correia",
+    # precisa aparecer TODAS as correias/itens relacionados, não apenas uma linha.
     q = (request.args.get("q") or "").strip()
+
+    def norm(s):
+        s = str(s or "")
+        s = unicodedata.normalize("NFD", s)
+        s = "".join(ch for ch in s if unicodedata.category(ch) != "Mn")
+        return s.casefold().strip()
+
+    nq = norm(q)
+    tokens = [t for t in nq.split() if t]
     with connect_db() as con:
-        if q:
-            rows = con.execute(
-                "SELECT id, item, categoria, qtde, preco FROM estoque WHERE item LIKE ? OR categoria LIKE ? ORDER BY item LIMIT 25",
-                (f"%{q}%", f"%{q}%"),
-            ).fetchall()
-        else:
-            rows = con.execute("SELECT id, item, categoria, qtde, preco FROM estoque ORDER BY item LIMIT 25").fetchall()
-    return jsonify([dict(r) for r in rows])
+        rows = con.execute(
+            "SELECT id, item, categoria, qtde, preco FROM estoque ORDER BY item COLLATE NOCASE, categoria COLLATE NOCASE"
+        ).fetchall()
+
+    data = [dict(r) for r in rows]
+    if tokens:
+        filtered = []
+        for r in data:
+            hay = norm(f"{r.get('item','')} {r.get('categoria','')}")
+            if all(t in hay for t in tokens):
+                filtered.append(r)
+        # Se a busca digitada for só uma palavra, também tenta correspondência parcial mais simples.
+        if not filtered and nq:
+            filtered = [r for r in data if nq in norm(f"{r.get('item','')} {r.get('categoria','')}")]
+        data = filtered
+
+    # Retorna bastante resultado e deixa o scroll no seletor do estoque.
+    return jsonify(data[:150])
 
 
 @app.route("/api/clientes")

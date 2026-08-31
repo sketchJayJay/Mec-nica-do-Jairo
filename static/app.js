@@ -1,3 +1,4 @@
+// BOTAO_SALVAR_CADASTRO_E_BUSCA_ESTOQUE_COMPLETA_20260831
 // EDITAR_OS_SEM_SOBREPOR_20260831
 function onlyNumber(v){
   let s = String(v || '').trim().replace('R$', '').replace(/\s/g, '');
@@ -62,7 +63,8 @@ async function searchEstoque(q){
   if(!q){ box.innerHTML=''; return; }
   const res = await fetch('/api/estoque?q=' + encodeURIComponent(q));
   const rows = await res.json();
-  box.innerHTML = rows.map(r => `<div class="result-item"><div><b>${r.item}</b><br><small>${r.categoria} • qtd ${r.qtde} • ${moneyBR(r.preco)}</small></div><button type="button" class="btn small" onclick='pickEstoque(${JSON.stringify(r).replaceAll("'", "&#39;")})'>Usar</button></div>`).join('') || '<div class="empty">Nenhum item achado.</div>';
+  const totalLabel = rows.length ? `<div class="empty" style="font-weight:600;margin-bottom:6px;">${rows.length} item(ns) encontrado(s)</div>` : '';
+  box.innerHTML = totalLabel + (rows.map(r => `<div class="result-item"><div><b>${escapeHtml(r.item || '')}</b><br><small>${escapeHtml(r.categoria || '')} • qtd ${r.qtde} • ${moneyBR(Number(r.preco || 0))}</small></div><button type="button" class="btn small" onclick='pickEstoque(${JSON.stringify(r).replaceAll("'", "&#39;")})'>Usar</button></div>`).join('') || '<div class="empty">Nenhum item achado.</div>');
 }
 function pickEstoque(r){
   document.getElementById('itemCategoria').value = r.categoria || 'Outros';
