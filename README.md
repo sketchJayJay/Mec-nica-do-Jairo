@@ -1,73 +1,22 @@
-# Mecânica do Jairo - Web para Coolify
+# Mecânica do Jairo - correção dura SQLite
 
-Versão web em Flask + SQLite + Docker, pronta para subir pelo GitHub no Coolify.
+Correção para o erro:
 
-## Visual
+`sqlite3.OperationalError: Cannot add a column with non-constant default`
 
-Esta versão foi ajustada para ficar parecida com o sistema antigo/novo das telas enviadas:
+Também mantém o banco antigo em `/data/oficina.db` e o volume `mecanica-jairo-data:/data`.
 
-- topo com logo, nome **MECÂNICA DO JAIRO** e texto **Pro Light 2025 — FIX**
-- menu em abas: Início, Cadastro, Busca, Estoque e Relatórios
-- tela inicial com imagem da oficina no fundo e cartões transparentes
-- Cadastro/OS, Busca, Estoque e Relatórios com visual mais simples, claro e parecido com o programa de desktop
+Antes do redeploy, faça backup no terminal:
 
-## Funções mantidas
-
-- Cadastro de cliente
-- Cadastro de veículo com Marca e Veículo/Modelo já com opções
-- Digitação manual quando não tiver marca/modelo na lista
-- Nova OS / Nota
-- Buscar, abrir, editar, imprimir e excluir OS
-- Editar OS pronta sem refazer tudo
-- Baixa de estoque ao salvar OS
-- Ao editar ou excluir OS, o estoque antigo é revertido para evitar baixa dupla
-- Estoque com adicionar, editar, excluir, buscar e imprimir
-- Relatórios básicos
-- Banco SQLite persistente em `/app/data`
-
-## Como subir no Coolify
-
-1. Crie um repositório no GitHub.
-2. Envie todos os arquivos desta pasta para o repositório.
-3. No Coolify, crie um novo recurso usando esse repositório.
-4. Escolha deploy por Dockerfile ou Docker Compose.
-5. Porta interna: `8080`.
-6. Faça o deploy.
-
-## Volume obrigatório
-
-O banco fica em:
-
-```txt
-/data/oficina.db
+```bash
+cp /data/oficina.db /data/oficina.db.backup_antes_fix_hard
 ```
 
-No Coolify, mantenha um volume persistente em:
+Depois suba estes arquivos no GitHub, substituindo os antigos, e no Coolify use Reload Compose File + Force Redeploy/No Cache.
 
-```txt
-/app/data
+Verificação após subir:
+
+```bash
+grep -n "DEFAULT CURRENT_TIMESTAMP" /app/app.py || echo OK_SEM_DEFAULT
+grep -n "FIX_DEFAULT_TIMESTAMP_HARD" /app/app.py
 ```
-
-Sem esse volume, o sistema pode perder clientes, OS e estoque depois de redeploy.
-
-## Correção Coolify: porta já ocupada
-
-Este pacote removeu o mapeamento direto `8080:8080` do `docker-compose.yml`.
-No Coolify, não é necessário prender a porta 8080 do servidor inteiro. O sistema agora usa:
-
-```yaml
-expose:
-  - "8080"
-```
-
-Assim o proxy do Coolify consegue apontar o domínio para o container sem bater conflito com outro app usando a porta 8080.
-
-Depois de subir no GitHub:
-1. Settings > General > Docker Compose Location: `/docker-compose.yml`
-2. Clique em Save
-3. Clique em Reload Compose File
-4. Faça Force Redeploy
-
-
-## Banco restaurado
-Este pacote usa `DB_PATH=/data/oficina.db`, que foi o banco maior encontrado no volume antigo. Não apagar volumes antigos antes de validar os dados.

@@ -15,6 +15,7 @@ DATA_DIR = os.environ.get("DATA_DIR", os.path.join(BASE_DIR, "data"))
 os.makedirs(DATA_DIR, exist_ok=True)
 DB_PATH = os.environ.get("DB_PATH", os.path.join(DATA_DIR, "jairo_oficina.db"))
 
+print("FIX_DEFAULT_TIMESTAMP_HARD_20260831_1618")
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "jairo-oficina-local")
 app.config["JSON_AS_ASCII"] = False
@@ -146,7 +147,7 @@ def ensure_db():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nome TEXT NOT NULL,
                 telefone TEXT,
-                created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                created_at TEXT
             );
 
             CREATE TABLE IF NOT EXISTS veiculos (
@@ -160,7 +161,7 @@ def ensure_db():
                 km_troca_corr REAL DEFAULT 0,
                 km_corr_trocada REAL DEFAULT 0,
                 km_corr_proxima REAL DEFAULT 0,
-                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                created_at TEXT,
                 updated_at TEXT,
                 FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE
             );
@@ -177,7 +178,7 @@ def ensure_db():
                 km_corr_proxima REAL DEFAULT 0,
                 data TEXT,
                 observacoes TEXT,
-                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                created_at TEXT,
                 updated_at TEXT,
                 FOREIGN KEY (veiculo_id) REFERENCES veiculos(id) ON DELETE CASCADE
             );
@@ -201,7 +202,7 @@ def ensure_db():
                 categoria TEXT,
                 qtde REAL DEFAULT 0,
                 preco REAL DEFAULT 0,
-                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                created_at TEXT,
                 updated_at TEXT
             );
 
@@ -213,7 +214,7 @@ def ensure_db():
                 categoria TEXT,
                 qtde REAL DEFAULT 0,
                 tipo TEXT NOT NULL,
-                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                created_at TEXT,
                 FOREIGN KEY (servico_id) REFERENCES servicos(id) ON DELETE CASCADE,
                 FOREIGN KEY (estoque_id) REFERENCES estoque(id) ON DELETE SET NULL
             );
@@ -225,7 +226,7 @@ def ensure_db():
         # "no such column: updated_at".
         migrations = [
             ("clientes", "telefone", "TEXT"),
-            ("clientes", "created_at", "TEXT DEFAULT CURRENT_TIMESTAMP"),
+            ("clientes", "created_at", "TEXT"),
             ("clientes", "updated_at", "TEXT"),
 
             ("veiculos", "marca", "TEXT"),
@@ -236,7 +237,7 @@ def ensure_db():
             ("veiculos", "km_troca_corr", "REAL DEFAULT 0"),
             ("veiculos", "km_corr_trocada", "REAL DEFAULT 0"),
             ("veiculos", "km_corr_proxima", "REAL DEFAULT 0"),
-            ("veiculos", "created_at", "TEXT DEFAULT CURRENT_TIMESTAMP"),
+            ("veiculos", "created_at", "TEXT"),
             ("veiculos", "updated_at", "TEXT"),
 
             ("servicos", "descricao", "TEXT"),
@@ -248,7 +249,7 @@ def ensure_db():
             ("servicos", "km_corr_proxima", "REAL DEFAULT 0"),
             ("servicos", "data", "TEXT"),
             ("servicos", "observacoes", "TEXT"),
-            ("servicos", "created_at", "TEXT DEFAULT CURRENT_TIMESTAMP"),
+            ("servicos", "created_at", "TEXT"),
             ("servicos", "updated_at", "TEXT"),
 
             ("itens_servico", "categoria", "TEXT"),
@@ -260,7 +261,7 @@ def ensure_db():
             ("estoque", "categoria", "TEXT"),
             ("estoque", "qtde", "REAL DEFAULT 0"),
             ("estoque", "preco", "REAL DEFAULT 0"),
-            ("estoque", "created_at", "TEXT DEFAULT CURRENT_TIMESTAMP"),
+            ("estoque", "created_at", "TEXT"),
             ("estoque", "updated_at", "TEXT"),
 
             ("estoque_movimentos", "servico_id", "INTEGER"),
@@ -269,7 +270,7 @@ def ensure_db():
             ("estoque_movimentos", "categoria", "TEXT"),
             ("estoque_movimentos", "qtde", "REAL DEFAULT 0"),
             ("estoque_movimentos", "tipo", "TEXT DEFAULT 'baixa'"),
-            ("estoque_movimentos", "created_at", "TEXT DEFAULT CURRENT_TIMESTAMP"),
+            ("estoque_movimentos", "created_at", "TEXT"),
         ]
         for table, col, spec in migrations:
             cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table,))
@@ -278,7 +279,28 @@ def ensure_db():
             cur.execute(f"PRAGMA table_info({table})")
             cols = [r[1] for r in cur.fetchall()]
             if col not in cols:
-                cur.execute(f"ALTER TABLE {table} ADD COLUMN {col} {spec}")
+                # Migração defensiva: SQLite não permite DEFAULT dinâmico em ADD COLUMN.
+                # Também evita derrubar o sistema se dois workers tentarem migrar juntos.
+                safe_spec = spec.replace("DEFAULT CURRENT_TIMESTAMP", "").strip()
+                try:
+                    cur.execute(f"ALTER TABLE {table} ADD COLUMN {col} {safe_spec}")
+                except sqlite3.OperationalError as e:
+                    msg = str(e).lower()
+                    if "duplicate column" in msg:
+                        pass
+                    elif "non-constant default" in msg:
+                        cur.execute(f"ALTER TABLE {table} ADD COLUMN {col} TEXT")
+                    else:
+                        raise
+
+        for table in ("clientes", "veiculos", "servicos", "estoque", "estoque_movimentos"):
+            cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table,))
+            if not cur.fetchone():
+                continue
+            cur.execute(f"PRAGMA table_info({table})")
+            cols = [r[1] for r in cur.fetchall()]
+            if "created_at" in cols:
+                cur.execute(f"UPDATE {table} SET created_at = ? WHERE created_at IS NULL OR created_at = ''", (now_str(),))
         con.commit()
 
         cur.execute("SELECT COUNT(*) AS total FROM estoque")
