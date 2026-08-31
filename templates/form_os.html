@@ -1,33 +1,35 @@
 {% extends 'base.html' %}
 {% block content %}
-<form method="post" class="stack os-form old-os-form" id="osForm">
+<form method="post" class="stack os-form old-os-form desktop-exact-form" id="osForm">
   <datalist id="marcasList">
     {% for marca in brands.keys() %}<option value="{{ marca }}">{% endfor %}
   </datalist>
   <datalist id="modelosList"></datalist>
 
-  <section class="panel compact fieldset-panel">
-    <h2>Cliente</h2>
-    <div class="cliente-line">
+  <section class="desktop-fieldset cliente-fieldset">
+    <div class="legend-title">Cliente</div>
+    <div class="desktop-client-row">
       <label>Nome:<input name="nome" id="nome" required value="{{ os.nome if os else '' }}"></label>
       <label>Telefone:<input name="telefone" id="telefone" value="{{ os.telefone if os else '' }}"></label>
-      <button class="btn" type="button" onclick="buscarClientes()">Puxar cadastro (F2)</button>
+      <button class="btn old-btn" type="button" onclick="buscarClientes()">Puxar cadastro (F2)</button>
     </div>
-    <div class="helper-search no-print hidden-helper">
+    <div class="helper-search hidden-helper no-print">
       <input type="search" id="clienteBusca" placeholder="Digite nome, telefone ou placa para puxar cadastro">
     </div>
     <div id="clienteResultados" class="results-list no-print"></div>
   </section>
 
-  <section class="panel compact fieldset-panel">
-    <h2>Veículo</h2>
-    <div class="vehicle-grid">
-      <label>Marca:<input list="marcasList" name="marca" id="marca" value="{{ os.marca if os else '' }}" autocomplete="off"></label>
-      <label>Veículo/Modelo:<input list="modelosList" name="modelo" id="modelo" value="{{ os.modelo if os else '' }}" autocomplete="off"></label>
-      <label>Placa:<input name="placa" id="placa" value="{{ os.placa if os else '' }}" style="text-transform:uppercase"></label>
-      <label>Ano:<input name="ano" id="ano" value="{{ os.ano if os else '' }}"></label>
-      <label>KM atual (troca de óleo):<input name="km_atual" id="km_atual" value="{{ br_int(os.km_atual) if os else '' }}" inputmode="numeric"></label>
-      <label>Intervalo (km):
+  <section class="desktop-fieldset vehicle-fieldset">
+    <div class="legend-title">Veículo</div>
+    <div class="desktop-vehicle-grid">
+      <label class="marca-label">Marca:<input list="marcasList" name="marca" id="marca" value="{{ os.marca if os else '' }}" autocomplete="off"></label>
+      <label class="modelo-label">Modelo:<input list="modelosList" name="modelo" id="modelo" value="{{ os.modelo if os else '' }}" autocomplete="off"></label>
+
+      <label class="placa-label">Placa:<input name="placa" id="placa" value="{{ os.placa if os else '' }}" style="text-transform:uppercase"></label>
+      <label class="ano-label">Ano:<input name="ano" id="ano" value="{{ os.ano if os else '' }}"></label>
+
+      <label class="km-oleo-label">KM atual (troca de óleo):<input name="km_atual" id="km_atual" value="{{ br_int(os.km_atual) if os else '' }}" inputmode="numeric"></label>
+      <label class="intervalo-label">Intervalo (km):
         <select name="intervalo_km" id="intervalo_km">
           {% set intervalo = (os.intervalo_km if os else 10000)|int %}
           {% for v in [0,1000,5000,7000,10000,15000] %}
@@ -35,74 +37,99 @@
           {% endfor %}
         </select>
       </label>
-      <label>Intervalo (km) — Correia:<input name="km_troca_corr" id="km_troca_corr" value="{{ br_int(os.km_troca_corr) if os else '' }}" inputmode="numeric"></label>
-      <div class="hint-text">(ex.: 60000 ou 80000 km)</div>
-      <label>KM que foi feita a troca (Correia):<input name="km_corr_trocada" id="km_corr_trocada" value="{{ br_int(os.km_corr_trocada) if os else '' }}" inputmode="numeric"></label>
-      <label>KM da próxima troca (Correia):<input name="km_corr_proxima" id="km_corr_proxima" value="{{ br_int(os.km_corr_proxima) if os else '' }}" inputmode="numeric"></label>
-      <div class="next-maint">Próxima manutenção: <b><span id="proxOleoPreview">—</span> km</b></div>
+
+      <label class="intervalo-correia-label">Intervalo (km) — Correia:<input name="km_troca_corr" id="km_troca_corr" value="{{ br_int(os.km_troca_corr) if os else '' }}" inputmode="numeric"></label>
+      <div class="desktop-hint">(ex.: 60000 ou 80000 km)</div>
+
+      <label class="correia-feita-label">KM que foi feita a troca (Correia):<input name="km_corr_trocada" id="km_corr_trocada" value="{{ br_int(os.km_corr_trocada) if os else '' }}" inputmode="numeric"></label>
+      <label class="correia-proxima-label">KM da próxima troca (Correia):<input name="km_corr_proxima" id="km_corr_proxima" value="{{ br_int(os.km_corr_proxima) if os else '' }}" inputmode="numeric"></label>
+
+      <div class="desktop-next-maint">Próxima manutenção: <b><span id="proxOleoPreview">—</span> km</b></div>
       <input type="hidden" name="proxima_manut_km" id="proxima_manut_km" value="{{ br_int(os.proxima_manut_km) if os else '' }}">
-      <label>Data serviço:<input name="data" value="{{ os.data if os else today_br() }}"></label>
+      <input type="hidden" name="data" value="{{ os.data if os else today_br() }}">
     </div>
   </section>
 
-  <section class="panel compact fieldset-panel">
-    <h2>KM atual — apenas registro</h2>
-    <div class="km-register">
+  <section class="desktop-fieldset km-only-fieldset">
+    <div class="legend-title">KM atual — apenas registro</div>
+    <div class="desktop-km-register">
       <label>KM atual:<input id="km_apenas_registro" type="text"></label>
       <span>*Somente registro. Não altera próxima troca.</span>
     </div>
   </section>
 
-  <section class="panel compact service-panel">
-    <h2>Serviço</h2>
-    <div class="service-tabs no-print"><button type="button" class="active">Descrição</button><button type="button">Itens do serviço</button></div>
-    <label class="description-label">
-      <textarea name="descricao" rows="6">{{ os.descricao if os else '' }}</textarea>
-    </label>
-
-    <div class="catalog-box no-print">
-      <div class="form-grid cols-4">
-        <label>Buscar peça no estoque<input type="search" id="estoqueBusca" placeholder="Filtro, óleo, pastilha..."></label>
-        <label>Categoria<input id="itemCategoria" placeholder="Categoria"></label>
-        <label>Item<input id="itemNome" placeholder="Nome do item"></label>
-        <label>Valor unitário<input id="itemValor" placeholder="0,00" inputmode="decimal"></label>
-      </div>
-      <div id="estoqueResultados" class="results-list"></div>
-      <div class="form-grid cols-4 small-grid">
-        <label>Quantidade<input id="itemQtde" value="1" inputmode="decimal"></label>
-        <label>Baixar do estoque?<select id="itemBaixa"><option value="1">Sim</option><option value="0">Não</option></select></label>
-        <button class="btn align-end" type="button" onclick="addItemFromInputs()">Adicionar peça</button>
-        <button class="btn align-end" type="button" onclick="addMaoObra()">Adicionar mão de obra</button>
-      </div>
+  <section class="desktop-fieldset service-desktop-fieldset">
+    <div class="legend-title">Serviço</div>
+    <div class="desktop-service-tabs no-print">
+      <button type="button" class="tab-btn active" data-tab="descricao" onclick="setServiceTab('descricao')">Descrição</button>
+      <button type="button" class="tab-btn" data-tab="itens" onclick="setServiceTab('itens')">Itens do serviço</button>
     </div>
 
-    <div class="table-wrap itens-wrap">
-      <table id="itensTable">
-        <thead><tr><th>Categoria</th><th>Item</th><th>Qtd</th><th>Valor</th><th>Total</th><th class="no-print">Baixa</th><th class="no-print"></th></tr></thead>
-        <tbody>
-          {% for it in itens %}
-          <tr>
-            <td><input name="item_categoria[]" value="{{ it.categoria }}"></td>
-            <td><input name="item_nome[]" value="{{ it.item }}"></td>
-            <td><input name="item_qtde[]" value="{{ it.qtde }}" inputmode="decimal" oninput="recalcItens()"></td>
-            <td><input name="item_valor[]" value="{{ '%.2f'|format(it.valor_unit or 0) }}" inputmode="decimal" oninput="recalcItens()"></td>
-            <td class="row-total">{{ br_money((it.qtde or 0) * (it.valor_unit or 0)) }}</td>
-            <td class="no-print"><select name="item_baixa[]"><option value="1" {% if it.baixa_estoque != 0 %}selected{% endif %}>Sim</option><option value="0" {% if it.baixa_estoque == 0 %}selected{% endif %}>Não</option></select></td>
-            <td class="no-print"><button class="btn danger small" type="button" onclick="removeRow(this)">Excluir</button></td>
-          </tr>
-          {% endfor %}
-        </tbody>
-        <tfoot><tr><td colspan="4">Total</td><td id="itensTotal">R$ 0,00</td><td colspan="2" class="no-print"></td></tr></tfoot>
-      </table>
+    <div id="descricaoPane" class="service-pane descricao-pane active">
+      <textarea name="descricao" rows="8">{{ os.descricao if os else '' }}</textarea>
     </div>
 
-    <label>Observações<textarea name="observacoes" rows="3">{{ os.observacoes if os else '' }}</textarea></label>
+    <div id="itensPane" class="service-pane itens-pane no-print">
+      <div class="item-topline">
+        <button class="btn old-btn" type="button" onclick="toggleEstoquePicker()">Buscar no estoque</button>
+        <button class="btn old-btn" type="button" onclick="addSelectedOrPrompt()">Adicionar item</button>
+        <span id="selectedItemLabel">Nenhum item selecionado</span>
+      </div>
+
+      <div id="estoquePicker" class="desktop-stock-picker hidden-helper">
+        <input type="search" id="estoqueBusca" placeholder="Digite para buscar no estoque">
+        <div id="estoqueResultados" class="results-list"></div>
+        <div class="manual-item-line">
+          <input id="itemCategoria" placeholder="Categoria">
+          <input id="itemNome" placeholder="Item">
+          <input id="itemQtde" value="1" inputmode="decimal" placeholder="Qtde">
+          <input id="itemValor" placeholder="Unitário (R$)" inputmode="decimal">
+          <select id="itemBaixa"><option value="1">Baixar estoque</option><option value="0">Não baixar</option></select>
+        </div>
+      </div>
+
+      <div class="desktop-table-wrap itens-wrap">
+        <table id="itensTable" class="desktop-itens-table">
+          <thead>
+            <tr>
+              <th>Categoria</th>
+              <th>Item</th>
+              <th>Qtde</th>
+              <th>Unitário (R$)</th>
+              <th>Total (R$)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for it in itens %}
+            <tr onclick="selectItemRow(this)">
+              <td><input name="item_categoria[]" value="{{ it.categoria }}"></td>
+              <td><input name="item_nome[]" value="{{ it.item }}"><input type="hidden" name="item_baixa[]" value="{{ it.baixa_estoque if it.baixa_estoque is defined else 1 }}"></td>
+              <td><input name="item_qtde[]" value="{{ it.qtde }}" inputmode="decimal" oninput="recalcItens()"></td>
+              <td><input name="item_valor[]" value="{{ '%.2f'|format(it.valor_unit or 0) }}" inputmode="decimal" oninput="recalcItens()"></td>
+              <td class="row-total">{{ br_money((it.qtde or 0) * (it.valor_unit or 0)) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mao-obra-line">
+        <label>Mão de obra:<input id="maoObraDesc"></label>
+        <label>Preço (R$):<input id="maoObraValor" inputmode="decimal"></label>
+        <button class="btn old-btn" type="button" onclick="addMaoObraInline()">Adicionar</button>
+      </div>
+      <button class="btn old-btn remove-selected" type="button" onclick="removeSelectedItem()">Remover selecionado</button>
+      <div class="desktop-total">Total: <span id="itensTotal">R$ 0,00</span></div>
+    </div>
+
+    <input type="hidden" name="observacoes" value="{{ os.observacoes if os else '' }}">
   </section>
 
-  <div class="fixed-actions no-print">
-    <button class="btn" type="submit">Salvar cadastro + serviço</button>
-    {% if os %}<a class="btn" href="{{ url_for('ver_os', sid=os.id) }}">Cancelar</a>{% endif %}
-    <a class="btn" href="{{ url_for('index') }}">Limpar / Voltar</a>
+  <div class="desktop-bottom-actions no-print">
+    <button class="btn old-btn" type="submit">Salvar cadastro + serviço</button>
+    <button class="btn old-btn" type="button" onclick="excluirPorPlaca()">Excluir por placa</button>
+    <a class="btn old-btn" href="{{ url_for('nova_os') }}">Limpar</a>
+    {% if os %}<a class="btn old-btn" href="{{ url_for('ver_os', sid=os.id) }}">Cancelar edição</a>{% endif %}
   </div>
 </form>
 {% endblock %}

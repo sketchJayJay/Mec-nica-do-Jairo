@@ -236,3 +236,276 @@ tfoot td{font-weight:700;background:#fafafa;}
 .vehicle-grid label:nth-of-type(10){grid-column:3 / 4;}
 .km-register{display:flex;align-items:center;gap:8px;}.km-register label{width:260px}.km-register span{font-size:15px;color:#23344b}.service-panel{padding:0 0 10px!important;overflow:hidden}.service-panel h2{padding:9px 10px;margin:0;background:#fff}.service-tabs{height:66px;background:#e9e9e9;display:flex;align-items:flex-end;justify-content:center;border-bottom:1px solid #ddd}.service-tabs button{height:60px;min-width:145px;border:0;border-radius:8px 8px 0 0;background:transparent;color:#23344b;cursor:default}.service-tabs button.active{background:#fff;border:1px solid #eee;border-bottom-color:#fff}.description-label{padding:0 9px}.description-label textarea{border-radius:0;min-height:270px;margin-top:0}.service-panel .catalog-box,.service-panel .table-wrap,.service-panel > label:not(.description-label){margin-left:9px;margin-right:9px}.service-panel > label:not(.description-label){margin-top:10px}
 @media(max-width:980px){.estoque-toolbar{grid-template-columns:1fr 1fr}.cliente-line,.vehicle-grid{grid-template-columns:1fr}.cliente-line label,.vehicle-grid label,.km-register label{grid-template-columns:1fr}.vehicle-grid label:nth-of-type(n),.vehicle-grid .hint-text,.vehicle-grid .next-maint{grid-column:auto}.km-register{align-items:stretch;flex-direction:column}.km-register label{width:100%}.description-label textarea{min-height:180px}}
+
+/* ===== Cadastro/OS no visual desktop antigo, aplicado na versão Coolify ===== */
+.work-page:has(.desktop-exact-form){
+  padding:0;
+  background:#fff;
+}
+.desktop-exact-form{
+  gap:0;
+  font-size:16px;
+  color:#25364b;
+}
+.desktop-exact-form .desktop-fieldset{
+  position:relative;
+  margin:0 4px 0;
+  padding:16px 8px 8px;
+  border:1px solid #e6e6e6;
+  border-radius:5px;
+  background:#fff;
+  box-shadow:inset 0 0 0 1px #fafafa;
+}
+.desktop-exact-form .legend-title{
+  position:absolute;
+  top:-2px;
+  left:8px;
+  padding:0 3px;
+  background:#fff;
+  color:#25364b;
+  line-height:1;
+  font-size:15px;
+  font-weight:500;
+}
+.desktop-client-row{
+  display:grid;
+  grid-template-columns:292px 240px auto 1fr;
+  gap:6px;
+  align-items:center;
+  min-height:50px;
+}
+.desktop-client-row label,
+.desktop-vehicle-grid label,
+.desktop-km-register label,
+.mao-obra-line label{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  align-items:center;
+  gap:6px;
+  font-weight:500;
+  margin:0;
+  color:#25364b;
+}
+.desktop-exact-form input,
+.desktop-exact-form select,
+.desktop-exact-form textarea{
+  border:1px solid #dcdfe5;
+  border-radius:4px;
+  background:#fff;
+  min-height:38px;
+  padding:7px 10px;
+  color:#1f2d40;
+  box-shadow:inset 0 1px 1px rgba(0,0,0,.03);
+}
+.desktop-exact-form input:focus,
+.desktop-exact-form select:focus,
+.desktop-exact-form textarea:focus{
+  border-color:#0b74d1;
+  box-shadow:0 0 0 1px rgba(11,116,209,.16), inset 0 1px 1px rgba(0,0,0,.03);
+}
+.old-btn{
+  min-height:40px;
+  border-radius:4px;
+  background:#fff;
+  border:1px solid #dedede;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+  color:#25364b;
+  padding:9px 16px;
+  font-weight:500;
+}
+.desktop-vehicle-grid{
+  display:grid;
+  grid-template-columns:250px 250px 170px 250px 130px 1fr;
+  grid-auto-rows:42px;
+  gap:1px 22px;
+  align-items:center;
+  padding-top:2px;
+}
+.desktop-vehicle-grid .marca-label{grid-column:1 / 3;grid-row:1;}
+.desktop-vehicle-grid .modelo-label{grid-column:3 / 6;grid-row:1;}
+.desktop-vehicle-grid .placa-label{grid-column:1 / 3;grid-row:2;}
+.desktop-vehicle-grid .ano-label{grid-column:3 / 5;grid-row:2;}
+.desktop-vehicle-grid .km-oleo-label{grid-column:1 / 2;grid-row:3;}
+.desktop-vehicle-grid .intervalo-label{grid-column:3 / 5;grid-row:3;}
+.desktop-vehicle-grid .intervalo-correia-label{grid-column:1 / 2;grid-row:4;}
+.desktop-vehicle-grid .desktop-hint{grid-column:3 / 5;grid-row:4;color:#25364b;font-size:15px;}
+.desktop-vehicle-grid .correia-feita-label{grid-column:1 / 2;grid-row:5;}
+.desktop-vehicle-grid .correia-proxima-label{grid-column:3 / 5;grid-row:5;}
+.desktop-vehicle-grid .desktop-next-maint{grid-column:1 / 3;grid-row:6;color:#25364b;font-weight:500;align-self:center;}
+.desktop-vehicle-grid input,
+.desktop-vehicle-grid select{height:38px;}
+.desktop-km-register{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-height:42px;
+}
+.desktop-km-register label{width:210px;}
+.desktop-km-register span{font-size:15px;color:#25364b;}
+.service-desktop-fieldset{
+  padding:0 8px 8px!important;
+  overflow:hidden;
+}
+.service-desktop-fieldset .legend-title{
+  top:-1px;
+}
+.desktop-service-tabs{
+  height:66px;
+  background:#e8e8e8;
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+  margin:0 -8px;
+  border-bottom:1px solid #ddd;
+}
+.desktop-service-tabs .tab-btn{
+  height:59px;
+  min-width:145px;
+  border:1px solid transparent;
+  border-bottom:0;
+  border-radius:8px 8px 0 0;
+  background:transparent;
+  color:#25364b;
+  cursor:pointer;
+  font-size:16px;
+}
+.desktop-service-tabs .tab-btn.active{
+  background:#fff;
+  border-color:#ececec;
+  box-shadow:0 -1px 0 #fff inset;
+}
+.service-pane{display:none;}
+.service-pane.active{display:block;}
+.descricao-pane textarea{
+  display:block;
+  width:100%;
+  min-height:292px;
+  border-radius:0;
+  border-color:#d9dfe7;
+  margin:0;
+  resize:vertical;
+}
+.item-topline{
+  height:56px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:8px 2px 4px;
+}
+.item-topline #selectedItemLabel{
+  font-weight:600;
+  color:#25364b;
+}
+.desktop-stock-picker{
+  border:1px solid #e1e1e1;
+  border-radius:4px;
+  background:#f8f8f8;
+  padding:8px;
+  margin:0 0 6px;
+}
+.manual-item-line{
+  display:grid;
+  grid-template-columns:1fr 1.4fr 110px 150px 150px;
+  gap:8px;
+  margin-top:8px;
+}
+.desktop-table-wrap{
+  border:0;
+  background:#fff;
+  overflow:auto;
+}
+.desktop-itens-table{
+  min-width:760px;
+  border-collapse:separate;
+  border-spacing:0;
+  width:100%;
+}
+.desktop-itens-table th{
+  height:32px;
+  padding:4px 8px;
+  background:#fff;
+  border:1px solid #e4e7eb;
+  border-radius:4px;
+  color:#111;
+  text-align:center;
+  font-size:16px;
+  font-weight:700;
+}
+.desktop-itens-table td{
+  height:34px;
+  padding:2px 4px;
+  border-bottom:1px solid #f0f0f0;
+  background:#fff;
+}
+.desktop-itens-table tbody tr:nth-child(even) td{background:#f8fafc;}
+.desktop-itens-table tbody tr.selected-row td{background:#e7f2ff!important;}
+.desktop-itens-table input{
+  min-height:30px;
+  height:30px;
+  padding:4px 6px;
+  border-color:transparent;
+  background:transparent;
+  box-shadow:none;
+}
+.desktop-itens-table input:focus{
+  border-color:#0b74d1;
+  background:#fff;
+}
+.desktop-itens-table .row-total{
+  text-align:right;
+  padding-right:10px;
+  font-weight:500;
+}
+.mao-obra-line{
+  display:grid;
+  grid-template-columns:405px 190px auto 1fr;
+  gap:10px;
+  align-items:center;
+  margin:80px 0 8px;
+}
+.remove-selected{
+  margin:0 0 0 0;
+}
+.desktop-total{
+  float:right;
+  margin-top:-32px;
+  padding-right:6px;
+  font-size:16px;
+  font-weight:500;
+  color:#25364b;
+}
+.desktop-bottom-actions{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:10px 8px 6px;
+  border-top:1px solid #f1f1f1;
+  background:#fff;
+}
+@media(max-width:1100px){
+  .desktop-client-row{grid-template-columns:1fr 1fr auto;}
+  .desktop-vehicle-grid{grid-template-columns:1fr 1fr;grid-auto-rows:auto;gap:8px 12px;}
+  .desktop-vehicle-grid .marca-label,
+  .desktop-vehicle-grid .modelo-label,
+  .desktop-vehicle-grid .placa-label,
+  .desktop-vehicle-grid .ano-label,
+  .desktop-vehicle-grid .km-oleo-label,
+  .desktop-vehicle-grid .intervalo-label,
+  .desktop-vehicle-grid .intervalo-correia-label,
+  .desktop-vehicle-grid .desktop-hint,
+  .desktop-vehicle-grid .correia-feita-label,
+  .desktop-vehicle-grid .correia-proxima-label,
+  .desktop-vehicle-grid .desktop-next-maint{grid-column:auto;grid-row:auto;}
+  .mao-obra-line{grid-template-columns:1fr 180px auto;margin-top:35px;}
+}
+@media(max-width:720px){
+  .desktop-client-row,.desktop-vehicle-grid,.manual-item-line,.mao-obra-line{grid-template-columns:1fr;}
+  .desktop-client-row label,
+  .desktop-vehicle-grid label,
+  .desktop-km-register label,
+  .mao-obra-line label{grid-template-columns:1fr;}
+  .desktop-km-register{align-items:stretch;flex-direction:column;}.desktop-km-register label{width:100%;}
+  .desktop-service-tabs .tab-btn{min-width:130px;}
+  .desktop-bottom-actions{flex-wrap:wrap;}
+  .desktop-total{float:none;margin:10px 0 0;text-align:right;}
+}
