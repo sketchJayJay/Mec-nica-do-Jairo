@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="panel receipt">
+  <div class="section-head no-print">
+    <div><p class="eyebrow">Ordem de serviço</p><h1>OS #{{ os.id }}</h1></div>
+    <div class="actions">
+      <a class="btn" href="{{ url_for('listar_os') }}">Voltar</a>
+      <a class="btn" href="{{ url_for('editar_os', sid=os.id) }}">Editar OS</a>
+      <a class="btn primary" target="_blank" href="{{ url_for('imprimir_os', sid=os.id) }}">Imprimir</a>
+      <form method="post" action="{{ url_for('excluir_os', sid=os.id) }}" onsubmit="return confirm('Excluir esta OS? O estoque será revertido.');"><button class="btn danger" type="submit">Excluir</button></form>
+    </div>
+  </div>
+  <div class="receipt-head">
+    <img src="{{ url_for('static', filename='assets/logo.png') }}" onerror="this.style.display='none'" alt="Logo">
+    <div><h2>Oficina do Jairo</h2><p>Ordem de Serviço / Nota</p></div>
+    <strong>#{{ os.id }}</strong>
+  </div>
+  <div class="info-grid">
+    <div><b>Cliente</b><span>{{ os.nome }}</span></div>
+    <div><b>Telefone</b><span>{{ os.telefone or '—' }}</span></div>
+    <div><b>Veículo</b><span>{{ os.marca }} {{ os.modelo }}</span></div>
+    <div><b>Placa/Ano</b><span>{{ os.placa or '—' }} • {{ os.ano or '—' }}</span></div>
+    <div><b>KM atual</b><span>{{ br_int(os.km_atual) }} km</span></div>
+    <div><b>Próx. óleo</b><span>{{ br_int(os.proxima_manut_km) }} km</span></div>
+    <div><b>Próx. correia</b><span>{{ br_int(os.km_corr_proxima) }} km</span></div>
+    <div><b>Data</b><span>{{ os.data or '—' }}</span></div>
+  </div>
+  <h3>Descrição</h3>
+  <p class="description">{{ os.descricao or '—' }}</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Categoria</th><th>Item</th><th>Qtd</th><th>Valor</th><th>Total</th></tr></thead>
+      <tbody>{% for it in itens %}<tr><td>{{ it.categoria }}</td><td>{{ it.item }}</td><td>{{ br_int(it.qtde) }}</td><td>{{ br_money(it.valor_unit) }}</td><td>{{ br_money((it.qtde or 0)*(it.valor_unit or 0)) }}</td></tr>{% endfor %}</tbody>
+      <tfoot><tr><td colspan="4">Total</td><td>{{ br_money(total) }}</td></tr></tfoot>
+    </table>
+  </div>
+  {% if os.observacoes %}<h3>Observações</h3><p class="description">{{ os.observacoes }}</p>{% endif %}
+</section>
+{% endblock %}

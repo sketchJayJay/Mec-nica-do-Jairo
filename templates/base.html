@@ -3,51 +3,52 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b1220">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="manifest" href="{{ url_for('manifest') }}">
-  <link rel="icon" sizes="192x192" href="{{ url_for('static', filename='img/icon-192.png') }}">
-  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon-192.png') }}">
-  <title>{% block title %}Mecânica do Jairo{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
-  {% block head %}{% endblock %}
+  <title>{{ title or 'Oficina Mecânica — v0.5 (Pro Light 2025) — FIX' }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="app-shell">
-  <header class="topbar">
-    <a class="brand" href="{{ url_for('dashboard') }}">
-      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Mecânica do Jairo">
-      <span><strong>Mecânica do Jairo</strong><small>Sistema da oficina</small></span>
-    </a>
-    <button class="menu-toggle" type="button" aria-label="Abrir menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
-    <nav class="nav">
-      <a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">Início</a>
-      <a href="{{ url_for('os_list') }}" class="{% if request.endpoint and request.endpoint.startswith('os_') %}active{% endif %}">Ordens de serviço</a>
-      <a href="{{ url_for('orcamentos_list') }}" class="{% if request.endpoint and request.endpoint.startswith('orcamento') %}active{% endif %}">Orçamentos</a>
-      <a href="{{ url_for('estoque') }}" class="{% if request.endpoint and request.endpoint.startswith('estoque') %}active{% endif %}">Estoque</a>
-      <a href="{{ url_for('clientes') }}" class="{% if request.endpoint and (request.endpoint.startswith('cliente') or request.endpoint.startswith('veiculo')) %}active{% endif %}">Clientes</a>
-      <a href="{{ url_for('relatorios') }}" class="{% if request.endpoint == 'relatorios' %}active{% endif %}">Relatórios</a>
-    </nav>
-</header>
+<body>
+  <div class="app-window">
+    <div class="window-menu no-print"><span>Exibir</span><span>Configurações</span></div>
 
-  <main class="page">
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="flash-stack">
-        {% for category, message in messages %}
-          <div class="alert {{ category }}">{{ message }}</div>
-        {% endfor %}
+    <header class="topbar no-print">
+      <a class="brand" href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='assets/logo.png') }}" onerror="this.style.display='none'" alt="Logo Mecânica do Jairo">
+        <div class="brand-copy">
+          <strong>MECÂNICA DO JAIRO</strong>
+          <span>Sistema de ordens, cadastro e estoque</span>
         </div>
-      {% endif %}
-    {% endwith %}
+      </a>
+      <div class="version">Pro Light 2025 — FIX</div>
+      <nav class="quick-actions">
+        <a href="{{ url_for('listar_os') }}">Editar OS</a>
+        <a href="{{ url_for('nova_os') }}">Nova OS</a>
+        <a href="{{ url_for('relatorios') }}">Relatórios</a>
+      </nav>
+    </header>
 
-    {% block content %}{% endblock %}
-  </main>
+    <nav class="tabbar no-print" aria-label="Menu principal">
+      <a class="{{ 'active' if request.endpoint == 'index' else '' }}" href="{{ url_for('index') }}">⌂ Início</a>
+      <a class="{{ 'active' if request.endpoint in ['nova_os','editar_os'] else '' }}" href="{{ url_for('nova_os') }}">☙ Cadastro</a>
+      <a class="{{ 'active' if request.endpoint in ['listar_os','ver_os'] else '' }}" href="{{ url_for('listar_os') }}">🔎 Busca</a>
+      <a class="{{ 'active' if request.endpoint in ['estoque','editar_estoque','imprimir_estoque'] else '' }}" href="{{ url_for('estoque') }}">◈ Estoque</a>
+      <a class="{{ 'active' if request.endpoint == 'relatorios' else '' }}" href="{{ url_for('relatorios') }}">▦ Relatórios</a>
+    </nav>
 
-  <footer class="footer">Mecânica do Jairo • versão {{ APP_VERSION }} • agora as atualizações entram pelo deploy do Coolify</footer>
-  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <main class="page {{ 'home-page' if request.endpoint == 'index' else 'work-page' }}">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-wrap no-print">
+            {% for category, msg in messages %}
+              <div class="flash {{ category }}">{{ msg }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="panel">
+  <form class="search-row no-print" method="get">
+    <label class="inline-label">Buscar por nome ou placa:</label>
+    <input type="search" name="q" value="{{ q }}" autofocus>
+    <button class="btn" type="submit">Buscar</button>
+  </form>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th><th>Cliente</th><th>Carro</th><th>Placa</th><th>KM atual (troca de óleo)</th><th>Próx. manut. (km)</th><th>Data serviço</th><th class="no-print">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for r in rows %}
+        <tr>
+          <td>{{ r.id }}</td>
+          <td>{{ r.nome }}</td>
+          <td>{{ (r.marca or '') ~ ' ' ~ (r.modelo or '') }}</td>
+          <td>{{ r.placa or '—' }}</td>
+          <td>{{ br_int(r.km_atual) }}</td>
+          <td>{{ br_int(r.proxima_manut_km) }}</td>
+          <td>{{ r.data or '—' }}</td>
+          <td class="row-actions no-print"><a class="btn small" href="{{ url_for('ver_os', sid=r.id) }}">Abrir</a><a class="btn small" href="{{ url_for('editar_os', sid=r.id) }}">Editar</a></td>
+        </tr>
+      {% else %}<tr><td colspan="8" class="empty">Nenhuma OS encontrada.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer-actions no-print">
+    <a class="btn danger" href="{{ url_for('listar_os') }}">Excluir OS selecionada</a>
+    <span>{{ rows|length }} resultados</span>
+  </div>
+</section>
+{% endblock %}

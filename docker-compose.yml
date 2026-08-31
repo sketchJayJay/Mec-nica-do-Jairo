@@ -1,0 +1,16 @@
+services:
+  jairo-oficina:
+    build: .
+    container_name: jairo-oficina
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - jairo_oficina_data:/app/data
+    environment:
+      - PORT=8080
+      - DATA_DIR=/app/data
+      - SECRET_KEY=troque-essa-chave-depois
+
+volumes:
+  jairo_oficina_data:

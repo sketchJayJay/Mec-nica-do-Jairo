@@ -1,10 +1,42 @@
 {% extends 'base.html' %}
-{% block title %}Estoque • Mecânica do Jairo{% endblock %}
 {% block content %}
-<div class="page-heading"><div><span class="eyebrow">Estoque</span><h1>Peças e produtos</h1><p>Agora dá para corrigir nome/descrição, quantidade e preço de qualquer item.</p></div><div class="heading-actions"><a class="btn primary" href="{{ url_for('estoque_novo') }}">+ Novo item</a><a class="btn" target="_blank" href="{{ url_for('estoque_print') }}">Imprimir estoque completo</a></div></div>
-<form class="searchbar searchbar-wide" method="get"><input name="q" value="{{ q }}" placeholder="Buscar item..."><select name="categoria"><option value="">Todas as categorias</option>{% for c in categorias %}<option value="{{ c.categoria }}" {% if categoria==c.categoria %}selected{% endif %}>{{ c.categoria }}</option>{% endfor %}</select><button class="btn primary">Buscar</button>{% if q or categoria %}<a class="btn" href="{{ url_for('estoque') }}">Limpar</a>{% endif %}</form>
-<div class="summary-line"><span><strong>{{ items|length }}</strong> item(ns) na tela</span><span>Valor total do estoque atual: <strong>{{ total_valor|money }}</strong></span></div>
-<section class="panel"><div class="table-wrap"><table><thead><tr><th>Item</th><th>Categoria</th><th>Qtd.</th><th>Preço</th><th>Total</th><th></th></tr></thead><tbody>
-{% for i in items %}<tr class="{% if i.qtde <= 1 %}low-row{% endif %}"><td><strong>{{ i.item }}</strong><small>ID {{ i.id }}</small></td><td>{{ i.categoria or '—' }}</td><td><span class="qty {% if i.qtde <= 1 %}low{% endif %}">{{ i.qtde }}</span></td><td>{{ i.preco|money }}</td><td>{{ (i.qtde*i.preco)|money }}</td><td class="actions-cell"><a class="btn small primary" href="{{ url_for('estoque_editar', item_id=i.id) }}">Editar</a></td></tr>{% else %}<tr><td colspan="6" class="empty">Nada encontrado.</td></tr>{% endfor %}
-</tbody></table></div></section>
+<section class="panel estoque-screen">
+  <h2 class="plain-title">Estoque (MVP)</h2>
+
+  <form class="estoque-toolbar no-print" method="post">
+    <input name="item" placeholder="Ex: Óleo 5W30" required>
+    <input name="categoria" list="catsList" value="Lubrificantes" placeholder="Categoria">
+    <input name="qtde" inputmode="decimal" value="0" placeholder="Qtde">
+    <input name="preco" inputmode="decimal" value="0" placeholder="Preço">
+    <button class="btn" type="submit">Adicionar</button>
+    <a class="btn" href="{{ url_for('estoque') }}">Salvar estoque</a>
+    <a class="btn" href="#listaEstoque">Editar item</a>
+    <a class="btn" target="_blank" href="{{ url_for('imprimir_estoque', q=q) }}">Imprimir estoque</a>
+  </form>
+  <datalist id="catsList">{% for c in cats %}<option value="{{ c }}">{% endfor %}</datalist>
+
+  <form class="search-row no-print estoque-search" method="get">
+    <label class="inline-label">Buscar:</label>
+    <input name="q" value="{{ q }}" placeholder="item ou categoria">
+    <button class="btn small" type="submit">Filtrar</button>
+  </form>
+
+  <div class="table-wrap" id="listaEstoque">
+    <table>
+      <thead><tr><th>ID</th><th>Item</th><th>Categoria</th><th>Qtde</th><th>Preço</th><th class="no-print">Ações</th></tr></thead>
+      <tbody>
+      {% for r in rows %}
+        <tr class="{% if r.qtde <= 1 %}warn-line{% endif %}">
+          <td>{{ r.id }}</td>
+          <td>{{ r.item }}</td>
+          <td>{{ r.categoria }}</td>
+          <td>{{ br_int(r.qtde) }}</td>
+          <td>{{ br_money(r.preco) }}</td>
+          <td class="row-actions no-print"><a class="btn small" href="{{ url_for('editar_estoque', eid=r.id) }}">Editar</a><form method="post" action="{{ url_for('excluir_estoque', eid=r.id) }}" onsubmit="return confirm('Excluir item?');"><button class="btn danger small">Excluir</button></form></td>
+        </tr>
+      {% else %}<tr><td colspan="6" class="empty">Nenhum item encontrado.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
 {% endblock %}

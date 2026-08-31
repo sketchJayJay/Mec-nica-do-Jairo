@@ -1,147 +1,51 @@
-# Mecânica do Jairo • versão web para Coolify
+# Mecânica do Jairo - Web para Coolify
 
-Esta versão foi criada a partir do banco real da oficina e preparada para rodar no navegador, celular e computador.
+Versão web em Flask + SQLite + Docker, pronta para subir pelo GitHub no Coolify.
 
-## O que foi corrigido / incluído
+## Visual
 
-- OS podem ser abertas e editadas mesmo depois de `Finalizada`.
-- É possível alterar apenas uma linha da OS, sem refazer a OS inteira.
-- Itens adicionados pelo estoque na versão web ficam vinculados ao produto e o saldo é reconciliado automaticamente quando quantidade é aumentada, reduzida ou removida.
-- OS antigas continuam preservadas. Como o sistema antigo não gravava o ID do produto do estoque dentro da OS, itens históricos antigos não alteram estoque automaticamente quando editados, evitando baixar ou repor a peça errada.
-- Estoque permite editar **nome/descrição**, categoria, quantidade e preço.
-- Botão para imprimir a relação completa do estoque com todos os itens, quantidades, preços e valor total.
-- Busca de cliente por nome, telefone e placa.
-- Edição dos dados do carro.
-- Impressão/reimpressão da OS.
-- Backup do banco pelo próprio sistema.
-- Relatório de movimentações do estoque feitas pela nova versão.
-- Layout responsivo para celular.
-- A antiga rotina de atualização do programa Windows deixa de ser necessária. Atualizações passam a ser feitas pelo deploy/redeploy do Coolify.
+Esta versão foi ajustada para ficar parecida com o sistema antigo/novo das telas enviadas:
 
-## Banco de dados
+- topo com logo, nome **MECÂNICA DO JAIRO** e texto **Pro Light 2025 — FIX**
+- menu em abas: Início, Cadastro, Busca, Estoque e Relatórios
+- tela inicial com imagem da oficina no fundo e cartões transparentes
+- Cadastro/OS, Busca, Estoque e Relatórios com visual mais simples, claro e parecido com o programa de desktop
 
-O banco original enviado foi colocado em:
+## Funções mantidas
 
-`seed/oficina.db`
+- Cadastro de cliente
+- Cadastro de veículo com Marca e Veículo/Modelo já com opções
+- Digitação manual quando não tiver marca/modelo na lista
+- Nova OS / Nota
+- Buscar, abrir, editar, imprimir e excluir OS
+- Editar OS pronta sem refazer tudo
+- Baixa de estoque ao salvar OS
+- Ao editar ou excluir OS, o estoque antigo é revertido para evitar baixa dupla
+- Estoque com adicionar, editar, excluir, buscar e imprimir
+- Relatórios básicos
+- Banco SQLite persistente em `/app/data`
 
-No primeiro start do container, se `/data/oficina.db` ainda não existir, o sistema copia automaticamente esse banco para o volume persistente.
+## Como subir no Coolify
 
-O sistema também cria automaticamente um backup pré-migração chamado aproximadamente:
+1. Crie um repositório no GitHub.
+2. Envie todos os arquivos desta pasta para o repositório.
+3. No Coolify, crie um novo recurso usando esse repositório.
+4. Escolha deploy por Dockerfile ou Docker Compose.
+5. Porta interna: `8080`.
+6. Faça o deploy.
 
-`/data/oficina.db.pre-web-v2.bak`
+## Volume obrigatório
 
-### Dados conferidos antes da migração
+O banco fica em:
 
-- 425 clientes
-- 410 veículos
-- 676 ordens de serviço
-- 4.239 itens de OS
-- 1.300 itens de estoque
-
-## Coolify
-
-### Opção recomendada: Docker Compose
-
-No Coolify:
-
-1. Crie um novo Resource usando o repositório deste projeto.
-2. Escolha **Docker Compose**.
-3. O arquivo está na raiz e se chama exatamente `docker-compose.yaml`.
-4. Configure as variáveis:
-   - `LOGIN_REMOVIDO`
-   - `LOGIN_REMOVIDO`
-   - `SECRET_KEY`
-5. Faça o deploy.
-6. A aplicação escuta na porta `8000`.
-7. Configure o domínio no Coolify apontando para o serviço na porta interna `8000`.
-
-> Use um repositório **privado**. O arquivo `seed/oficina.db` contém os dados reais da oficina.
-
-O volume `mecanica_jairo_data` mantém o banco entre os deploys.
-
-## Login inicial
-
-Se nenhuma variável for definida, o sistema inicia com:
-
-- usuário: `admin`
-- senha: `admin`
-
-**Troque isso no Coolify antes de deixar o domínio público.**
-
-## Backup
-
-Dentro do sistema existe o botão **Baixar backup**. Ele usa o recurso de backup do próprio SQLite para gerar uma cópia consistente mesmo com a aplicação ligada.
-
-Mesmo com esse botão, é recomendado manter também backup externo do volume `/data`.
-
-## Desenvolvimento local
-
-```bash
-python -m venv .venv
-# Windows
-.venv\Scripts\activate
-# Linux/macOS
-source .venv/bin/activate
-
-pip install -r requirements.txt
-python app.py
+```txt
+/app/data/jairo_oficina.db
 ```
 
-Acesse `http://localhost:8000`.
+No Coolify, mantenha um volume persistente em:
 
-## Observação importante sobre o estoque antigo
+```txt
+/app/data
+```
 
-O programa Windows baixava estoque por nome/categoria e não salvava uma referência segura do produto em `itens_servico`. Por isso a nova versão não tenta adivinhar automaticamente qual produto pertence a cada uma das milhares de linhas históricas. Isso evita corromper o saldo atual.
-
-A partir da nova versão, peças escolhidas em **Buscar no estoque** recebem `estoque_id`, e alterações futuras passam a ser exatas.
-
-
-## Modelo original da OS
-A impressão da Ordem de Serviço mantém o modelo original do programa desktop, incluindo logo, QR PIX, seções Cliente/Veículo/Serviço, tabela de itens e assinatura.
-
-
-## v9
-- A placa passou a ser opcional ao criar ou editar uma OS.
-- OS sem placa continuam vinculadas a um carro/cliente normalmente.
-
-
-## Orçamentos sem baixa de estoque
-
-Esta versão inclui um módulo separado de **Orçamentos**. Ele pode puxar nome, categoria e preço dos itens cadastrados no estoque, mas **não baixa, não reserva e não repõe quantidades**. Criar, editar ou excluir um orçamento não gera movimentação de estoque.
-
-Fluxo: **Orçamentos → Novo orçamento → buscar item no estoque → ajustar nome/quantidade/preço → salvar → Imprimir / PDF**.
-
-
-## v12 - X para fechar
-- Botão X vermelho no canto superior direito.
-- Quando aberto pelo aplicativo Windows/PyWebView, fecha a janela inteira com um clique.
-
-
-## v13
-- Adicionado botão **← Voltar para o orçamento** na página de impressão.
-- Os botões continuam ocultos na impressão/PDF.
-
-## v14
-- Corrigido o botão X do aplicativo Windows para não aguardar o encerramento nativo via ponte JavaScript.
-- Evita travamento ao fechar o programa em modo PyWebView.
-
-
-## v15
-- Removido o X interno da página.
-- O fechamento passa a ser feito pelo X nativo da janela do Edge em modo aplicativo.
-- Evita o PyWebView, que estava travando neste notebook.
-
-
-## v16 - Excluir orçamento
-- Adicionado botão **Excluir** diretamente na lista de orçamentos.
-- Adicionado botão **Excluir** no cabeçalho ao abrir um orçamento.
-- A exclusão pede confirmação antes de apagar.
-- Excluir orçamento não altera o estoque.
-
-
-## v17 — cálculo automático e impressão
-- Troca de óleo: ao informar KM atual e intervalo, a próxima troca é calculada automaticamente.
-- Correia: ao informar KM da última troca e intervalo, a próxima troca é calculada automaticamente.
-- Intervalo do óleo agora aceita qualquer valor em km, não apenas opções fixas.
-- Impressão da OS usa margem de página zero do navegador para evitar o endereço/`www` no rodapé.
-- Adicionado botão **Excluir** diretamente na lista de OS/nota, com confirmação e devolução de estoque pelos vínculos existentes.
+Sem esse volume, o sistema pode perder clientes, OS e estoque depois de redeploy.

@@ -1,0 +1,10 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>OS #{{ os.id }}</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body class="print-page" onload="window.print()">
+<section class="print-sheet receipt">
+  <div class="receipt-head"><img src="{{ url_for('static', filename='assets/logo.png') }}" onerror="this.style.display='none'" alt="Logo"><div><h2>Oficina do Jairo</h2><p>Ordem de Serviço / Nota</p></div><strong>#{{ os.id }}</strong></div>
+  <div class="info-grid"><div><b>Cliente</b><span>{{ os.nome }}</span></div><div><b>Telefone</b><span>{{ os.telefone or '—' }}</span></div><div><b>Veículo</b><span>{{ os.marca }} {{ os.modelo }}</span></div><div><b>Placa/Ano</b><span>{{ os.placa or '—' }} • {{ os.ano or '—' }}</span></div><div><b>KM atual</b><span>{{ br_int(os.km_atual) }} km</span></div><div><b>Próx. óleo</b><span>{{ br_int(os.proxima_manut_km) }} km</span></div><div><b>Próx. correia</b><span>{{ br_int(os.km_corr_proxima) }} km</span></div><div><b>Data</b><span>{{ os.data or '—' }}</span></div></div>
+  <h3>Descrição</h3><p class="description">{{ os.descricao or '—' }}</p>
+  <table><thead><tr><th>Categoria</th><th>Item</th><th>Qtd</th><th>Valor</th><th>Total</th></tr></thead><tbody>{% for it in itens %}<tr><td>{{ it.categoria }}</td><td>{{ it.item }}</td><td>{{ br_int(it.qtde) }}</td><td>{{ br_money(it.valor_unit) }}</td><td>{{ br_money((it.qtde or 0)*(it.valor_unit or 0)) }}</td></tr>{% endfor %}</tbody><tfoot><tr><td colspan="4">Total</td><td>{{ br_money(total) }}</td></tr></tfoot></table>
+  {% if os.observacoes %}<h3>Observações</h3><p>{{ os.observacoes }}</p>{% endif %}
+  <div class="signatures"><span>Assinatura do cliente</span><span>Assinatura da oficina</span></div>
+</section></body></html>

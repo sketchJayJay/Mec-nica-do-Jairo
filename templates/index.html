@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="home-hero">
+  <div class="home-title">
+    <h1>🚙 Mecânica do Jairo</h1>
+    <p>Início — escolha uma ação para começar</p>
+  </div>
+
+  <div class="glass-grid">
+    <a class="glass-card" href="{{ url_for('nova_os') }}">
+      <b>☙ Cadastro</b>
+      <span>Cadastro de clientes/veículos</span>
+    </a>
+    <a class="glass-card" href="{{ url_for('listar_os') }}">
+      <b>🔎 Buscar</b>
+      <span>Encontre por nome ou placa</span>
+    </a>
+    <a class="glass-card" href="{{ url_for('estoque') }}">
+      <b>◈ Estoque</b>
+      <span>Itens, quantidades e preços</span>
+    </a>
+    <a class="glass-card" href="{{ url_for('relatorios') }}">
+      <b>▦ Relatórios</b>
+      <span>Visão geral e desempenho</span>
+    </a>
+  </div>
+</section>
+
+<section class="home-bottom no-print">
+  <div class="mini-stat"><span>{{ total_os }}</span><small>OS salvas</small></div>
+  <div class="mini-stat"><span>{{ total_clientes }}</span><small>Clientes</small></div>
+  <div class="mini-stat"><span>{{ estoque_baixo }}</span><small>Itens baixos</small></div>
+</section>
+{% endblock %}
