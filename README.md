@@ -49,3 +49,21 @@ No Coolify, mantenha um volume persistente em:
 ```
 
 Sem esse volume, o sistema pode perder clientes, OS e estoque depois de redeploy.
+
+## Correção Coolify: porta já ocupada
+
+Este pacote removeu o mapeamento direto `8080:8080` do `docker-compose.yml`.
+No Coolify, não é necessário prender a porta 8080 do servidor inteiro. O sistema agora usa:
+
+```yaml
+expose:
+  - "8080"
+```
+
+Assim o proxy do Coolify consegue apontar o domínio para o container sem bater conflito com outro app usando a porta 8080.
+
+Depois de subir no GitHub:
+1. Settings > General > Docker Compose Location: `/docker-compose.yml`
+2. Clique em Save
+3. Clique em Reload Compose File
+4. Faça Force Redeploy
