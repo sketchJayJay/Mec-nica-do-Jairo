@@ -1,3 +1,4 @@
+// BUSCA_ESTOQUE_MAIS_VISIVEL_20260831
 // BOTAO_SALVAR_CADASTRO_E_BUSCA_ESTOQUE_COMPLETA_20260831
 // EDITAR_OS_SEM_SOBREPOR_20260831
 function onlyNumber(v){
@@ -59,12 +60,31 @@ function setupEstoqueSearch(){
 }
 async function searchEstoque(q){
   const box = document.getElementById('estoqueResultados');
+  const status = document.getElementById('estoqueStatus');
   if(!box) return;
-  if(!q){ box.innerHTML=''; return; }
-  const res = await fetch('/api/estoque?q=' + encodeURIComponent(q));
+  const query = String(q || '').trim();
+  box.innerHTML = '<div class="empty">Carregando itens do estoque...</div>';
+  if(status) status.textContent = query ? `Buscando por: ${query}` : 'Mostrando itens do estoque';
+  const res = await fetch('/api/estoque?q=' + encodeURIComponent(query));
   const rows = await res.json();
-  const totalLabel = rows.length ? `<div class="empty" style="font-weight:600;margin-bottom:6px;">${rows.length} item(ns) encontrado(s)</div>` : '';
-  box.innerHTML = totalLabel + (rows.map(r => `<div class="result-item"><div><b>${escapeHtml(r.item || '')}</b><br><small>${escapeHtml(r.categoria || '')} • qtd ${r.qtde} • ${moneyBR(Number(r.preco || 0))}</small></div><button type="button" class="btn small" onclick='pickEstoque(${JSON.stringify(r).replaceAll("'", "&#39;")})'>Usar</button></div>`).join('') || '<div class="empty">Nenhum item achado.</div>');
+  const header = query
+    ? `${rows.length} item(ns) encontrado(s) para "${escapeHtml(query)}"`
+    : `${rows.length} item(ns) do estoque para escolher`;
+  if(status) status.textContent = header;
+  box.innerHTML = (rows.map(r => `
+    <button type="button" class="result-item-card" onclick='pickEstoque(${JSON.stringify(r).replaceAll("'", "&#39;")})'>
+      <div class="result-main">
+        <div class="result-title">${escapeHtml(r.item || '')}</div>
+        <div class="result-sub">
+          <span class="result-badge">${escapeHtml(r.categoria || 'Sem categoria')}</span>
+          <span class="result-meta">Qtde: ${escapeHtml(r.qtde ?? 0)}</span>
+        </div>
+      </div>
+      <div class="result-side">
+        <div class="result-price">${moneyBR(Number(r.preco || 0))}</div>
+        <span class="result-use">Usar este item</span>
+      </div>
+    </button>`).join('') || '<div class="empty">Nenhum item achado. Tente outra palavra, categoria ou deixe vazio para ver o estoque.</div>');
 }
 function pickEstoque(r){
   document.getElementById('itemCategoria').value = r.categoria || 'Outros';
