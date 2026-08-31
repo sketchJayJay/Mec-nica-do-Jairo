@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-<!-- FLUXO_SELECIONAR_QTD_ADICIONAR_20260831
+<!-- REMOVER_ITEM_SELECIONADO_20260831
+     FLUXO_SELECIONAR_QTD_ADICIONAR_20260831
      baseado em BOTAO_ADICIONAR_ITEM_MODAL_20260831
    BUSCA_ESTOQUE_MODAL_TOPO_FUNCIONANDO_20260831 -->
 <!-- BUSCA_ESTOQUE_MAIS_VISIVEL_20260831 -->
@@ -95,11 +96,12 @@
 .jairo-old-real-form .result-price{font-size:19px;font-weight:800;color:#0f2f57;white-space:nowrap;}
 .jairo-old-real-form .result-use{display:inline-flex;align-items:center;justify-content:center;padding:7px 12px;border-radius:999px;background:#0f766e;color:#fff;font-size:13px;font-weight:700;white-space:nowrap;}
 
-.jairo-old-real-form .manual-item-line{display:grid;grid-template-columns:170px 1fr 125px 155px 160px 210px;gap:8px;align-items:end;margin-top:10px;padding:12px;border:1px solid #cfe3f7;border-radius:8px;background:#f6fbff;}
+.jairo-old-real-form .manual-item-line{display:grid;grid-template-columns:160px 1fr 115px 145px 150px 180px 175px;gap:8px;align-items:end;margin-top:10px;padding:12px;border:1px solid #cfe3f7;border-radius:8px;background:#f6fbff;}
 .jairo-old-real-form .manual-item-line label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:700;color:#304a69;}
 .jairo-old-real-form .manual-item-line input,.jairo-old-real-form .manual-item-line select{width:100%;height:40px;}
 .jairo-old-real-form .manual-item-line #itemNome{font-weight:700;}
 .jairo-old-real-form .manual-item-line .modal-add-selected{height:42px;min-height:42px;background:#0f766e!important;color:#fff!important;border-color:#0f766e!important;font-weight:800!important;}
+.jairo-old-real-form .manual-item-line .modal-clear-selected{height:42px;min-height:42px;background:#fff7ed!important;color:#9a3412!important;border-color:#fdba74!important;font-weight:800!important;}
 .jairo-old-real-form .selected-stock-panel{opacity:.72;}
 .jairo-old-real-form .selected-stock-panel.selected-stock-active{opacity:1;box-shadow:0 0 0 2px rgba(15,118,110,.12);}
 
@@ -193,11 +195,12 @@
 .jairo-old-real-form .result-price{font-size:20px;font-weight:900;color:#0f2f57;white-space:nowrap;}
 .jairo-old-real-form .result-use{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:999px;background:#245b92;color:#fff;font-size:13px;font-weight:800;white-space:nowrap;}
 
-.jairo-old-real-form .manual-item-line{display:grid;grid-template-columns:170px 1fr 125px 155px 160px 210px;gap:8px;align-items:end;margin-top:10px;padding:12px;border:1px solid #cfe3f7;border-radius:8px;background:#f6fbff;}
+.jairo-old-real-form .manual-item-line{display:grid;grid-template-columns:160px 1fr 115px 145px 150px 180px 175px;gap:8px;align-items:end;margin-top:10px;padding:12px;border:1px solid #cfe3f7;border-radius:8px;background:#f6fbff;}
 .jairo-old-real-form .manual-item-line label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:700;color:#304a69;}
 .jairo-old-real-form .manual-item-line input,.jairo-old-real-form .manual-item-line select{width:100%;height:40px;}
 .jairo-old-real-form .manual-item-line #itemNome{font-weight:700;}
 .jairo-old-real-form .manual-item-line .modal-add-selected{height:42px;min-height:42px;background:#0f766e!important;color:#fff!important;border-color:#0f766e!important;font-weight:800!important;}
+.jairo-old-real-form .manual-item-line .modal-clear-selected{height:42px;min-height:42px;background:#fff7ed!important;color:#9a3412!important;border-color:#fdba74!important;font-weight:800!important;}
 .jairo-old-real-form .selected-stock-panel{opacity:.72;}
 .jairo-old-real-form .selected-stock-panel.selected-stock-active{opacity:1;box-shadow:0 0 0 2px rgba(15,118,110,.12);}
 
@@ -319,6 +322,7 @@
             <select id="itemBaixa"><option value="1">Baixar estoque</option><option value="0">Não baixar</option></select>
           </label>
           <button class="old-btn modal-add-selected" type="button" onclick="addSelectedItemOldReal()">Adicionar item</button>
+          <button class="old-btn modal-clear-selected" type="button" onclick="clearSelectedStockOldReal()">Remover seleção</button>
         </div>
       </div>
       <div class="table-area">
@@ -344,7 +348,7 @@
         <label class="mao-valor"><span>Preço (R$):</span><input id="maoObraValor" inputmode="decimal"></label>
         <button class="old-btn" type="button" onclick="addMaoObraOldReal()">Adicionar</button>
       </div>
-      <button class="old-btn remove-selected" type="button" onclick="removeSelectedOldReal()">Remover selecionado</button>
+      <button class="old-btn remove-selected" type="button" onclick="removeSelectedOldReal()">Remover item selecionado da OS</button>
       <div class="total-line">Total: <span id="itensTotal">R$ 0,00</span></div>
     </div>
     <input type="hidden" name="observacoes" value="{{ os.observacoes if os else '' }}">
@@ -414,6 +418,16 @@ window.pickEstoque = function(r){
   const q = document.getElementById('itemQtde');
   if(q){ q.focus(); q.select?.(); }
 };
+function clearSelectedStockOldReal(){
+  ['itemCategoria','itemNome','itemValor'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  const q = document.getElementById('itemQtde'); if(q) q.value='1';
+  const baixa = document.getElementById('itemBaixa'); if(baixa) baixa.value='1';
+  const baixa = document.getElementById('itemBaixa'); if(baixa) baixa.value='1';
+  const label = document.getElementById('selectedItemLabel'); if(label) label.textContent='Nenhum item selecionado';
+  const status = document.getElementById('estoqueStatus'); if(status) status.textContent='Seleção removida. Escolha outro item no estoque.';
+  const panel = document.getElementById('selectedStockPanel'); if(panel) panel.classList.remove('selected-stock-active');
+  const busca = document.getElementById('estoqueBusca'); if(busca) busca.focus();
+}
 function addSelectedItemOldReal(){
   const nome = document.getElementById('itemNome')?.value || '';
   if(!nome.trim()){
@@ -427,7 +441,7 @@ function addSelectedItemOldReal(){
     document.getElementById('itemValor')?.value || '0,00',
     document.getElementById('itemBaixa')?.value || '1'
   );
-  ['itemNome','itemValor'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  ['itemCategoria','itemNome','itemValor'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
   const q = document.getElementById('itemQtde'); if(q) q.value='1';
   const b = document.getElementById('estoqueBusca'); if(b) b.value='';
   const r = document.getElementById('estoqueResultados'); if(r) r.innerHTML='';
@@ -462,7 +476,13 @@ function selectOldRealRow(tr){
   tr.classList.add('selected-row');
 }
 function removeSelectedOldReal(){
-  if(OLD_REAL_SELECTED_ROW){ OLD_REAL_SELECTED_ROW.remove(); OLD_REAL_SELECTED_ROW=null; recalcItens(); }
+  if(OLD_REAL_SELECTED_ROW){
+    OLD_REAL_SELECTED_ROW.remove();
+    OLD_REAL_SELECTED_ROW=null;
+    recalcItens();
+  } else {
+    alert('Selecione um item na tabela antes de remover.');
+  }
 }
 function excluirPorPlacaOldReal(){
   const placa = document.getElementById('placa')?.value || '';
