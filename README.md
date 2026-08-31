@@ -11,3 +11,8 @@ Correções:
 Banco/volume preservados:
 - DB_PATH=/data/oficina.db
 - mecanica-jairo-data:/data
+
+
+Versão: BOTAO_SALVAR_EDICAO_OS_20260831
+- Adiciona botão destacado para salvar quando estiver editando OS.
+- Mantém banco /data/oficina.db e volume mecanica-jairo-data:/data.

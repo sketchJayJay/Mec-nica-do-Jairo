@@ -91,6 +91,12 @@
 /* Rodapé */
 .jairo-old-real-form .bottom-actions{height:56px;flex:0 0 56px;display:flex;align-items:center;gap:12px;padding:7px 8px;background:#fff;border-top:1px solid #f1f1f1;}
 .jairo-old-real-form .bottom-actions .old-btn{height:48px;min-height:48px;}
+/* BOTAO_SALVAR_EDICAO_OS_20260831 */
+.jairo-old-real-form .save-edit-btn{background:#0f766e!important;color:#fff!important;border-color:#0f766e!important;font-weight:700!important;box-shadow:0 2px 5px rgba(0,0,0,.14)!important;}
+.jairo-old-real-form .edit-floating-save{position:fixed;right:22px;bottom:22px;z-index:9999;height:54px;min-height:54px;padding:0 22px;border-radius:6px;background:#0f766e;color:#fff;border:1px solid #0f766e;font-weight:700;font-size:16px;box-shadow:0 8px 22px rgba(0,0,0,.25);cursor:pointer;}
+.jairo-old-real-form .edit-floating-save:hover{background:#0b5f59;}
+@media(max-width:900px){.jairo-old-real-form .edit-floating-save{left:12px;right:12px;bottom:12px;width:auto;}}
+
 @media(max-width:1150px){
   .work-page{overflow:auto!important;}.jairo-old-real-form{height:auto;overflow:visible;min-height:calc(100vh - 191px);} 
   .jairo-old-real-form .fs-cliente,.jairo-old-real-form .fs-veiculo,.jairo-old-real-form .fs-km,.jairo-old-real-form .fs-servico{height:auto;min-height:0;}
@@ -108,6 +114,15 @@
 .jairo-old-real-form .total-line{grid-row:4!important;grid-column:2!important;position:static!important;z-index:3!important;white-space:nowrap!important;}
 </style>
 <form method="post" class="jairo-old-real-form" id="osForm">
+  {% if os %}
+  <div class="edit-save-strip no-print" style="height:54px;flex:0 0 54px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 8px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:4px;margin:0 5px 4px;">
+    <strong>Editando OS #{{ os.id }}</strong>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="old-btn save-edit-btn" type="submit">Salvar alterações da OS</button>
+      <a class="old-btn" href="{{ url_for('ver_os', sid=os.id) }}">Cancelar edição</a>
+    </div>
+  </div>
+  {% endif %}
   <datalist id="marcasList">
     {% for marca in brands.keys() %}<option value="{{ marca }}">{% endfor %}
   </datalist>
@@ -216,7 +231,7 @@
   </fieldset>
 
   <div class="bottom-actions no-print">
-    <button class="old-btn" type="submit">Salvar cadastro + serviço</button>
+    {% if os %}<button class="old-btn save-edit-btn" type="submit">Salvar alterações da OS</button>{% else %}<button class="old-btn" type="submit">Salvar cadastro + serviço</button>{% endif %}
     <button class="old-btn" type="button" onclick="excluirPorPlacaOldReal()">Excluir por placa</button>
     <a class="old-btn" href="{{ url_for('nova_os') }}">Limpar</a>
     {% if os %}<a class="old-btn" href="{{ url_for('ver_os', sid=os.id) }}">Cancelar edição</a>{% endif %}
