@@ -1,5 +1,20 @@
+// EDITAR_OS_SEM_SOBREPOR_20260831
 function onlyNumber(v){
-  const s = String(v || '').replace(/\./g,'').replace(',', '.').replace(/[^0-9.]/g,'');
+  let s = String(v || '').trim().replace('R$', '').replace(/\s/g, '');
+  if(!s) return 0;
+  // Aceita 81,50, 81.50, 1.234,56 e 1234.56 sem transformar centavos em milhares.
+  const hasComma = s.includes(',');
+  const hasDot = s.includes('.');
+  if(hasComma){
+    s = s.replace(/\./g, '').replace(',', '.');
+  } else if(hasDot){
+    const parts = s.split('.');
+    const last = parts[parts.length - 1];
+    if(parts.length > 2 || last.length === 3){
+      s = s.replace(/\./g, '');
+    }
+  }
+  s = s.replace(/[^0-9.\-]/g, '');
   const n = parseFloat(s);
   return isNaN(n) ? 0 : n;
 }
