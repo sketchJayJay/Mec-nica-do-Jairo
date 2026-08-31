@@ -5,11 +5,14 @@ services:
     expose:
       - "8080"
     volumes:
-      - jairo_oficina_data:/app/data
+      # Usa o volume antigo que já aparece no Coolify como *_mecanica-jairo-data
+      # Assim os dados antigos voltam a aparecer no sistema.
+      - mecanica-jairo-data:/data
     environment:
       - PORT=8080
-      - DATA_DIR=/app/data
+      - DATA_DIR=/data
+      - DB_PATH=/data/jairo_oficina.db
       - SECRET_KEY=troque-essa-chave-depois
 
 volumes:
-  jairo_oficina_data:
+  mecanica-jairo-data:
