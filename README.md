@@ -1,12 +1,22 @@
-# Mecânica do Jairo - Clone visual exato da tela antiga
+# Mecânica do Jairo - Cadastro antigo real sem imagem
 
-Marcador: CLONE_VISUAL_EXATO_PRINT_ANTIGO_20260831
+Versão Coolify corrigida para a tela Cadastro/OS.
 
-Esta versão usa a tela antiga como base visual da aba Cadastro/OS, com campos transparentes sobrepostos para manter o funcionamento.
+Marcador: CADASTRO_ANTIGO_REAL_SEM_IMAGEM_20260831
 
-Banco preservado:
-- Volume: mecanica-jairo-data:/data
-- Banco: /data/oficina.db
+Correções principais:
+- Remove completamente o print/imagem de fundo da tela de cadastro.
+- Campos e botões são elementos HTML reais, então os cliques ficam no lugar certo.
+- Mantém banco antigo em `/data/oficina.db`.
+- Mantém volume `mecanica-jairo-data:/data`.
+- Mantém correção SQLite/Gunicorn.
 
-Antes do deploy:
-cp /data/oficina.db /data/oficina.db.backup_antes_clone_visual_exato
+Antes de redeploy:
+```bash
+cp /data/oficina.db /data/oficina.db.backup_antes_cadastro_sem_imagem
+```
+
+Depois do deploy, confira:
+```bash
+grep -n "CADASTRO_ANTIGO_REAL_SEM_IMAGEM_20260831" /app/app.py /app/templates/form_os.html
+```

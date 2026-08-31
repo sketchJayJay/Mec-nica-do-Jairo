@@ -1,227 +1,318 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Oficina Mecânica — v0.5 (Pro Light 2025) — FIX</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <style>
-    /* CLONE_VISUAL_EXATO_PRINT_ANTIGO_20260831 */
-    html,body{margin:0;background:#fff;overflow:auto;font-family:"Segoe UI",Tahoma,Arial,sans-serif;}
-    .clone-wrap{width:100vw;min-width:1024px;background:#fff;}
-    .clone-screen{position:relative;width:100%;aspect-ratio:2048/1084;background:url('{{ url_for('static', filename='assets/cadastro_os_itens_exato.png') }}') top left/100% 100% no-repeat;}
-    .clone-screen input,.clone-screen select,.clone-screen textarea{position:absolute;border:0!important;outline:none!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;padding:0 .35vw!important;margin:0!important;color:#1d2b3a!important;font-size:clamp(12px,0.82vw,17px)!important;font-family:"Segoe UI",Tahoma,Arial,sans-serif!important;min-height:0!important;height:auto;}
-    .clone-screen input:focus,.clone-screen select:focus,.clone-screen textarea:focus{box-shadow:none!important;border:0!important;}
-    .clone-screen select{appearance:none;-webkit-appearance:none;-moz-appearance:none;}
-    .clone-screen .click{position:absolute;border:0;background:rgba(255,255,255,0);cursor:pointer;color:transparent!important;text-indent:-9999px;overflow:hidden;}
-    .clone-screen .navlink{position:absolute;display:block;background:rgba(255,255,255,0);color:transparent!important;text-indent:-9999px;overflow:hidden;}
-    .clone-screen .selected-text{position:absolute;color:#25364b;font-weight:600;font-size:clamp(12px,0.82vw,17px);line-height:1.4;white-space:nowrap;overflow:hidden;}
-    .clone-screen .clone-total{position:absolute;color:#25364b;font-size:clamp(12px,0.82vw,17px);text-align:right;}
-    .clone-screen .clone-table{position:absolute;border-collapse:collapse;table-layout:fixed;background:transparent;color:#111;font-size:clamp(12px,0.82vw,17px);}
-    .clone-screen .clone-table th{height:2.8vw;max-height:34px;font-weight:700;text-align:center;color:#111;background:transparent;border:0;}
-    .clone-screen .clone-table td{height:2.15vw;max-height:31px;border:0;background:transparent;padding:0 4px;}
-    .clone-screen .clone-table input{position:static!important;width:100%;height:100%!important;background:transparent!important;border:0!important;padding:0 4px!important;text-align:left;}
-    .clone-screen .clone-table .row-total{text-align:right;padding-right:.7vw;}
-    .clone-picker{position:absolute;left:1%;right:1%;top:83%;z-index:30;background:white;border:1px solid #cfd5dc;border-radius:4px;box-shadow:0 10px 24px rgba(0,0,0,.16);padding:8px;}
-    .clone-picker input,.clone-picker select{position:static!important;border:1px solid #ddd!important;background:#fff!important;border-radius:4px!important;height:36px!important;padding:6px!important;color:#111!important;}
-    .manual-item-line{display:grid;grid-template-columns:1fr 1.4fr 95px 140px 140px;gap:8px;margin-top:8px;}
-    .results-list{max-height:180px;overflow:auto;background:#fff;}
-    .hidden-helper{display:none!important;}
-    .flash-wrap{position:absolute;left:23%;right:23%;top:20%;z-index:40;}
-    @media(max-width:1200px){.clone-wrap{min-width:900px;}}
-    .pos-name{left:3.417969%;top:25.276753%;width:14.355469%;height:3.966790%;}
-.pos-phone{left:21.826172%;top:25.276753%;width:11.767578%;height:3.966790%;}
-.pos-pull{left:33.935547%;top:24.723247%;width:9.033203%;height:5.073801%;}
-.pos-marca{left:14.062500%;top:32.472325%;width:14.648438%;height:3.966790%;}
-.pos-modelo{left:41.503906%;top:32.472325%;width:17.919922%;height:3.966790%;}
-.pos-placa{left:14.013672%;top:36.715867%;width:10.742188%;height:3.966790%;}
-.pos-ano{left:41.503906%;top:36.715867%;width:6.445312%;height:3.966790%;}
-.pos-km{left:14.013672%;top:40.959410%;width:7.519531%;height:3.966790%;}
-.pos-intervalo{left:41.503906%;top:40.959410%;width:9.619141%;height:3.966790%;}
-.pos-corr_int{left:14.013672%;top:45.202952%;width:7.519531%;height:3.966790%;}
-.pos-corr_feita{left:14.013672%;top:49.446494%;width:7.519531%;height:3.966790%;}
-.pos-corr_prox{left:41.503906%;top:49.446494%;width:7.519531%;height:3.966790%;}
-.pos-km_reg{left:4.736328%;top:58.118081%;width:7.470703%;height:3.966790%;}
-.pos-buscarEstoque{left:0.878906%;top:71.678967%;width:8.886719%;height:5.073801%;}
-.pos-addItem{left:10.498047%;top:71.678967%;width:7.226562%;height:5.073801%;}
-.pos-selectedLabel{left:18.847656%;top:72.785978%;width:14.648438%;height:2.583026%;}
-.pos-table{left:0.830078%;top:77.398524%;width:97.949219%;height:13.099631%;}
-.pos-mao_desc{left:6.591797%;top:89.667897%;width:17.871094%;height:3.966790%;}
-.pos-mao_valor{left:29.687500%;top:89.667897%;width:6.445312%;height:3.966790%;}
-.pos-mao_add{left:36.865234%;top:89.022140%;width:5.126953%;height:5.073801%;}
-.pos-remove{left:0.781250%;top:94.926199%;width:9.912109%;height:4.704797%;}
-.pos-total{left:93.261719%;top:95.018450%;width:5.859375%;height:2.767528%;}
-.pos-save{left:0.732422%;top:94.741697%;width:11.425781%;height:4.981550%;}
-.pos-delplate{left:13.037109%;top:94.741697%;width:8.007812%;height:4.981550%;}
-.pos-clear{left:21.826172%;top:94.741697%;width:4.199219%;height:4.981550%;}
-.pos-editar{left:79.980469%;top:7.749077%;width:5.419922%;height:5.350554%;}
-.pos-nova{left:88.183594%;top:7.749077%;width:5.029297%;height:5.350554%;}
-.pos-relatorios{left:93.798828%;top:7.749077%;width:5.468750%;height:5.350554%;}
-.pos-inicio{left:30.517578%;top:16.051661%;width:5.615234%;height:6.088561%;}
-.pos-cadastroTab{left:36.279297%;top:16.051661%;width:9.667969%;height:6.088561%;}
-.pos-busca{left:46.337891%;top:16.051661%;width:5.957031%;height:6.088561%;}
-.pos-estoqueTab{left:53.076172%;top:16.051661%;width:6.933594%;height:6.088561%;}
-.pos-relatoriosTab{left:60.791016%;top:16.051661%;width:8.056641%;height:6.088561%;}
-  </style>
-</head>
-<body>
-<form method="post" class="clone-wrap" id="osForm">
-  <datalist id="marcasList">{% for marca in brands.keys() %}<option value="{{ marca }}">{% endfor %}</datalist>
+{% extends 'base.html' %}
+{% block content %}
+<style>
+/* CADASTRO_ANTIGO_REAL_SEM_IMAGEM_20260831
+   Tela refeita em HTML/CSS real. Não usa print de fundo. Os cliques ficam nos campos de verdade. */
+.work-page{padding:0!important;background:#fff!important;overflow:hidden!important;}
+.page.work-page{min-height:calc(100vh - 191px)!important;}
+.jairo-old-real-form{height:calc(100vh - 191px);min-height:720px;display:flex;flex-direction:column;margin:0;padding:0;background:#fff;color:#26354a;font-family:"Segoe UI",Tahoma,Arial,sans-serif;font-size:16px;overflow:hidden;}
+.jairo-old-real-form *{box-sizing:border-box;}
+.jairo-old-real-form button,.jairo-old-real-form input,.jairo-old-real-form select,.jairo-old-real-form textarea{font-family:"Segoe UI",Tahoma,Arial,sans-serif;font-size:16px;color:#1f2d40;}
+.jairo-old-real-form input,.jairo-old-real-form select{height:40px;border:1px solid #dfe4e8;border-radius:4px;background:#fff;box-shadow:inset 0 1px 2px rgba(0,0,0,.035);padding:5px 9px;outline:none;}
+.jairo-old-real-form input:focus,.jairo-old-real-form select:focus,.jairo-old-real-form textarea:focus{border-color:#1683d8;box-shadow:0 0 0 1px rgba(22,131,216,.18),inset 0 1px 2px rgba(0,0,0,.035);}
+.jairo-old-real-form textarea{width:100%;height:100%;border:1px solid #dfe4e8;border-radius:0;background:#fff;resize:none;padding:7px 8px;outline:none;}
+.jairo-old-real-form .old-btn{height:48px;min-height:48px;border:1px solid #dedede;border-radius:4px;background:#fff;color:#26354a;padding:0 16px;box-shadow:0 1px 2px rgba(0,0,0,.05);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;white-space:nowrap;}
+.jairo-old-real-form .old-btn:hover{background:#f7f7f7;border-color:#cfcfcf;}
+.jairo-old-real-form fieldset{position:relative;margin:0 5px;border:1px solid #e6e9ed;border-radius:5px;background:#fff;padding:20px 8px 7px;box-shadow:none;}
+.jairo-old-real-form legend{font-size:15px;color:#26354a;padding:0 4px;font-weight:500;margin-left:-2px;}
+.jairo-old-real-form label{font-weight:500;color:#26354a;margin:0;white-space:nowrap;}
+/* Cliente exatamente no estilo antigo */
+.jairo-old-real-form .fs-cliente{height:82px;flex:0 0 82px;}
+.jairo-old-real-form .cliente-row{display:grid;grid-template-columns:350px 278px 170px 1fr;column-gap:12px;align-items:center;height:43px;}
+.jairo-old-real-form .field-inline{display:grid;align-items:center;column-gap:7px;}
+.jairo-old-real-form .client-name{grid-template-columns:55px 292px;}
+.jairo-old-real-form .client-phone{grid-template-columns:83px 240px;}
+.jairo-old-real-form .pull-btn{height:42px;min-height:42px;width:170px;}
+.jairo-old-real-form .helper-search{position:absolute;left:8px;top:72px;right:8px;background:#fff;border:1px solid #d2d7de;border-radius:4px;padding:7px;z-index:40;box-shadow:0 8px 22px rgba(0,0,0,.12);}
+.jairo-old-real-form .helper-search input{width:100%;}
+.jairo-old-real-form .hidden-helper{display:none!important;}
+.jairo-old-real-form #clienteResultados{position:absolute;left:8px;right:8px;top:116px;z-index:50;background:#fff;border-radius:4px;max-height:190px;overflow:auto;}
+/* Veículo */
+.jairo-old-real-form .fs-veiculo{height:235px;flex:0 0 235px;}
+.jairo-old-real-form .vehicle-grid{display:grid;grid-template-columns:585px 640px 1fr;grid-template-rows:43px 43px 43px 43px 43px 28px;align-items:center;column-gap:20px;row-gap:0;}
+.jairo-old-real-form .vehicle-left{grid-template-columns:278px 306px;}
+.jairo-old-real-form .vehicle-right{grid-template-columns:255px 370px;}
+.jairo-old-real-form .marca-line{grid-column:1;grid-row:1;}
+.jairo-old-real-form .modelo-line{grid-column:2;grid-row:1;}
+.jairo-old-real-form .placa-line{grid-column:1;grid-row:2;}
+.jairo-old-real-form .ano-line{grid-column:2;grid-row:2;grid-template-columns:255px 132px;}
+.jairo-old-real-form .km-oleo-line{grid-column:1;grid-row:3;grid-template-columns:278px 156px;}
+.jairo-old-real-form .intervalo-line{grid-column:2;grid-row:3;grid-template-columns:255px 198px;}
+.jairo-old-real-form .intervalo-line select{width:198px;}
+.jairo-old-real-form .intervalo-correia-line{grid-column:1;grid-row:4;grid-template-columns:278px 156px;}
+.jairo-old-real-form .hint-correia{grid-column:2;grid-row:4;font-size:15px;color:#26354a;align-self:center;}
+.jairo-old-real-form .correia-feita-line{grid-column:1;grid-row:5;grid-template-columns:278px 156px;}
+.jairo-old-real-form .correia-proxima-line{grid-column:2;grid-row:5;grid-template-columns:255px 156px;}
+.jairo-old-real-form .proxima-line{grid-column:1/3;grid-row:6;font-size:16px;font-weight:500;color:#26354a;align-self:start;}
+/* KM apenas registro */
+.jairo-old-real-form .fs-km{height:56px;flex:0 0 56px;padding-top:18px;}
+.jairo-old-real-form .km-row{display:flex;align-items:center;gap:8px;height:32px;}
+.jairo-old-real-form .km-reg{display:grid;grid-template-columns:82px 128px;align-items:center;column-gap:7px;}
+.jairo-old-real-form .km-reg input{height:34px;}
+.jairo-old-real-form .km-note{font-size:15px;color:#26354a;}
+/* Serviço */
+.jairo-old-real-form .fs-servico{flex:1 1 auto;min-height:305px;padding:0 8px 7px;overflow:hidden;}
+.jairo-old-real-form .fs-servico legend{position:relative;top:8px;z-index:2;background:#fff;}
+.jairo-old-real-form .service-tabs{height:65px;margin:0 -8px;background:#e8e8e8;border-bottom:1px solid #dfe2e6;display:flex;align-items:flex-end;justify-content:center;}
+.jairo-old-real-form .service-tabs button{height:60px;width:165px;border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;background:transparent;color:#26354a;cursor:pointer;}
+.jairo-old-real-form .service-tabs button.active{background:#fff;border-color:#eef0f2;border-bottom-color:#fff;}
+.jairo-old-real-form .service-pane{display:none;height:calc(100% - 65px);position:relative;background:#fff;}
+.jairo-old-real-form .service-pane.active{display:block;}
+.jairo-old-real-form .description-pane textarea{height:100%;display:block;}
+.jairo-old-real-form .item-topline{height:58px;display:flex;align-items:center;gap:12px;padding:8px 2px 4px;}
+.jairo-old-real-form .item-topline .old-btn{height:48px;min-height:48px;}
+.jairo-old-real-form #selectedItemLabel{font-weight:600;color:#26354a;margin-left:8px;}
+.jairo-old-real-form .stock-picker{position:absolute;left:3px;right:3px;top:58px;background:#fff;border:1px solid #cfd5dc;border-radius:4px;z-index:35;box-shadow:0 8px 24px rgba(0,0,0,.15);padding:8px;}
+.jairo-old-real-form .picker-search{width:100%;margin-bottom:7px;}
+.jairo-old-real-form .manual-item-line{display:grid;grid-template-columns:1fr 1.35fr 105px 150px 150px;gap:8px;margin-top:8px;}
+.jairo-old-real-form .results-list .result-item{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#f7f7f7;border:1px solid #e0e0e0;border-radius:4px;padding:8px 10px;margin-bottom:6px;}
+.jairo-old-real-form .table-area{height:calc(100% - 155px);overflow:auto;background:#fff;border:0;}
+.jairo-old-real-form .itens-table{width:100%;min-width:900px;border-collapse:separate;border-spacing:0;table-layout:fixed;}
+.jairo-old-real-form .itens-table th{height:34px;padding:3px 8px;background:#fff;border:1px solid #e4e7eb;border-radius:4px;text-align:center;font-size:16px;font-weight:700;color:#111;}
+.jairo-old-real-form .itens-table td{height:32px;padding:2px 4px;background:#fff;border-bottom:1px solid #f2f2f2;}
+.jairo-old-real-form .itens-table tbody tr:hover td{background:#f6fbff;}
+.jairo-old-real-form .itens-table tbody tr.selected-row td{background:#e7f2ff!important;}
+.jairo-old-real-form .itens-table input{width:100%;height:28px;min-height:28px;border-color:transparent;background:transparent;box-shadow:none;padding:3px 6px;}
+.jairo-old-real-form .itens-table .row-total{text-align:right;padding-right:10px;font-weight:500;}
+.jairo-old-real-form .mao-row{position:absolute;left:4px;bottom:48px;display:grid;grid-template-columns:492px 230px 104px 1fr;gap:10px;align-items:center;width:860px;}
+.jairo-old-real-form .mao-desc{display:grid;grid-template-columns:118px 374px;align-items:center;column-gap:6px;}
+.jairo-old-real-form .mao-valor{display:grid;grid-template-columns:95px 132px;align-items:center;column-gap:6px;}
+.jairo-old-real-form .mao-row input{height:38px;}
+.jairo-old-real-form .mao-row .old-btn{height:44px;min-height:44px;}
+.jairo-old-real-form .remove-selected{position:absolute;left:4px;bottom:4px;height:42px;min-height:42px;}
+.jairo-old-real-form .total-line{position:absolute;right:6px;bottom:12px;font-size:16px;color:#26354a;}
+/* Rodapé */
+.jairo-old-real-form .bottom-actions{height:56px;flex:0 0 56px;display:flex;align-items:center;gap:12px;padding:7px 8px;background:#fff;border-top:1px solid #f1f1f1;}
+.jairo-old-real-form .bottom-actions .old-btn{height:48px;min-height:48px;}
+@media(max-width:1150px){
+  .work-page{overflow:auto!important;}.jairo-old-real-form{height:auto;overflow:visible;min-height:calc(100vh - 191px);} 
+  .jairo-old-real-form .fs-cliente,.jairo-old-real-form .fs-veiculo,.jairo-old-real-form .fs-km,.jairo-old-real-form .fs-servico{height:auto;min-height:0;}
+  .jairo-old-real-form .cliente-row,.jairo-old-real-form .vehicle-grid,.jairo-old-real-form .manual-item-line,.jairo-old-real-form .mao-row{display:grid;grid-template-columns:1fr;gap:8px;position:static;width:auto;}
+  .jairo-old-real-form .field-inline,.jairo-old-real-form .vehicle-left,.jairo-old-real-form .vehicle-right,.jairo-old-real-form .ano-line,.jairo-old-real-form .km-oleo-line,.jairo-old-real-form .intervalo-line,.jairo-old-real-form .intervalo-correia-line,.jairo-old-real-form .correia-feita-line,.jairo-old-real-form .correia-proxima-line,.jairo-old-real-form .km-reg,.jairo-old-real-form .mao-desc,.jairo-old-real-form .mao-valor{grid-template-columns:1fr!important;}
+  .jairo-old-real-form .marca-line,.jairo-old-real-form .modelo-line,.jairo-old-real-form .placa-line,.jairo-old-real-form .ano-line,.jairo-old-real-form .km-oleo-line,.jairo-old-real-form .intervalo-line,.jairo-old-real-form .intervalo-correia-line,.jairo-old-real-form .hint-correia,.jairo-old-real-form .correia-feita-line,.jairo-old-real-form .correia-proxima-line,.jairo-old-real-form .proxima-line{grid-column:auto;grid-row:auto;}
+  .jairo-old-real-form .service-pane{height:430px;}.jairo-old-real-form .description-pane{height:300px;}.jairo-old-real-form .remove-selected,.jairo-old-real-form .total-line{position:static;margin-top:8px;text-align:right;}.jairo-old-real-form .bottom-actions{height:auto;flex-wrap:wrap;}
+}
+</style>
+<form method="post" class="jairo-old-real-form" id="osForm">
+  <datalist id="marcasList">
+    {% for marca in brands.keys() %}<option value="{{ marca }}">{% endfor %}
+  </datalist>
   <datalist id="modelosList"></datalist>
-  <div class="clone-screen">
-    {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-wrap">{% for category,msg in messages %}<div class="flash {{ category }}">{{ msg }}</div>{% endfor %}</div>{% endif %}{% endwith %}
 
-    <a class="navlink pos-editar" href="{{ url_for('listar_os') }}">Editar OS</a>
-    <a class="navlink pos-nova" href="{{ url_for('nova_os') }}">Nova OS</a>
-    <a class="navlink pos-relatorios" href="{{ url_for('relatorios') }}">Relatórios</a>
-    <a class="navlink pos-inicio" href="{{ url_for('index') }}">Início</a>
-    <a class="navlink pos-cadastroTab" href="{{ url_for('nova_os') }}">Cadastro</a>
-    <a class="navlink pos-busca" href="{{ url_for('listar_os') }}">Busca</a>
-    <a class="navlink pos-estoqueTab" href="{{ url_for('estoque') }}">Estoque</a>
-    <a class="navlink pos-relatoriosTab" href="{{ url_for('relatorios') }}">Relatórios</a>
-
-    <input class="pos-name" name="nome" id="nome" required value="{{ os.nome if os else '' }}">
-    <input class="pos-phone" name="telefone" id="telefone" value="{{ os.telefone if os else '' }}">
-    <button class="click pos-pull" type="button" onclick="buscarClientes()">Puxar cadastro (F2)</button>
-
-    <input class="pos-marca" list="marcasList" name="marca" id="marca" value="{{ os.marca if os else '' }}" autocomplete="off">
-    <input class="pos-modelo" list="modelosList" name="modelo" id="modelo" value="{{ os.modelo if os else '' }}" autocomplete="off">
-    <input class="pos-placa" name="placa" id="placa" value="{{ os.placa if os else '' }}" style="text-transform:uppercase">
-    <input class="pos-ano" name="ano" id="ano" value="{{ os.ano if os else '' }}">
-    <input class="pos-km" name="km_atual" id="km_atual" value="{{ br_int(os.km_atual) if os else '' }}" inputmode="numeric">
-    <select class="pos-intervalo" name="intervalo_km" id="intervalo_km">
-      {% set intervalo = (os.intervalo_km if os else 10000)|int %}
-      {% for v in [0,1000,5000,7000,10000,15000] %}<option value="{{ v }}" {% if intervalo == v %}selected{% endif %}>{{ br_int(v) }}</option>{% endfor %}
-    </select>
-    <input class="pos-corr_int" name="km_troca_corr" id="km_troca_corr" value="{{ br_int(os.km_troca_corr) if os else '' }}" inputmode="numeric">
-    <input class="pos-corr_feita" name="km_corr_trocada" id="km_corr_trocada" value="{{ br_int(os.km_corr_trocada) if os else '' }}" inputmode="numeric">
-    <input class="pos-corr_prox" name="km_corr_proxima" id="km_corr_proxima" value="{{ br_int(os.km_corr_proxima) if os else '' }}" inputmode="numeric">
-    <input class="pos-km_reg" id="km_apenas_registro" type="text">
-
-    <input type="hidden" name="proxima_manut_km" id="proxima_manut_km" value="{{ br_int(os.proxima_manut_km) if os else '' }}">
-    <input type="hidden" name="data" value="{{ os.data if os else today_br() }}">
-    <input type="hidden" name="observacoes" value="{{ os.observacoes if os else '' }}">
-    <textarea name="descricao" style="display:none">{{ os.descricao if os else '' }}</textarea>
-
-    <button class="click pos-buscarEstoque" type="button" onclick="toggleEstoquePicker()">Buscar no estoque</button>
-    <button class="click pos-addItem" type="button" onclick="addSelectedOrPrompt()">Adicionar item</button>
-    <span id="selectedItemLabel" class="selected-text pos-selectedLabel">Nenhum item selecionado</span>
-
-    <div id="estoquePicker" class="clone-picker hidden-helper">
-      <input type="search" id="estoqueBusca" placeholder="Digite para buscar no estoque">
-      <div id="estoqueResultados" class="results-list"></div>
-      <div class="manual-item-line">
-        <input id="itemCategoria" placeholder="Categoria">
-        <input id="itemNome" placeholder="Item">
-        <input id="itemQtde" value="1" inputmode="decimal" placeholder="Qtde">
-        <input id="itemValor" placeholder="Unitário (R$)" inputmode="decimal">
-        <select id="itemBaixa"><option value="1">Baixar estoque</option><option value="0">Não baixar</option></select>
-      </div>
+  <fieldset class="fs-cliente">
+    <legend>Cliente</legend>
+    <div class="cliente-row">
+      <label class="field-inline client-name"><span>Nome:</span><input name="nome" id="nome" required value="{{ os.nome if os else '' }}"></label>
+      <label class="field-inline client-phone"><span>Telefone:</span><input name="telefone" id="telefone" value="{{ os.telefone if os else '' }}"></label>
+      <button class="old-btn pull-btn" type="button" onclick="buscarClientesOldReal()">Puxar cadastro (F2)</button>
     </div>
+    <div class="helper-search hidden-helper no-print" id="clienteSearchBox">
+      <input type="search" id="clienteBusca" placeholder="Digite nome, telefone ou placa para puxar cadastro">
+    </div>
+    <div id="clienteResultados" class="results-list no-print"></div>
+  </fieldset>
 
-    <table id="itensTable" class="clone-table pos-table">
-      <colgroup><col style="width:20%"><col style="width:25%"><col style="width:17%"><col style="width:19%"><col style="width:19%"></colgroup>
-      <thead><tr><th></th><th></th><th></th><th></th><th></th></tr></thead>
-      <tbody>
-      {% for it in itens %}
-        <tr onclick="selectItemRow(this)">
-          <td><input name="item_categoria[]" value="{{ it.categoria }}"></td>
-          <td><input name="item_nome[]" value="{{ it.item }}"><input type="hidden" name="item_baixa[]" value="{{ it.baixa_estoque if it.baixa_estoque is defined else 1 }}"></td>
-          <td><input name="item_qtde[]" value="{{ it.qtde }}" inputmode="decimal" oninput="recalcItens()"></td>
-          <td><input name="item_valor[]" value="{{ '%.2f'|format(it.valor_unit or 0) }}" inputmode="decimal" oninput="recalcItens()"></td>
-          <td class="row-total">{{ br_money((it.qtde or 0) * (it.valor_unit or 0)) }}</td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
+  <fieldset class="fs-veiculo">
+    <legend>Veículo</legend>
+    <div class="vehicle-grid">
+      <label class="field-inline vehicle-left marca-line"><span>Marca:</span><input list="marcasList" name="marca" id="marca" value="{{ os.marca if os else '' }}" autocomplete="off"></label>
+      <label class="field-inline vehicle-right modelo-line"><span>Modelo:</span><input list="modelosList" name="modelo" id="modelo" value="{{ os.modelo if os else '' }}" autocomplete="off"></label>
+      <label class="field-inline vehicle-left placa-line"><span>Placa:</span><input name="placa" id="placa" value="{{ os.placa if os else '' }}" style="text-transform:uppercase"></label>
+      <label class="field-inline vehicle-right ano-line"><span>Ano:</span><input name="ano" id="ano" value="{{ os.ano if os else '' }}"></label>
+      <label class="field-inline vehicle-left km-oleo-line"><span>KM atual (troca de óleo):</span><input name="km_atual" id="km_atual" value="{{ br_int(os.km_atual) if os else '' }}" inputmode="numeric"></label>
+      <label class="field-inline vehicle-right intervalo-line"><span>Intervalo (km):</span>
+        <select name="intervalo_km" id="intervalo_km">
+          {% set intervalo = (os.intervalo_km if os else 10000)|int %}
+          {% for v in [0,1000,5000,7000,10000,15000] %}
+            <option value="{{ v }}" {% if intervalo == v %}selected{% endif %}>{{ br_int(v) }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label class="field-inline vehicle-left intervalo-correia-line"><span>Intervalo (km) — Correia:</span><input name="km_troca_corr" id="km_troca_corr" value="{{ br_int(os.km_troca_corr) if os else '' }}" inputmode="numeric"></label>
+      <div class="hint-correia">(ex.: 60000 ou 80000 km)</div>
+      <label class="field-inline vehicle-left correia-feita-line"><span>KM que foi feita a troca (Correia):</span><input name="km_corr_trocada" id="km_corr_trocada" value="{{ br_int(os.km_corr_trocada) if os else '' }}" inputmode="numeric"></label>
+      <label class="field-inline vehicle-right correia-proxima-line"><span>KM da próxima troca (Correia):</span><input name="km_corr_proxima" id="km_corr_proxima" value="{{ br_int(os.km_corr_proxima) if os else '' }}" inputmode="numeric"></label>
+      <div class="proxima-line">Próxima manutenção: <b><span id="proxOleoPreview">—</span> km</b></div>
+      <input type="hidden" name="proxima_manut_km" id="proxima_manut_km" value="{{ br_int(os.proxima_manut_km) if os else '' }}">
+      <input type="hidden" name="data" value="{{ os.data if os else today_br() }}">
+    </div>
+  </fieldset>
 
-    <input class="pos-mao_desc" id="maoObraDesc">
-    <input class="pos-mao_valor" id="maoObraValor" inputmode="decimal">
-    <button class="click pos-mao_add" type="button" onclick="addMaoObraInline()">Adicionar</button>
-    <button class="click pos-remove" type="button" onclick="removeSelectedItem()">Remover selecionado</button>
-    <div class="clone-total pos-total">Total: <span id="itensTotal">R$ 0,00</span></div>
+  <fieldset class="fs-km">
+    <legend>KM atual — apenas registro</legend>
+    <div class="km-row">
+      <label class="km-reg"><span>KM atual:</span><input id="km_apenas_registro" type="text"></label>
+      <span class="km-note">*Somente registro. Não altera próxima troca.</span>
+    </div>
+  </fieldset>
 
-    <button class="click pos-save" type="submit">Salvar cadastro + serviço</button>
-    <button class="click pos-delplate" type="button" onclick="excluirPorPlaca()">Excluir por placa</button>
-    <a class="navlink pos-clear" href="{{ url_for('nova_os') }}">Limpar</a>
-    <div class="helper-search hidden-helper no-print"><input type="search" id="clienteBusca" placeholder="Digite nome, telefone ou placa para puxar cadastro"></div>
-    <div id="clienteResultados" class="results-list no-print" style="position:absolute;left:2%;right:2%;top:31%;z-index:50;background:#fff"></div>
+  <fieldset class="fs-servico">
+    <legend>Serviço</legend>
+    <div class="service-tabs no-print">
+      <button type="button" data-tab="descricao" onclick="setOldRealTab('descricao')">Descrição</button>
+      <button type="button" data-tab="itens" class="active" onclick="setOldRealTab('itens')">Itens do serviço</button>
+    </div>
+    <div id="descricaoPane" class="service-pane description-pane">
+      <textarea name="descricao">{{ os.descricao if os else '' }}</textarea>
+    </div>
+    <div id="itensPane" class="service-pane itens-pane active no-print">
+      <div class="item-topline">
+        <button class="old-btn" type="button" onclick="toggleStockPickerOldReal()">Buscar no estoque</button>
+        <button class="old-btn" type="button" onclick="addSelectedItemOldReal()">Adicionar item</button>
+        <span id="selectedItemLabel">Nenhum item selecionado</span>
+      </div>
+      <div id="stockPicker" class="stock-picker hidden-helper">
+        <input class="picker-search" type="search" id="estoqueBusca" placeholder="Digite para buscar no estoque">
+        <div id="estoqueResultados" class="results-list"></div>
+        <div class="manual-item-line">
+          <input id="itemCategoria" placeholder="Categoria">
+          <input id="itemNome" placeholder="Item">
+          <input id="itemQtde" value="1" inputmode="decimal" placeholder="Qtde">
+          <input id="itemValor" placeholder="Unitário (R$)" inputmode="decimal">
+          <select id="itemBaixa"><option value="1">Baixar estoque</option><option value="0">Não baixar</option></select>
+        </div>
+      </div>
+      <div class="table-area">
+        <table id="itensTable" class="itens-table">
+          <thead>
+            <tr><th>Categoria</th><th>Item</th><th>Qtde</th><th>Unitário (R$)</th><th>Total (R$)</th></tr>
+          </thead>
+          <tbody>
+            {% for it in itens %}
+            <tr onclick="selectOldRealRow(this)">
+              <td><input name="item_categoria[]" value="{{ it.categoria }}"></td>
+              <td><input name="item_nome[]" value="{{ it.item }}"><input type="hidden" name="item_baixa[]" value="{{ it.baixa_estoque if it.baixa_estoque is defined else 1 }}"></td>
+              <td><input name="item_qtde[]" value="{{ it.qtde }}" inputmode="decimal" oninput="recalcItens()"></td>
+              <td><input name="item_valor[]" value="{{ '%.2f'|format(it.valor_unit or 0) }}" inputmode="decimal" oninput="recalcItens()"></td>
+              <td class="row-total">{{ br_money((it.qtde or 0) * (it.valor_unit or 0)) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="mao-row">
+        <label class="mao-desc"><span>Mão de obra:</span><input id="maoObraDesc"></label>
+        <label class="mao-valor"><span>Preço (R$):</span><input id="maoObraValor" inputmode="decimal"></label>
+        <button class="old-btn" type="button" onclick="addMaoObraOldReal()">Adicionar</button>
+      </div>
+      <button class="old-btn remove-selected" type="button" onclick="removeSelectedOldReal()">Remover selecionado</button>
+      <div class="total-line">Total: <span id="itensTotal">R$ 0,00</span></div>
+    </div>
+    <input type="hidden" name="observacoes" value="{{ os.observacoes if os else '' }}">
+  </fieldset>
+
+  <div class="bottom-actions no-print">
+    <button class="old-btn" type="submit">Salvar cadastro + serviço</button>
+    <button class="old-btn" type="button" onclick="excluirPorPlacaOldReal()">Excluir por placa</button>
+    <a class="old-btn" href="{{ url_for('nova_os') }}">Limpar</a>
+    {% if os %}<a class="old-btn" href="{{ url_for('ver_os', sid=os.id) }}">Cancelar edição</a>{% endif %}
   </div>
 </form>
-<script src="{{ url_for('static', filename='app.js') }}"></script>
-<script>
+{% endblock %}
 
-// Funções da tela clonada mantendo visual antigo
-let SELECTED_ESTOQUE_ITEM = null;
-let SELECTED_ROW = null;
-function toggleEstoquePicker(){
-  const picker=document.getElementById('estoquePicker');
-  if(!picker) return;
-  picker.classList.toggle('hidden-helper');
-  if(!picker.classList.contains('hidden-helper')) document.getElementById('estoqueBusca')?.focus();
+{% block scripts %}
+<script>
+window.BRANDS = {{ brands|tojson }};
+window.CATALOGO = {{ catalogo|tojson }};
+let OLD_REAL_SELECTED_ROW = null;
+function setOldRealTab(tab){
+  document.querySelectorAll('.jairo-old-real-form .service-tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.getElementById('descricaoPane')?.classList.toggle('active', tab === 'descricao');
+  document.getElementById('itensPane')?.classList.toggle('active', tab === 'itens');
 }
-function pickEstoque(r){
-  SELECTED_ESTOQUE_ITEM = r || null;
-  const set=(id,v)=>{const el=document.getElementById(id); if(el) el.value=v||'';};
+function buscarClientesOldReal(){
+  const box = document.getElementById('clienteSearchBox');
+  if(box) box.classList.toggle('hidden-helper');
+  const busca = document.getElementById('clienteBusca');
+  if(busca && !box.classList.contains('hidden-helper')) busca.focus();
+  buscarClientes();
+}
+function toggleStockPickerOldReal(){
+  const p = document.getElementById('stockPicker');
+  if(!p) return;
+  p.classList.toggle('hidden-helper');
+  if(!p.classList.contains('hidden-helper')) document.getElementById('estoqueBusca')?.focus();
+}
+window.pickEstoque = function(r){
+  const set = (id,v) => { const el=document.getElementById(id); if(el) el.value = v || ''; };
   set('itemCategoria', r.categoria || 'Outros');
   set('itemNome', r.item || '');
-  set('itemValor', Number(r.preco || 0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}));
-  set('itemQtde','1');
-  const label=document.getElementById('selectedItemLabel');
+  set('itemValor', Number(r.preco || 0).toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2}));
+  set('itemQtde', '1');
+  const label = document.getElementById('selectedItemLabel');
   if(label) label.textContent = r.item ? `${r.item} selecionado` : 'Nenhum item selecionado';
-}
-function addSelectedOrPrompt(){
-  let nome=document.getElementById('itemNome')?.value || '';
-  let cat=document.getElementById('itemCategoria')?.value || 'Outros';
-  let qtde=document.getElementById('itemQtde')?.value || '1';
-  let valor=document.getElementById('itemValor')?.value || '0,00';
-  let baixa=document.getElementById('itemBaixa')?.value || '1';
+};
+function addSelectedItemOldReal(){
+  const nome = document.getElementById('itemNome')?.value || '';
   if(!nome.trim()){
-    nome = prompt('Nome do item:', '') || '';
-    if(!nome.trim()) return;
-    cat = prompt('Categoria:', 'Outros') || 'Outros';
-    qtde = prompt('Quantidade:', '1') || '1';
-    valor = prompt('Valor unitário:', '0,00') || '0,00';
-    baixa = '1';
+    toggleStockPickerOldReal();
+    return;
   }
-  addItemRow(cat,nome,qtde,valor,baixa);
-  ['itemNome','itemValor','estoqueBusca'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
-  const q=document.getElementById('itemQtde'); if(q) q.value='1';
-  const box=document.getElementById('estoqueResultados'); if(box) box.innerHTML='';
-  const label=document.getElementById('selectedItemLabel'); if(label) label.textContent='Nenhum item selecionado';
+  addItemRowOldReal(
+    document.getElementById('itemCategoria')?.value || 'Outros',
+    nome,
+    document.getElementById('itemQtde')?.value || '1',
+    document.getElementById('itemValor')?.value || '0,00',
+    document.getElementById('itemBaixa')?.value || '1'
+  );
+  ['itemNome','itemValor'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  const q = document.getElementById('itemQtde'); if(q) q.value='1';
+  const b = document.getElementById('estoqueBusca'); if(b) b.value='';
+  const r = document.getElementById('estoqueResultados'); if(r) r.innerHTML='';
+  const label = document.getElementById('selectedItemLabel'); if(label) label.textContent='Nenhum item selecionado';
 }
-function addItemRow(cat,nome,qtde,valor,baixa){
-  const tbody=document.querySelector('#itensTable tbody'); if(!tbody) return;
-  const tr=document.createElement('tr');
-  tr.onclick=()=>selectItemRow(tr);
+function addItemRowOldReal(cat,nome,qtde,valor,baixa){
+  const tbody = document.querySelector('#itensTable tbody');
+  if(!tbody) return;
+  const tr = document.createElement('tr');
+  tr.setAttribute('onclick','selectOldRealRow(this)');
   tr.innerHTML = `<td><input name="item_categoria[]" value="${escapeHtml(cat)}"></td>
-    <td><input name="item_nome[]" value="${escapeHtml(nome)}"><input type="hidden" name="item_baixa[]" value="${escapeHtml(baixa || '1')}"></td>
+    <td><input name="item_nome[]" value="${escapeHtml(nome)}"><input type="hidden" name="item_baixa[]" value="${escapeHtml(baixa)}"></td>
     <td><input name="item_qtde[]" value="${escapeHtml(qtde)}" inputmode="decimal" oninput="recalcItens()"></td>
     <td><input name="item_valor[]" value="${escapeHtml(valor)}" inputmode="decimal" oninput="recalcItens()"></td>
     <td class="row-total">R$ 0,00</td>`;
-  tbody.appendChild(tr); recalcItens();
+  tbody.appendChild(tr);
+  selectOldRealRow(tr);
+  recalcItens();
 }
-function addMaoObraInline(){
-  const desc=document.getElementById('maoObraDesc')?.value || 'Mão de obra';
-  const valor=document.getElementById('maoObraValor')?.value || '0,00';
-  if(!desc.trim()) return;
-  addItemRow('Mão de obra', desc, '1', valor, '0');
-  document.getElementById('maoObraDesc').value='';
-  document.getElementById('maoObraValor').value='';
+function addMaoObraOldReal(){
+  const desc = document.getElementById('maoObraDesc')?.value || 'Mão de obra';
+  const valor = document.getElementById('maoObraValor')?.value || '0,00';
+  addItemRowOldReal('Mão de obra', desc, '1', valor, '0');
+  const d = document.getElementById('maoObraDesc'); if(d) d.value='';
+  const v = document.getElementById('maoObraValor'); if(v) v.value='';
 }
-function selectItemRow(tr){
-  document.querySelectorAll('#itensTable tbody tr').forEach(r=>r.style.background='transparent');
-  SELECTED_ROW=tr; tr.style.background='rgba(0,120,215,.08)';
+function selectOldRealRow(tr){
+  document.querySelectorAll('#itensTable tbody tr').forEach(r => r.classList.remove('selected-row'));
+  OLD_REAL_SELECTED_ROW = tr;
+  tr.classList.add('selected-row');
 }
-function removeSelectedItem(){
-  if(SELECTED_ROW){ SELECTED_ROW.remove(); SELECTED_ROW=null; recalcItens(); }
+function removeSelectedOldReal(){
+  if(OLD_REAL_SELECTED_ROW){ OLD_REAL_SELECTED_ROW.remove(); OLD_REAL_SELECTED_ROW=null; recalcItens(); }
 }
-
-window.BRANDS = {{ brands|tojson }};
-window.CATALOGO = {{ catalogo|tojson }};
+function excluirPorPlacaOldReal(){
+  const placa = document.getElementById('placa')?.value || '';
+  if(!placa.trim()){ alert('Informe a placa para buscar/excluir.'); return; }
+  window.location.href = '{{ url_for('listar_os') }}?q=' + encodeURIComponent(placa.trim());
+}
+window.addEventListener('keydown', (ev) => {
+  if(ev.key === 'F2'){
+    ev.preventDefault();
+    buscarClientesOldReal();
+  }
+});
 window.addEventListener('DOMContentLoaded', () => {
-  setupVehicleOptions(); setupCalculations(); setupEstoqueSearch(); recalcItens();
+  setupVehicleOptions();
+  setupCalculations();
+  setupEstoqueSearch();
+  recalcItens();
+  setOldRealTab('itens');
+  const km = document.getElementById('km_atual');
+  const prox = document.getElementById('proxima_manut_km');
+  const prev = document.getElementById('proxOleoPreview');
+  function syncPreview(){ if(prev && prox){ prev.textContent = prox.value || '—'; } }
+  [km,prox,document.getElementById('intervalo_km')].forEach(el => el && el.addEventListener('input', syncPreview));
+  syncPreview();
 });
 </script>
-</body>
-</html>
+{% endblock %}

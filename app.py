@@ -1,4 +1,4 @@
-# CLONE_VISUAL_EXATO_PRINT_ANTIGO_20260831
+# CADASTRO_ANTIGO_REAL_SEM_IMAGEM_20260831
 # -*- coding: utf-8 -*-
 import os
 import sqlite3
