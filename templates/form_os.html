@@ -61,15 +61,15 @@
   <section class="desktop-fieldset service-desktop-fieldset">
     <div class="legend-title">Serviço</div>
     <div class="desktop-service-tabs no-print">
-      <button type="button" class="tab-btn active" data-tab="descricao" onclick="setServiceTab('descricao')">Descrição</button>
-      <button type="button" class="tab-btn" data-tab="itens" onclick="setServiceTab('itens')">Itens do serviço</button>
+      <button type="button" class="tab-btn" data-tab="descricao" onclick="setServiceTab('descricao')">Descrição</button>
+      <button type="button" class="tab-btn active" data-tab="itens" onclick="setServiceTab('itens')">Itens do serviço</button>
     </div>
 
-    <div id="descricaoPane" class="service-pane descricao-pane active">
+    <div id="descricaoPane" class="service-pane descricao-pane">
       <textarea name="descricao">{{ os.descricao if os else '' }}</textarea>
     </div>
 
-    <div id="itensPane" class="service-pane itens-pane no-print">
+    <div id="itensPane" class="service-pane itens-pane no-print active">
       <div class="item-topline">
         <button class="btn old-btn" type="button" onclick="toggleEstoquePicker()">Buscar no estoque</button>
         <button class="btn old-btn" type="button" onclick="addSelectedOrPrompt()">Adicionar item</button>
@@ -143,6 +143,9 @@ window.addEventListener('DOMContentLoaded', () => {
   setupCalculations();
   setupEstoqueSearch();
   recalcItens();
+  // LAYOUT_EXATAMENTE_ASSIM_20260831
+  setServiceTab('itens');
+  window.scrollTo({top: 0, behavior: 'instant'});
   const km = document.getElementById('km_atual');
   const prox = document.getElementById('proxima_manut_km');
   const prev = document.getElementById('proxOleoPreview');

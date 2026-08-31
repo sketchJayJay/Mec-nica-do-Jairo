@@ -25,3 +25,6 @@ LAYOUT_CADASTRO_PIXEL_DESKTOP_20260831_1735
 ```bash
 cp /data/oficina.db /data/oficina.db.backup_antes_layout_pixel_desktop
 ```
+
+
+Marcador desta versão: LAYOUT_EXATAMENTE_ASSIM_20260831

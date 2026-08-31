@@ -1,3 +1,4 @@
+# LAYOUT_EXATAMENTE_ASSIM_20260831
 # -*- coding: utf-8 -*-
 import os
 import sqlite3
