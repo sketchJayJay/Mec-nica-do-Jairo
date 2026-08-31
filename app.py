@@ -594,6 +594,7 @@ def editar_os(sid):
     return render_template("form_os.html", brands=BRANDS, catalogo=CATALOGO, os=servico, itens=itens, title=f"Editar OS #{sid}")
 
 
+# EXCLUIR_NOTA_LISTA_OS_20260831
 @app.post("/os/<int:sid>/excluir")
 def excluir_os(sid):
     with connect_db() as con:
