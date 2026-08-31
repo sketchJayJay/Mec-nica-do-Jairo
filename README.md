@@ -20,3 +20,6 @@ Depois do deploy, confira:
 ```bash
 grep -n "CADASTRO_ANTIGO_REAL_SEM_IMAGEM_20260831" /app/app.py /app/templates/form_os.html
 ```
+
+
+Versão: CADASTRO_ANTIGO_AJUSTE_SERVICO_GRID_20260831

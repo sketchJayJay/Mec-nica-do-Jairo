@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <style>
-/* CADASTRO_ANTIGO_REAL_AJUSTE_ALINHAMENTO_20260831
+/* CADASTRO_ANTIGO_AJUSTE_SERVICO_GRID_20260831
    derivado de SEM_IMAGEM
    e ajuste fino de alinhamento
 
@@ -55,7 +55,7 @@
 .jairo-old-real-form .km-reg input{height:34px;}
 .jairo-old-real-form .km-note{font-size:15px;color:#26354a;}
 /* Serviço */
-.jairo-old-real-form .fs-servico{margin-top:4px;flex:1 1 auto;min-height:305px;padding:0 8px 7px;overflow:hidden;}
+.jairo-old-real-form .fs-servico{margin-top:4px;flex:1 1 auto;min-height:370px;padding:0 8px 7px;overflow:hidden;}
 .jairo-old-real-form .fs-servico legend{position:relative;top:8px;z-index:2;background:#fff;}
 .jairo-old-real-form .service-tabs{height:65px;margin:0 -8px;background:#e8e8e8;border-bottom:1px solid #dfe2e6;display:flex;align-items:flex-end;justify-content:center;}
 .jairo-old-real-form .service-tabs button{height:60px;width:165px;border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;background:transparent;color:#26354a;cursor:pointer;}
@@ -63,14 +63,17 @@
 .jairo-old-real-form .service-pane{display:none;height:calc(100% - 65px);position:relative;background:#fff;}
 .jairo-old-real-form .service-pane.active{display:block;}
 .jairo-old-real-form .description-pane textarea{height:100%;display:block;}
-.jairo-old-real-form .item-topline{height:58px;display:flex;align-items:center;gap:12px;padding:8px 2px 4px;}
+.jairo-old-real-form .itens-pane{display:none;}
+.jairo-old-real-form .itens-pane.active{display:grid;grid-template-columns:1fr auto;grid-template-rows:58px minmax(130px,1fr) 58px 48px;column-gap:8px;row-gap:0;align-items:start;padding:0 2px 4px;}
+
+.jairo-old-real-form .item-topline{grid-row:1;height:58px;display:flex;align-items:center;gap:12px;padding:8px 2px 4px;}
 .jairo-old-real-form .item-topline .old-btn{height:48px;min-height:48px;}
 .jairo-old-real-form #selectedItemLabel{font-weight:600;color:#26354a;margin-left:8px;}
 .jairo-old-real-form .stock-picker{position:absolute;left:3px;right:3px;top:58px;background:#fff;border:1px solid #cfd5dc;border-radius:4px;z-index:35;box-shadow:0 8px 24px rgba(0,0,0,.15);padding:8px;}
 .jairo-old-real-form .picker-search{width:100%;margin-bottom:7px;}
 .jairo-old-real-form .manual-item-line{display:grid;grid-template-columns:1fr 1.35fr 105px 150px 150px;gap:8px;margin-top:8px;}
 .jairo-old-real-form .results-list .result-item{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#f7f7f7;border:1px solid #e0e0e0;border-radius:4px;padding:8px 10px;margin-bottom:6px;}
-.jairo-old-real-form .table-area{height:calc(100% - 155px);overflow:auto;background:#fff;border:0;}
+.jairo-old-real-form .table-area{grid-row:2;min-height:120px;overflow:auto;background:#fff;border:0;}
 .jairo-old-real-form .itens-table{width:100%;min-width:900px;border-collapse:separate;border-spacing:0;table-layout:fixed;}
 .jairo-old-real-form .itens-table th{height:34px;padding:3px 8px;background:#fff;border:1px solid #e4e7eb;border-radius:4px;text-align:center;font-size:16px;font-weight:700;color:#111;}
 .jairo-old-real-form .itens-table td{height:32px;padding:2px 4px;background:#fff;border-bottom:1px solid #f2f2f2;}
@@ -78,13 +81,13 @@
 .jairo-old-real-form .itens-table tbody tr.selected-row td{background:#e7f2ff!important;}
 .jairo-old-real-form .itens-table input{width:100%;height:28px;min-height:28px;border-color:transparent;background:transparent;box-shadow:none;padding:3px 6px;}
 .jairo-old-real-form .itens-table .row-total{text-align:right;padding-right:10px;font-weight:500;}
-.jairo-old-real-form .mao-row{position:absolute;left:4px;bottom:48px;display:grid;grid-template-columns:492px 230px 104px 1fr;gap:10px;align-items:center;width:860px;}
+.jairo-old-real-form .mao-row{grid-row:3;position:static;display:grid;grid-template-columns:492px 230px 104px 1fr;gap:10px;align-items:center;width:860px;padding-top:8px;}
 .jairo-old-real-form .mao-desc{display:grid;grid-template-columns:118px 374px;align-items:center;column-gap:6px;}
 .jairo-old-real-form .mao-valor{display:grid;grid-template-columns:95px 132px;align-items:center;column-gap:6px;}
 .jairo-old-real-form .mao-row input{height:38px;}
 .jairo-old-real-form .mao-row .old-btn{height:44px;min-height:44px;}
-.jairo-old-real-form .remove-selected{position:absolute;left:4px;bottom:4px;height:42px;min-height:42px;}
-.jairo-old-real-form .total-line{position:absolute;right:6px;bottom:12px;font-size:16px;color:#26354a;}
+.jairo-old-real-form .remove-selected{grid-row:4;justify-self:start;position:static;height:42px;min-height:42px;margin-top:6px;}
+.jairo-old-real-form .total-line{grid-row:4;justify-self:end;align-self:center;position:static;font-size:16px;color:#26354a;margin-top:6px;}
 /* Rodapé */
 .jairo-old-real-form .bottom-actions{height:56px;flex:0 0 56px;display:flex;align-items:center;gap:12px;padding:7px 8px;background:#fff;border-top:1px solid #f1f1f1;}
 .jairo-old-real-form .bottom-actions .old-btn{height:48px;min-height:48px;}
