@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<!-- CADASTRO_AREAS_MENORES_20260831 -->
 <!-- CORRIGE_BUSCA_ITEM_PAROU_20260831 -->
 <!-- EXCLUIR_ITEM_LINHA_EDITAR_OS_20260831 -->
 <!-- REMOVER_ITEM_SELECIONADO_20260831
@@ -214,6 +215,102 @@
 .jairo-old-real-form .itens-table th.action-col,.jairo-old-real-form .itens-table td.action-col{width:105px;text-align:center;}
 .jairo-old-real-form .row-delete-btn{height:30px;min-height:30px;border:1px solid #dc2626;border-radius:5px;background:#fff;color:#dc2626;font-weight:700;padding:0 10px;cursor:pointer;}
 .jairo-old-real-form .row-delete-btn:hover{background:#fee2e2;}
+
+
+
+/* CADASTRO_AREAS_MENORES_20260831
+   Compacta somente a tela da aba Cadastro/Nova OS/Editar OS.
+   A impressão da OS fica no modelo anterior. */
+@media (min-width: 901px){
+  body{font-size:14px!important;}
+  .window-menu{height:20px!important;font-size:12px!important;padding:0 7px!important;}
+  .topbar{height:74px!important;padding:8px 18px!important;gap:20px!important;}
+  .brand{gap:10px!important;min-width:300px!important;}
+  .brand img{width:46px!important;height:46px!important;}
+  .brand-copy strong{font-size:24px!important;line-height:1!important;}
+  .brand-copy span{font-size:14px!important;margin-top:3px!important;}
+  .version{font-size:16px!important;}
+  .quick-actions{gap:8px!important;}
+  .quick-actions a,.quick-actions .btn{min-height:34px!important;padding:7px 12px!important;font-size:14px!important;}
+  .tabbar{height:52px!important;margin:5px 6px 0!important;padding:0 10px!important;}
+  .tabbar a{height:48px!important;min-width:130px!important;font-size:14px!important;gap:6px!important;}
+  .page{margin:0 6px 6px!important;min-height:calc(100vh - 151px)!important;}
+  .page.work-page{min-height:calc(100vh - 151px)!important;}
+  .work-page{padding:0!important;}
+
+  .jairo-old-real-form{height:calc(100vh - 151px)!important;min-height:620px!important;font-size:14px!important;}
+  .jairo-old-real-form button,
+  .jairo-old-real-form input,
+  .jairo-old-real-form select,
+  .jairo-old-real-form textarea{font-size:14px!important;}
+  .jairo-old-real-form input,
+  .jairo-old-real-form select{height:32px!important;min-height:32px!important;padding:4px 8px!important;}
+  .jairo-old-real-form .old-btn{height:36px!important;min-height:36px!important;padding:0 12px!important;font-size:14px!important;}
+  .jairo-old-real-form fieldset{margin:0 4px!important;padding:13px 8px 5px!important;}
+  .jairo-old-real-form legend{font-size:14px!important;line-height:1!important;}
+  .jairo-old-real-form label{font-size:14px!important;}
+
+  .jairo-old-real-form .edit-save-strip{height:42px!important;flex:0 0 42px!important;margin:0 4px 2px!important;padding:4px 8px!important;}
+  .jairo-old-real-form .edit-save-strip strong{font-size:14px!important;}
+
+  .jairo-old-real-form .fs-cliente{height:62px!important;flex:0 0 62px!important;}
+  .jairo-old-real-form .cliente-row{height:34px!important;grid-template-columns:300px 245px 160px 1fr!important;column-gap:8px!important;}
+  .jairo-old-real-form .client-name{grid-template-columns:48px 250px!important;}
+  .jairo-old-real-form .client-phone{grid-template-columns:70px 170px!important;}
+  .jairo-old-real-form .pull-btn{height:34px!important;min-height:34px!important;width:160px!important;}
+  .jairo-old-real-form .helper-search{top:56px!important;padding:6px!important;}
+  .jairo-old-real-form #clienteResultados{top:98px!important;max-height:160px!important;}
+
+  .jairo-old-real-form .fs-veiculo{height:190px!important;flex:0 0 190px!important;padding-bottom:5px!important;}
+  .jairo-old-real-form .vehicle-grid{grid-template-columns:515px 570px 1fr!important;grid-template-rows:32px 32px 32px 32px 32px 22px!important;column-gap:16px!important;row-gap:2px!important;}
+  .jairo-old-real-form .vehicle-left{grid-template-columns:218px 292px!important;}
+  .jairo-old-real-form .vehicle-right{grid-template-columns:198px 330px!important;}
+  .jairo-old-real-form .ano-line{grid-template-columns:198px 120px!important;}
+  .jairo-old-real-form .km-oleo-line{grid-template-columns:218px 140px!important;}
+  .jairo-old-real-form .intervalo-line{grid-template-columns:198px 176px!important;}
+  .jairo-old-real-form .intervalo-line select{width:176px!important;}
+  .jairo-old-real-form .intervalo-correia-line{grid-template-columns:218px 140px!important;}
+  .jairo-old-real-form .correia-feita-line{grid-template-columns:218px 140px!important;}
+  .jairo-old-real-form .correia-proxima-line{grid-template-columns:198px 140px!important;}
+  .jairo-old-real-form .hint-correia{font-size:13px!important;}
+  .jairo-old-real-form .proxima-line{font-size:14px!important;padding-top:0!important;}
+
+  .jairo-old-real-form .fs-km{margin-top:2px!important;height:48px!important;flex:0 0 48px!important;padding-top:12px!important;}
+  .jairo-old-real-form .km-row{height:28px!important;gap:7px!important;}
+  .jairo-old-real-form .km-reg{grid-template-columns:70px 115px!important;}
+  .jairo-old-real-form .km-reg input{height:30px!important;min-height:30px!important;}
+  .jairo-old-real-form .km-note{font-size:13px!important;}
+
+  .jairo-old-real-form .fs-servico{margin-top:2px!important;min-height:310px!important;padding:0 8px 5px!important;}
+  .jairo-old-real-form .fs-servico legend{top:6px!important;}
+  .jairo-old-real-form .service-tabs{height:48px!important;margin:0 -8px!important;}
+  .jairo-old-real-form .service-tabs button{height:44px!important;width:145px!important;font-size:14px!important;border-radius:7px 7px 0 0!important;}
+  .jairo-old-real-form .service-pane{height:calc(100% - 48px)!important;}
+  .jairo-old-real-form .itens-pane.active{grid-template-rows:46px minmax(0,1fr) auto 40px!important;padding:0 2px 3px!important;}
+  .jairo-old-real-form .item-topline{height:46px!important;padding:5px 2px 3px!important;gap:8px!important;}
+  .jairo-old-real-form .item-topline .old-btn{height:36px!important;min-height:36px!important;}
+  .jairo-old-real-form #selectedItemLabel{font-size:14px!important;margin-left:6px!important;}
+  .jairo-old-real-form .itens-table th{height:28px!important;font-size:14px!important;padding:2px 6px!important;}
+  .jairo-old-real-form .itens-table td{height:27px!important;padding:1px 4px!important;font-size:14px!important;}
+  .jairo-old-real-form .itens-table input{height:24px!important;min-height:24px!important;font-size:14px!important;padding:2px 5px!important;}
+  .jairo-old-real-form .itens-table th.action-col,
+  .jairo-old-real-form .itens-table td.action-col{width:90px!important;}
+  .jairo-old-real-form .row-delete-btn{height:26px!important;min-height:26px!important;padding:0 8px!important;font-size:13px!important;}
+
+  .jairo-old-real-form .mao-row{grid-template-columns:390px 190px 92px 1fr!important;gap:8px!important;width:700px!important;padding-top:5px!important;}
+  .jairo-old-real-form .mao-desc{grid-template-columns:92px 290px!important;}
+  .jairo-old-real-form .mao-valor{grid-template-columns:78px 105px!important;}
+  .jairo-old-real-form .mao-row input{height:32px!important;min-height:32px!important;}
+  .jairo-old-real-form .mao-row .old-btn{height:34px!important;min-height:34px!important;}
+  .jairo-old-real-form .remove-selected{height:34px!important;min-height:34px!important;margin-top:4px!important;}
+  .jairo-old-real-form .total-line{font-size:14px!important;margin-top:4px!important;}
+
+  .jairo-old-real-form .bottom-actions{height:42px!important;flex:0 0 42px!important;padding:4px 8px!important;gap:8px!important;}
+  .jairo-old-real-form .bottom-actions .old-btn{height:34px!important;min-height:34px!important;}
+
+  .jairo-old-real-form .floating-save-main,
+  .jairo-old-real-form .edit-floating-save{height:46px!important;min-height:46px!important;font-size:14px!important;bottom:14px!important;right:16px!important;padding:0 18px!important;}
+}
 
 </style>
 <form method="post" class="jairo-old-real-form" id="osForm">
