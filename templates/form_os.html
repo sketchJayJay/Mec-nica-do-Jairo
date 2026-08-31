@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<form method="post" class="stack os-form old-os-form desktop-exact-form" id="osForm">
+<form method="post" class="stack os-form old-os-form desktop-exact-form desktop-pixel-form" id="osForm">
   <datalist id="marcasList">
     {% for marca in brands.keys() %}<option value="{{ marca }}">{% endfor %}
   </datalist>
@@ -9,9 +9,9 @@
   <section class="desktop-fieldset cliente-fieldset">
     <div class="legend-title">Cliente</div>
     <div class="desktop-client-row">
-      <label>Nome:<input name="nome" id="nome" required value="{{ os.nome if os else '' }}"></label>
-      <label>Telefone:<input name="telefone" id="telefone" value="{{ os.telefone if os else '' }}"></label>
-      <button class="btn old-btn" type="button" onclick="buscarClientes()">Puxar cadastro (F2)</button>
+      <label class="field-inline client-name"><span>Nome:</span><input name="nome" id="nome" required value="{{ os.nome if os else '' }}"></label>
+      <label class="field-inline client-phone"><span>Telefone:</span><input name="telefone" id="telefone" value="{{ os.telefone if os else '' }}"></label>
+      <button class="btn old-btn pull-btn" type="button" onclick="buscarClientes()">Puxar cadastro (F2)</button>
     </div>
     <div class="helper-search hidden-helper no-print">
       <input type="search" id="clienteBusca" placeholder="Digite nome, telefone ou placa para puxar cadastro">
@@ -22,14 +22,14 @@
   <section class="desktop-fieldset vehicle-fieldset">
     <div class="legend-title">Veículo</div>
     <div class="desktop-vehicle-grid">
-      <label class="marca-label">Marca:<input list="marcasList" name="marca" id="marca" value="{{ os.marca if os else '' }}" autocomplete="off"></label>
-      <label class="modelo-label">Modelo:<input list="modelosList" name="modelo" id="modelo" value="{{ os.modelo if os else '' }}" autocomplete="off"></label>
+      <label class="field-inline vehicle-left marca-label"><span>Marca:</span><input list="marcasList" name="marca" id="marca" value="{{ os.marca if os else '' }}" autocomplete="off"></label>
+      <label class="field-inline vehicle-right modelo-label"><span>Modelo:</span><input list="modelosList" name="modelo" id="modelo" value="{{ os.modelo if os else '' }}" autocomplete="off"></label>
 
-      <label class="placa-label">Placa:<input name="placa" id="placa" value="{{ os.placa if os else '' }}" style="text-transform:uppercase"></label>
-      <label class="ano-label">Ano:<input name="ano" id="ano" value="{{ os.ano if os else '' }}"></label>
+      <label class="field-inline vehicle-left placa-label"><span>Placa:</span><input name="placa" id="placa" value="{{ os.placa if os else '' }}" style="text-transform:uppercase"></label>
+      <label class="field-inline vehicle-right ano-label small-right"><span>Ano:</span><input name="ano" id="ano" value="{{ os.ano if os else '' }}"></label>
 
-      <label class="km-oleo-label">KM atual (troca de óleo):<input name="km_atual" id="km_atual" value="{{ br_int(os.km_atual) if os else '' }}" inputmode="numeric"></label>
-      <label class="intervalo-label">Intervalo (km):
+      <label class="field-inline vehicle-left km-oleo-label short-input"><span>KM atual (troca de óleo):</span><input name="km_atual" id="km_atual" value="{{ br_int(os.km_atual) if os else '' }}" inputmode="numeric"></label>
+      <label class="field-inline vehicle-right intervalo-label select-right"><span>Intervalo (km):</span>
         <select name="intervalo_km" id="intervalo_km">
           {% set intervalo = (os.intervalo_km if os else 10000)|int %}
           {% for v in [0,1000,5000,7000,10000,15000] %}
@@ -38,11 +38,11 @@
         </select>
       </label>
 
-      <label class="intervalo-correia-label">Intervalo (km) — Correia:<input name="km_troca_corr" id="km_troca_corr" value="{{ br_int(os.km_troca_corr) if os else '' }}" inputmode="numeric"></label>
+      <label class="field-inline vehicle-left intervalo-correia-label short-input"><span>Intervalo (km) — Correia:</span><input name="km_troca_corr" id="km_troca_corr" value="{{ br_int(os.km_troca_corr) if os else '' }}" inputmode="numeric"></label>
       <div class="desktop-hint">(ex.: 60000 ou 80000 km)</div>
 
-      <label class="correia-feita-label">KM que foi feita a troca (Correia):<input name="km_corr_trocada" id="km_corr_trocada" value="{{ br_int(os.km_corr_trocada) if os else '' }}" inputmode="numeric"></label>
-      <label class="correia-proxima-label">KM da próxima troca (Correia):<input name="km_corr_proxima" id="km_corr_proxima" value="{{ br_int(os.km_corr_proxima) if os else '' }}" inputmode="numeric"></label>
+      <label class="field-inline vehicle-left correia-feita-label short-input"><span>KM que foi feita a troca (Correia):</span><input name="km_corr_trocada" id="km_corr_trocada" value="{{ br_int(os.km_corr_trocada) if os else '' }}" inputmode="numeric"></label>
+      <label class="field-inline vehicle-right correia-proxima-label short-input-right"><span>KM da próxima troca (Correia):</span><input name="km_corr_proxima" id="km_corr_proxima" value="{{ br_int(os.km_corr_proxima) if os else '' }}" inputmode="numeric"></label>
 
       <div class="desktop-next-maint">Próxima manutenção: <b><span id="proxOleoPreview">—</span> km</b></div>
       <input type="hidden" name="proxima_manut_km" id="proxima_manut_km" value="{{ br_int(os.proxima_manut_km) if os else '' }}">
@@ -53,7 +53,7 @@
   <section class="desktop-fieldset km-only-fieldset">
     <div class="legend-title">KM atual — apenas registro</div>
     <div class="desktop-km-register">
-      <label>KM atual:<input id="km_apenas_registro" type="text"></label>
+      <label class="field-inline km-register-field"><span>KM atual:</span><input id="km_apenas_registro" type="text"></label>
       <span>*Somente registro. Não altera próxima troca.</span>
     </div>
   </section>
@@ -66,7 +66,7 @@
     </div>
 
     <div id="descricaoPane" class="service-pane descricao-pane active">
-      <textarea name="descricao" rows="8">{{ os.descricao if os else '' }}</textarea>
+      <textarea name="descricao">{{ os.descricao if os else '' }}</textarea>
     </div>
 
     <div id="itensPane" class="service-pane itens-pane no-print">
@@ -114,8 +114,8 @@
       </div>
 
       <div class="mao-obra-line">
-        <label>Mão de obra:<input id="maoObraDesc"></label>
-        <label>Preço (R$):<input id="maoObraValor" inputmode="decimal"></label>
+        <label class="field-inline mao-desc"><span>Mão de obra:</span><input id="maoObraDesc"></label>
+        <label class="field-inline mao-valor"><span>Preço (R$):</span><input id="maoObraValor" inputmode="decimal"></label>
         <button class="btn old-btn" type="button" onclick="addMaoObraInline()">Adicionar</button>
       </div>
       <button class="btn old-btn remove-selected" type="button" onclick="removeSelectedItem()">Remover selecionado</button>

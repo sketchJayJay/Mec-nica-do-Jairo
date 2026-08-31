@@ -16,7 +16,7 @@ os.makedirs(DATA_DIR, exist_ok=True)
 DB_PATH = os.environ.get("DB_PATH", os.path.join(DATA_DIR, "jairo_oficina.db"))
 
 print("FIX_DEFAULT_TIMESTAMP_HARD_20260831_1618")
-print("LAYOUT_CADASTRO_DESKTOP_EXATO_20260831_1645")
+print("LAYOUT_CADASTRO_PIXEL_DESKTOP_20260831_1735")
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "jairo-oficina-local")
 app.config["JSON_AS_ASCII"] = False
