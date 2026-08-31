@@ -1,3 +1,4 @@
+// BOTAO_ADICIONAR_ITEM_MODAL_20260831
 // BUSCA_ESTOQUE_MODAL_TOPO_FUNCIONANDO_20260831
 // BUSCA_ESTOQUE_MAIS_VISIVEL_20260831
 // BOTAO_SALVAR_CADASTRO_E_BUSCA_ESTOQUE_COMPLETA_20260831
@@ -89,7 +90,7 @@ async function searchEstoque(q){
         </div>
         <div class="result-side">
           <div class="result-price">${moneyBR(Number(r.preco || 0))}</div>
-          <span class="result-use">Usar este item</span>
+          <span class="result-use">Adicionar item</span>
         </div>
       </button>`).join('') || '<div class="empty">Nenhum item achado. Tente outra palavra, categoria ou deixe vazio para ver o estoque.</div>');
   }catch(err){
@@ -98,10 +99,24 @@ async function searchEstoque(q){
   }
 }
 function pickEstoque(r){
-  document.getElementById('itemCategoria').value = r.categoria || 'Outros';
-  document.getElementById('itemNome').value = r.item || '';
-  document.getElementById('itemValor').value = Number(r.preco || 0).toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2});
-  document.getElementById('itemQtde').focus();
+  // BOTAO_ADICIONAR_ITEM_MODAL_20260831
+  // Agora o clique no card é claramente o ato de adicionar o item na OS.
+  const cat = r.categoria || 'Outros';
+  const nome = r.item || '';
+  const valor = Number(r.preco || 0).toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2});
+  if(!nome){ return; }
+  if(typeof addItemRowOldReal === 'function'){
+    addItemRowOldReal(cat, nome, '1', valor, '1');
+    const label = document.getElementById('selectedItemLabel');
+    if(label) label.textContent = `${nome} adicionado na OS`;
+    const status = document.getElementById('estoqueStatus');
+    if(status) status.textContent = `Item adicionado: ${nome}. Pode adicionar outro ou fechar a busca.`;
+  } else {
+    document.getElementById('itemCategoria').value = cat;
+    document.getElementById('itemNome').value = nome;
+    document.getElementById('itemValor').value = valor;
+    document.getElementById('itemQtde').focus();
+  }
 }
 function addItemFromInputs(){
   const cat = document.getElementById('itemCategoria').value || 'Outros';

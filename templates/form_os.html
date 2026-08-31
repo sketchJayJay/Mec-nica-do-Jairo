@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-<!-- BUSCA_ESTOQUE_MODAL_TOPO_FUNCIONANDO_20260831 -->
+<!-- BOTAO_ADICIONAR_ITEM_MODAL_20260831
+   BUSCA_ESTOQUE_MODAL_TOPO_FUNCIONANDO_20260831 -->
 <!-- BUSCA_ESTOQUE_MAIS_VISIVEL_20260831 -->
 <style>
 /* EDITAR_OS_SEM_SOBREPOR_20260831
@@ -364,13 +365,17 @@ function clearEstoqueBuscaOldReal(){
   searchEstoque('');
 }
 window.pickEstoque = function(r){
-  const set = (id,v) => { const el=document.getElementById(id); if(el) el.value = v || ''; };
-  set('itemCategoria', r.categoria || 'Outros');
-  set('itemNome', r.item || '');
-  set('itemValor', Number(r.preco || 0).toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2}));
-  set('itemQtde', '1');
+  // BOTAO_ADICIONAR_ITEM_MODAL_20260831
+  // Para o pessoal não achar que só selecionou, o botão do card adiciona direto na OS.
+  const cat = r.categoria || 'Outros';
+  const nome = r.item || '';
+  const valor = Number(r.preco || 0).toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2});
+  if(!nome) return;
+  addItemRowOldReal(cat, nome, '1', valor, '1');
   const label = document.getElementById('selectedItemLabel');
-  if(label) label.textContent = r.item ? `${r.item} selecionado` : 'Nenhum item selecionado';
+  if(label) label.textContent = `${nome} adicionado na OS`;
+  const status = document.getElementById('estoqueStatus');
+  if(status) status.textContent = `Item adicionado: ${nome}. Pode adicionar outro ou fechar a busca.`;
   const busca = document.getElementById('estoqueBusca');
   if(busca) busca.focus();
 };
