@@ -1,4 +1,4 @@
-# LAYOUT_EXATAMENTE_ASSIM_20260831
+# CLONE_VISUAL_EXATO_PRINT_ANTIGO_20260831
 # -*- coding: utf-8 -*-
 import os
 import sqlite3
@@ -17,7 +17,6 @@ os.makedirs(DATA_DIR, exist_ok=True)
 DB_PATH = os.environ.get("DB_PATH", os.path.join(DATA_DIR, "jairo_oficina.db"))
 
 print("FIX_DEFAULT_TIMESTAMP_HARD_20260831_1618")
-print("LAYOUT_CADASTRO_PIXEL_DESKTOP_20260831_1735")
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "jairo-oficina-local")
 app.config["JSON_AS_ASCII"] = False
@@ -283,7 +282,7 @@ def ensure_db():
             if col not in cols:
                 # Migração defensiva: SQLite não permite DEFAULT dinâmico em ADD COLUMN.
                 # Também evita derrubar o sistema se dois workers tentarem migrar juntos.
-                safe_spec = spec.replace("DEFAULT " + "CURRENT_TIMESTAMP", "").strip()
+                safe_spec = spec.replace("DEFAULT CURRENT_TIMESTAMP", "").strip()
                 try:
                     cur.execute(f"ALTER TABLE {table} ADD COLUMN {col} {safe_spec}")
                 except sqlite3.OperationalError as e:

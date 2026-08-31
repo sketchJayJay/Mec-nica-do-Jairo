@@ -1,157 +1,227 @@
-{% extends 'base.html' %}
-{% block content %}
-<form method="post" class="stack os-form old-os-form desktop-exact-form desktop-pixel-form" id="osForm">
-  <datalist id="marcasList">
-    {% for marca in brands.keys() %}<option value="{{ marca }}">{% endfor %}
-  </datalist>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Oficina Mecânica — v0.5 (Pro Light 2025) — FIX</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    /* CLONE_VISUAL_EXATO_PRINT_ANTIGO_20260831 */
+    html,body{margin:0;background:#fff;overflow:auto;font-family:"Segoe UI",Tahoma,Arial,sans-serif;}
+    .clone-wrap{width:100vw;min-width:1024px;background:#fff;}
+    .clone-screen{position:relative;width:100%;aspect-ratio:2048/1084;background:url('{{ url_for('static', filename='assets/cadastro_os_itens_exato.png') }}') top left/100% 100% no-repeat;}
+    .clone-screen input,.clone-screen select,.clone-screen textarea{position:absolute;border:0!important;outline:none!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;padding:0 .35vw!important;margin:0!important;color:#1d2b3a!important;font-size:clamp(12px,0.82vw,17px)!important;font-family:"Segoe UI",Tahoma,Arial,sans-serif!important;min-height:0!important;height:auto;}
+    .clone-screen input:focus,.clone-screen select:focus,.clone-screen textarea:focus{box-shadow:none!important;border:0!important;}
+    .clone-screen select{appearance:none;-webkit-appearance:none;-moz-appearance:none;}
+    .clone-screen .click{position:absolute;border:0;background:rgba(255,255,255,0);cursor:pointer;color:transparent!important;text-indent:-9999px;overflow:hidden;}
+    .clone-screen .navlink{position:absolute;display:block;background:rgba(255,255,255,0);color:transparent!important;text-indent:-9999px;overflow:hidden;}
+    .clone-screen .selected-text{position:absolute;color:#25364b;font-weight:600;font-size:clamp(12px,0.82vw,17px);line-height:1.4;white-space:nowrap;overflow:hidden;}
+    .clone-screen .clone-total{position:absolute;color:#25364b;font-size:clamp(12px,0.82vw,17px);text-align:right;}
+    .clone-screen .clone-table{position:absolute;border-collapse:collapse;table-layout:fixed;background:transparent;color:#111;font-size:clamp(12px,0.82vw,17px);}
+    .clone-screen .clone-table th{height:2.8vw;max-height:34px;font-weight:700;text-align:center;color:#111;background:transparent;border:0;}
+    .clone-screen .clone-table td{height:2.15vw;max-height:31px;border:0;background:transparent;padding:0 4px;}
+    .clone-screen .clone-table input{position:static!important;width:100%;height:100%!important;background:transparent!important;border:0!important;padding:0 4px!important;text-align:left;}
+    .clone-screen .clone-table .row-total{text-align:right;padding-right:.7vw;}
+    .clone-picker{position:absolute;left:1%;right:1%;top:83%;z-index:30;background:white;border:1px solid #cfd5dc;border-radius:4px;box-shadow:0 10px 24px rgba(0,0,0,.16);padding:8px;}
+    .clone-picker input,.clone-picker select{position:static!important;border:1px solid #ddd!important;background:#fff!important;border-radius:4px!important;height:36px!important;padding:6px!important;color:#111!important;}
+    .manual-item-line{display:grid;grid-template-columns:1fr 1.4fr 95px 140px 140px;gap:8px;margin-top:8px;}
+    .results-list{max-height:180px;overflow:auto;background:#fff;}
+    .hidden-helper{display:none!important;}
+    .flash-wrap{position:absolute;left:23%;right:23%;top:20%;z-index:40;}
+    @media(max-width:1200px){.clone-wrap{min-width:900px;}}
+    .pos-name{left:3.417969%;top:25.276753%;width:14.355469%;height:3.966790%;}
+.pos-phone{left:21.826172%;top:25.276753%;width:11.767578%;height:3.966790%;}
+.pos-pull{left:33.935547%;top:24.723247%;width:9.033203%;height:5.073801%;}
+.pos-marca{left:14.062500%;top:32.472325%;width:14.648438%;height:3.966790%;}
+.pos-modelo{left:41.503906%;top:32.472325%;width:17.919922%;height:3.966790%;}
+.pos-placa{left:14.013672%;top:36.715867%;width:10.742188%;height:3.966790%;}
+.pos-ano{left:41.503906%;top:36.715867%;width:6.445312%;height:3.966790%;}
+.pos-km{left:14.013672%;top:40.959410%;width:7.519531%;height:3.966790%;}
+.pos-intervalo{left:41.503906%;top:40.959410%;width:9.619141%;height:3.966790%;}
+.pos-corr_int{left:14.013672%;top:45.202952%;width:7.519531%;height:3.966790%;}
+.pos-corr_feita{left:14.013672%;top:49.446494%;width:7.519531%;height:3.966790%;}
+.pos-corr_prox{left:41.503906%;top:49.446494%;width:7.519531%;height:3.966790%;}
+.pos-km_reg{left:4.736328%;top:58.118081%;width:7.470703%;height:3.966790%;}
+.pos-buscarEstoque{left:0.878906%;top:71.678967%;width:8.886719%;height:5.073801%;}
+.pos-addItem{left:10.498047%;top:71.678967%;width:7.226562%;height:5.073801%;}
+.pos-selectedLabel{left:18.847656%;top:72.785978%;width:14.648438%;height:2.583026%;}
+.pos-table{left:0.830078%;top:77.398524%;width:97.949219%;height:13.099631%;}
+.pos-mao_desc{left:6.591797%;top:89.667897%;width:17.871094%;height:3.966790%;}
+.pos-mao_valor{left:29.687500%;top:89.667897%;width:6.445312%;height:3.966790%;}
+.pos-mao_add{left:36.865234%;top:89.022140%;width:5.126953%;height:5.073801%;}
+.pos-remove{left:0.781250%;top:94.926199%;width:9.912109%;height:4.704797%;}
+.pos-total{left:93.261719%;top:95.018450%;width:5.859375%;height:2.767528%;}
+.pos-save{left:0.732422%;top:94.741697%;width:11.425781%;height:4.981550%;}
+.pos-delplate{left:13.037109%;top:94.741697%;width:8.007812%;height:4.981550%;}
+.pos-clear{left:21.826172%;top:94.741697%;width:4.199219%;height:4.981550%;}
+.pos-editar{left:79.980469%;top:7.749077%;width:5.419922%;height:5.350554%;}
+.pos-nova{left:88.183594%;top:7.749077%;width:5.029297%;height:5.350554%;}
+.pos-relatorios{left:93.798828%;top:7.749077%;width:5.468750%;height:5.350554%;}
+.pos-inicio{left:30.517578%;top:16.051661%;width:5.615234%;height:6.088561%;}
+.pos-cadastroTab{left:36.279297%;top:16.051661%;width:9.667969%;height:6.088561%;}
+.pos-busca{left:46.337891%;top:16.051661%;width:5.957031%;height:6.088561%;}
+.pos-estoqueTab{left:53.076172%;top:16.051661%;width:6.933594%;height:6.088561%;}
+.pos-relatoriosTab{left:60.791016%;top:16.051661%;width:8.056641%;height:6.088561%;}
+  </style>
+</head>
+<body>
+<form method="post" class="clone-wrap" id="osForm">
+  <datalist id="marcasList">{% for marca in brands.keys() %}<option value="{{ marca }}">{% endfor %}</datalist>
   <datalist id="modelosList"></datalist>
+  <div class="clone-screen">
+    {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-wrap">{% for category,msg in messages %}<div class="flash {{ category }}">{{ msg }}</div>{% endfor %}</div>{% endif %}{% endwith %}
 
-  <section class="desktop-fieldset cliente-fieldset">
-    <div class="legend-title">Cliente</div>
-    <div class="desktop-client-row">
-      <label class="field-inline client-name"><span>Nome:</span><input name="nome" id="nome" required value="{{ os.nome if os else '' }}"></label>
-      <label class="field-inline client-phone"><span>Telefone:</span><input name="telefone" id="telefone" value="{{ os.telefone if os else '' }}"></label>
-      <button class="btn old-btn pull-btn" type="button" onclick="buscarClientes()">Puxar cadastro (F2)</button>
-    </div>
-    <div class="helper-search hidden-helper no-print">
-      <input type="search" id="clienteBusca" placeholder="Digite nome, telefone ou placa para puxar cadastro">
-    </div>
-    <div id="clienteResultados" class="results-list no-print"></div>
-  </section>
+    <a class="navlink pos-editar" href="{{ url_for('listar_os') }}">Editar OS</a>
+    <a class="navlink pos-nova" href="{{ url_for('nova_os') }}">Nova OS</a>
+    <a class="navlink pos-relatorios" href="{{ url_for('relatorios') }}">Relatórios</a>
+    <a class="navlink pos-inicio" href="{{ url_for('index') }}">Início</a>
+    <a class="navlink pos-cadastroTab" href="{{ url_for('nova_os') }}">Cadastro</a>
+    <a class="navlink pos-busca" href="{{ url_for('listar_os') }}">Busca</a>
+    <a class="navlink pos-estoqueTab" href="{{ url_for('estoque') }}">Estoque</a>
+    <a class="navlink pos-relatoriosTab" href="{{ url_for('relatorios') }}">Relatórios</a>
 
-  <section class="desktop-fieldset vehicle-fieldset">
-    <div class="legend-title">Veículo</div>
-    <div class="desktop-vehicle-grid">
-      <label class="field-inline vehicle-left marca-label"><span>Marca:</span><input list="marcasList" name="marca" id="marca" value="{{ os.marca if os else '' }}" autocomplete="off"></label>
-      <label class="field-inline vehicle-right modelo-label"><span>Modelo:</span><input list="modelosList" name="modelo" id="modelo" value="{{ os.modelo if os else '' }}" autocomplete="off"></label>
+    <input class="pos-name" name="nome" id="nome" required value="{{ os.nome if os else '' }}">
+    <input class="pos-phone" name="telefone" id="telefone" value="{{ os.telefone if os else '' }}">
+    <button class="click pos-pull" type="button" onclick="buscarClientes()">Puxar cadastro (F2)</button>
 
-      <label class="field-inline vehicle-left placa-label"><span>Placa:</span><input name="placa" id="placa" value="{{ os.placa if os else '' }}" style="text-transform:uppercase"></label>
-      <label class="field-inline vehicle-right ano-label small-right"><span>Ano:</span><input name="ano" id="ano" value="{{ os.ano if os else '' }}"></label>
+    <input class="pos-marca" list="marcasList" name="marca" id="marca" value="{{ os.marca if os else '' }}" autocomplete="off">
+    <input class="pos-modelo" list="modelosList" name="modelo" id="modelo" value="{{ os.modelo if os else '' }}" autocomplete="off">
+    <input class="pos-placa" name="placa" id="placa" value="{{ os.placa if os else '' }}" style="text-transform:uppercase">
+    <input class="pos-ano" name="ano" id="ano" value="{{ os.ano if os else '' }}">
+    <input class="pos-km" name="km_atual" id="km_atual" value="{{ br_int(os.km_atual) if os else '' }}" inputmode="numeric">
+    <select class="pos-intervalo" name="intervalo_km" id="intervalo_km">
+      {% set intervalo = (os.intervalo_km if os else 10000)|int %}
+      {% for v in [0,1000,5000,7000,10000,15000] %}<option value="{{ v }}" {% if intervalo == v %}selected{% endif %}>{{ br_int(v) }}</option>{% endfor %}
+    </select>
+    <input class="pos-corr_int" name="km_troca_corr" id="km_troca_corr" value="{{ br_int(os.km_troca_corr) if os else '' }}" inputmode="numeric">
+    <input class="pos-corr_feita" name="km_corr_trocada" id="km_corr_trocada" value="{{ br_int(os.km_corr_trocada) if os else '' }}" inputmode="numeric">
+    <input class="pos-corr_prox" name="km_corr_proxima" id="km_corr_proxima" value="{{ br_int(os.km_corr_proxima) if os else '' }}" inputmode="numeric">
+    <input class="pos-km_reg" id="km_apenas_registro" type="text">
 
-      <label class="field-inline vehicle-left km-oleo-label short-input"><span>KM atual (troca de óleo):</span><input name="km_atual" id="km_atual" value="{{ br_int(os.km_atual) if os else '' }}" inputmode="numeric"></label>
-      <label class="field-inline vehicle-right intervalo-label select-right"><span>Intervalo (km):</span>
-        <select name="intervalo_km" id="intervalo_km">
-          {% set intervalo = (os.intervalo_km if os else 10000)|int %}
-          {% for v in [0,1000,5000,7000,10000,15000] %}
-            <option value="{{ v }}" {% if intervalo == v %}selected{% endif %}>{{ br_int(v) }}</option>
-          {% endfor %}
-        </select>
-      </label>
-
-      <label class="field-inline vehicle-left intervalo-correia-label short-input"><span>Intervalo (km) — Correia:</span><input name="km_troca_corr" id="km_troca_corr" value="{{ br_int(os.km_troca_corr) if os else '' }}" inputmode="numeric"></label>
-      <div class="desktop-hint">(ex.: 60000 ou 80000 km)</div>
-
-      <label class="field-inline vehicle-left correia-feita-label short-input"><span>KM que foi feita a troca (Correia):</span><input name="km_corr_trocada" id="km_corr_trocada" value="{{ br_int(os.km_corr_trocada) if os else '' }}" inputmode="numeric"></label>
-      <label class="field-inline vehicle-right correia-proxima-label short-input-right"><span>KM da próxima troca (Correia):</span><input name="km_corr_proxima" id="km_corr_proxima" value="{{ br_int(os.km_corr_proxima) if os else '' }}" inputmode="numeric"></label>
-
-      <div class="desktop-next-maint">Próxima manutenção: <b><span id="proxOleoPreview">—</span> km</b></div>
-      <input type="hidden" name="proxima_manut_km" id="proxima_manut_km" value="{{ br_int(os.proxima_manut_km) if os else '' }}">
-      <input type="hidden" name="data" value="{{ os.data if os else today_br() }}">
-    </div>
-  </section>
-
-  <section class="desktop-fieldset km-only-fieldset">
-    <div class="legend-title">KM atual — apenas registro</div>
-    <div class="desktop-km-register">
-      <label class="field-inline km-register-field"><span>KM atual:</span><input id="km_apenas_registro" type="text"></label>
-      <span>*Somente registro. Não altera próxima troca.</span>
-    </div>
-  </section>
-
-  <section class="desktop-fieldset service-desktop-fieldset">
-    <div class="legend-title">Serviço</div>
-    <div class="desktop-service-tabs no-print">
-      <button type="button" class="tab-btn" data-tab="descricao" onclick="setServiceTab('descricao')">Descrição</button>
-      <button type="button" class="tab-btn active" data-tab="itens" onclick="setServiceTab('itens')">Itens do serviço</button>
-    </div>
-
-    <div id="descricaoPane" class="service-pane descricao-pane">
-      <textarea name="descricao">{{ os.descricao if os else '' }}</textarea>
-    </div>
-
-    <div id="itensPane" class="service-pane itens-pane no-print active">
-      <div class="item-topline">
-        <button class="btn old-btn" type="button" onclick="toggleEstoquePicker()">Buscar no estoque</button>
-        <button class="btn old-btn" type="button" onclick="addSelectedOrPrompt()">Adicionar item</button>
-        <span id="selectedItemLabel">Nenhum item selecionado</span>
-      </div>
-
-      <div id="estoquePicker" class="desktop-stock-picker hidden-helper">
-        <input type="search" id="estoqueBusca" placeholder="Digite para buscar no estoque">
-        <div id="estoqueResultados" class="results-list"></div>
-        <div class="manual-item-line">
-          <input id="itemCategoria" placeholder="Categoria">
-          <input id="itemNome" placeholder="Item">
-          <input id="itemQtde" value="1" inputmode="decimal" placeholder="Qtde">
-          <input id="itemValor" placeholder="Unitário (R$)" inputmode="decimal">
-          <select id="itemBaixa"><option value="1">Baixar estoque</option><option value="0">Não baixar</option></select>
-        </div>
-      </div>
-
-      <div class="desktop-table-wrap itens-wrap">
-        <table id="itensTable" class="desktop-itens-table">
-          <thead>
-            <tr>
-              <th>Categoria</th>
-              <th>Item</th>
-              <th>Qtde</th>
-              <th>Unitário (R$)</th>
-              <th>Total (R$)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for it in itens %}
-            <tr onclick="selectItemRow(this)">
-              <td><input name="item_categoria[]" value="{{ it.categoria }}"></td>
-              <td><input name="item_nome[]" value="{{ it.item }}"><input type="hidden" name="item_baixa[]" value="{{ it.baixa_estoque if it.baixa_estoque is defined else 1 }}"></td>
-              <td><input name="item_qtde[]" value="{{ it.qtde }}" inputmode="decimal" oninput="recalcItens()"></td>
-              <td><input name="item_valor[]" value="{{ '%.2f'|format(it.valor_unit or 0) }}" inputmode="decimal" oninput="recalcItens()"></td>
-              <td class="row-total">{{ br_money((it.qtde or 0) * (it.valor_unit or 0)) }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-
-      <div class="mao-obra-line">
-        <label class="field-inline mao-desc"><span>Mão de obra:</span><input id="maoObraDesc"></label>
-        <label class="field-inline mao-valor"><span>Preço (R$):</span><input id="maoObraValor" inputmode="decimal"></label>
-        <button class="btn old-btn" type="button" onclick="addMaoObraInline()">Adicionar</button>
-      </div>
-      <button class="btn old-btn remove-selected" type="button" onclick="removeSelectedItem()">Remover selecionado</button>
-      <div class="desktop-total">Total: <span id="itensTotal">R$ 0,00</span></div>
-    </div>
-
+    <input type="hidden" name="proxima_manut_km" id="proxima_manut_km" value="{{ br_int(os.proxima_manut_km) if os else '' }}">
+    <input type="hidden" name="data" value="{{ os.data if os else today_br() }}">
     <input type="hidden" name="observacoes" value="{{ os.observacoes if os else '' }}">
-  </section>
+    <textarea name="descricao" style="display:none">{{ os.descricao if os else '' }}</textarea>
 
-  <div class="desktop-bottom-actions no-print">
-    <button class="btn old-btn" type="submit">Salvar cadastro + serviço</button>
-    <button class="btn old-btn" type="button" onclick="excluirPorPlaca()">Excluir por placa</button>
-    <a class="btn old-btn" href="{{ url_for('nova_os') }}">Limpar</a>
-    {% if os %}<a class="btn old-btn" href="{{ url_for('ver_os', sid=os.id) }}">Cancelar edição</a>{% endif %}
+    <button class="click pos-buscarEstoque" type="button" onclick="toggleEstoquePicker()">Buscar no estoque</button>
+    <button class="click pos-addItem" type="button" onclick="addSelectedOrPrompt()">Adicionar item</button>
+    <span id="selectedItemLabel" class="selected-text pos-selectedLabel">Nenhum item selecionado</span>
+
+    <div id="estoquePicker" class="clone-picker hidden-helper">
+      <input type="search" id="estoqueBusca" placeholder="Digite para buscar no estoque">
+      <div id="estoqueResultados" class="results-list"></div>
+      <div class="manual-item-line">
+        <input id="itemCategoria" placeholder="Categoria">
+        <input id="itemNome" placeholder="Item">
+        <input id="itemQtde" value="1" inputmode="decimal" placeholder="Qtde">
+        <input id="itemValor" placeholder="Unitário (R$)" inputmode="decimal">
+        <select id="itemBaixa"><option value="1">Baixar estoque</option><option value="0">Não baixar</option></select>
+      </div>
+    </div>
+
+    <table id="itensTable" class="clone-table pos-table">
+      <colgroup><col style="width:20%"><col style="width:25%"><col style="width:17%"><col style="width:19%"><col style="width:19%"></colgroup>
+      <thead><tr><th></th><th></th><th></th><th></th><th></th></tr></thead>
+      <tbody>
+      {% for it in itens %}
+        <tr onclick="selectItemRow(this)">
+          <td><input name="item_categoria[]" value="{{ it.categoria }}"></td>
+          <td><input name="item_nome[]" value="{{ it.item }}"><input type="hidden" name="item_baixa[]" value="{{ it.baixa_estoque if it.baixa_estoque is defined else 1 }}"></td>
+          <td><input name="item_qtde[]" value="{{ it.qtde }}" inputmode="decimal" oninput="recalcItens()"></td>
+          <td><input name="item_valor[]" value="{{ '%.2f'|format(it.valor_unit or 0) }}" inputmode="decimal" oninput="recalcItens()"></td>
+          <td class="row-total">{{ br_money((it.qtde or 0) * (it.valor_unit or 0)) }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+    <input class="pos-mao_desc" id="maoObraDesc">
+    <input class="pos-mao_valor" id="maoObraValor" inputmode="decimal">
+    <button class="click pos-mao_add" type="button" onclick="addMaoObraInline()">Adicionar</button>
+    <button class="click pos-remove" type="button" onclick="removeSelectedItem()">Remover selecionado</button>
+    <div class="clone-total pos-total">Total: <span id="itensTotal">R$ 0,00</span></div>
+
+    <button class="click pos-save" type="submit">Salvar cadastro + serviço</button>
+    <button class="click pos-delplate" type="button" onclick="excluirPorPlaca()">Excluir por placa</button>
+    <a class="navlink pos-clear" href="{{ url_for('nova_os') }}">Limpar</a>
+    <div class="helper-search hidden-helper no-print"><input type="search" id="clienteBusca" placeholder="Digite nome, telefone ou placa para puxar cadastro"></div>
+    <div id="clienteResultados" class="results-list no-print" style="position:absolute;left:2%;right:2%;top:31%;z-index:50;background:#fff"></div>
   </div>
 </form>
-{% endblock %}
-
-{% block scripts %}
+<script src="{{ url_for('static', filename='app.js') }}"></script>
 <script>
+
+// Funções da tela clonada mantendo visual antigo
+let SELECTED_ESTOQUE_ITEM = null;
+let SELECTED_ROW = null;
+function toggleEstoquePicker(){
+  const picker=document.getElementById('estoquePicker');
+  if(!picker) return;
+  picker.classList.toggle('hidden-helper');
+  if(!picker.classList.contains('hidden-helper')) document.getElementById('estoqueBusca')?.focus();
+}
+function pickEstoque(r){
+  SELECTED_ESTOQUE_ITEM = r || null;
+  const set=(id,v)=>{const el=document.getElementById(id); if(el) el.value=v||'';};
+  set('itemCategoria', r.categoria || 'Outros');
+  set('itemNome', r.item || '');
+  set('itemValor', Number(r.preco || 0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}));
+  set('itemQtde','1');
+  const label=document.getElementById('selectedItemLabel');
+  if(label) label.textContent = r.item ? `${r.item} selecionado` : 'Nenhum item selecionado';
+}
+function addSelectedOrPrompt(){
+  let nome=document.getElementById('itemNome')?.value || '';
+  let cat=document.getElementById('itemCategoria')?.value || 'Outros';
+  let qtde=document.getElementById('itemQtde')?.value || '1';
+  let valor=document.getElementById('itemValor')?.value || '0,00';
+  let baixa=document.getElementById('itemBaixa')?.value || '1';
+  if(!nome.trim()){
+    nome = prompt('Nome do item:', '') || '';
+    if(!nome.trim()) return;
+    cat = prompt('Categoria:', 'Outros') || 'Outros';
+    qtde = prompt('Quantidade:', '1') || '1';
+    valor = prompt('Valor unitário:', '0,00') || '0,00';
+    baixa = '1';
+  }
+  addItemRow(cat,nome,qtde,valor,baixa);
+  ['itemNome','itemValor','estoqueBusca'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
+  const q=document.getElementById('itemQtde'); if(q) q.value='1';
+  const box=document.getElementById('estoqueResultados'); if(box) box.innerHTML='';
+  const label=document.getElementById('selectedItemLabel'); if(label) label.textContent='Nenhum item selecionado';
+}
+function addItemRow(cat,nome,qtde,valor,baixa){
+  const tbody=document.querySelector('#itensTable tbody'); if(!tbody) return;
+  const tr=document.createElement('tr');
+  tr.onclick=()=>selectItemRow(tr);
+  tr.innerHTML = `<td><input name="item_categoria[]" value="${escapeHtml(cat)}"></td>
+    <td><input name="item_nome[]" value="${escapeHtml(nome)}"><input type="hidden" name="item_baixa[]" value="${escapeHtml(baixa || '1')}"></td>
+    <td><input name="item_qtde[]" value="${escapeHtml(qtde)}" inputmode="decimal" oninput="recalcItens()"></td>
+    <td><input name="item_valor[]" value="${escapeHtml(valor)}" inputmode="decimal" oninput="recalcItens()"></td>
+    <td class="row-total">R$ 0,00</td>`;
+  tbody.appendChild(tr); recalcItens();
+}
+function addMaoObraInline(){
+  const desc=document.getElementById('maoObraDesc')?.value || 'Mão de obra';
+  const valor=document.getElementById('maoObraValor')?.value || '0,00';
+  if(!desc.trim()) return;
+  addItemRow('Mão de obra', desc, '1', valor, '0');
+  document.getElementById('maoObraDesc').value='';
+  document.getElementById('maoObraValor').value='';
+}
+function selectItemRow(tr){
+  document.querySelectorAll('#itensTable tbody tr').forEach(r=>r.style.background='transparent');
+  SELECTED_ROW=tr; tr.style.background='rgba(0,120,215,.08)';
+}
+function removeSelectedItem(){
+  if(SELECTED_ROW){ SELECTED_ROW.remove(); SELECTED_ROW=null; recalcItens(); }
+}
+
 window.BRANDS = {{ brands|tojson }};
 window.CATALOGO = {{ catalogo|tojson }};
 window.addEventListener('DOMContentLoaded', () => {
-  setupVehicleOptions();
-  setupCalculations();
-  setupEstoqueSearch();
-  recalcItens();
-  // LAYOUT_EXATAMENTE_ASSIM_20260831
-  setServiceTab('itens');
-  window.scrollTo({top: 0, behavior: 'instant'});
-  const km = document.getElementById('km_atual');
-  const prox = document.getElementById('proxima_manut_km');
-  const prev = document.getElementById('proxOleoPreview');
-  function syncPreview(){ if(prev && prox){ prev.textContent = prox.value || '—'; } }
-  [km,prox,document.getElementById('intervalo_km')].forEach(el => el && el.addEventListener('input', syncPreview));
-  syncPreview();
+  setupVehicleOptions(); setupCalculations(); setupEstoqueSearch(); recalcItens();
 });
 </script>
-{% endblock %}
+</body>
+</html>

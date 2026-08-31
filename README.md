@@ -1,30 +1,12 @@
-# Jairo Oficina Web - Cadastro/OS no visual desktop antigo
+# Mecânica do Jairo - Clone visual exato da tela antiga
 
-Pacote para Coolify mantendo:
-- Banco antigo: `/data/oficina.db`
-- Volume: `mecanica-jairo-data:/data`
-- Correção SQLite sem `DEFAULT CURRENT_TIMESTAMP`
-- Gunicorn com 1 worker
-- Aba Cadastro/OS remodelada para ficar no mesmo desenho do programa desktop antigo.
+Marcador: CLONE_VISUAL_EXATO_PRINT_ANTIGO_20260831
 
-## Conferência após deploy
-No terminal do Coolify:
+Esta versão usa a tela antiga como base visual da aba Cadastro/OS, com campos transparentes sobrepostos para manter o funcionamento.
 
-```bash
-grep -n "LAYOUT_CADASTRO_PIXEL_DESKTOP" /app/app.py /app/static/style.css
-```
+Banco preservado:
+- Volume: mecanica-jairo-data:/data
+- Banco: /data/oficina.db
 
-Tem que aparecer:
-
-```txt
-LAYOUT_CADASTRO_PIXEL_DESKTOP_20260831_1735
-```
-
-## Backup antes do redeploy
-
-```bash
-cp /data/oficina.db /data/oficina.db.backup_antes_layout_pixel_desktop
-```
-
-
-Marcador desta versão: LAYOUT_EXATAMENTE_ASSIM_20260831
+Antes do deploy:
+cp /data/oficina.db /data/oficina.db.backup_antes_clone_visual_exato
