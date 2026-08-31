@@ -2,11 +2,15 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>OS #{{ os.id }}</title>
+    <title></title>
     <style>
-        /* RESTAURA_MODELO_ANTIGO_IMPRESSAO_OS_20260831 */
-        @page { margin: 16mm; }
-        body { font-family: Arial, Helvetica, sans-serif; margin:0; padding:16mm; color:#111827; }
+        /* VOLTA_IMPRESSAO_OS_20260831 */
+        /* REMOVE_CABECALHO_RODAPE_BROWSER_IMPRESSAO_OS_20260831 */
+        /* Zera a margem da página para cortar o cabeçalho/rodapé automático do navegador.
+           A margem visual da OS continua no body abaixo. */
+        @page { margin: 0; }
+        html, body { margin:0; }
+        body { font-family: Arial, Helvetica, sans-serif; padding:16mm; color:#111827; }
         .header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:0px; }
         .empresa { font-size:13px; line-height:1.45; }
         .empresa b { font-size:16px; }
@@ -22,10 +26,24 @@
         p { font-size:13px; line-height:1.4; }
         .logo img { height:200px; display:block; object-fit:contain; margin:0; padding:0; }
         .qr img { height:200px; display:block; }
-        @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+        .print-toolbar { position:fixed; top:0; left:0; right:0; z-index:9999; height:54px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 14px; background:#ffffff; border-bottom:1px solid #e5e7eb; box-shadow:0 2px 10px rgba(0,0,0,.08); font-family:Arial, Helvetica, sans-serif; }
+        .print-toolbar .toolbar-title { font-size:14px; font-weight:700; color:#1f2937; }
+        .print-toolbar .toolbar-actions { display:flex; gap:8px; align-items:center; }
+        .print-toolbar a, .print-toolbar button { height:38px; border:1px solid #d1d5db; border-radius:6px; background:#fff; color:#111827; padding:0 14px; font-size:14px; font-weight:600; text-decoration:none; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; }
+        .print-toolbar .back-btn { background:#f3f4f6; }
+        .print-toolbar .print-btn { background:#0f766e; color:#fff; border-color:#0f766e; }
+        @media screen { body { padding-top:calc(16mm + 54px); } }
+        @media print { .print-toolbar { display:none!important; } body { padding:16mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
     </style>
 </head>
-<body onload="window.print()">
+<body onload="document.title=''; setTimeout(() => window.print(), 150)">
+    <div class="print-toolbar no-print">
+        <div class="toolbar-title">Impressão da OS #{{ os.id }}</div>
+        <div class="toolbar-actions">
+            <a class="back-btn" href="{{ url_for('ver_os', sid=os.id) }}">← Voltar para OS</a>
+            <button class="print-btn" type="button" onclick="window.print()">Imprimir novamente</button>
+        </div>
+    </div>
     <!-- MECANICA_DO_JAIRO v1.2 (nobg) - modelo antigo restaurado -->
     <div class="header" style="display:block; position:relative; padding-right:150px; min-height:0px; margin-bottom:0px;">
         <div class="brandwrap" style="display:flex; flex-direction:column; align-items:flex-start; gap:8px; max-width: calc(100% - 260px);">
