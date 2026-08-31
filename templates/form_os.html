@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
 <style>
-/* CADASTRO_ANTIGO_REAL_SEM_IMAGEM_20260831
+/* CADASTRO_ANTIGO_REAL_AJUSTE_ALINHAMENTO_20260831
+   derivado de SEM_IMAGEM
+   e ajuste fino de alinhamento
+
+   original marker: CADASTRO_ANTIGO_REAL_SEM_IMAGEM_20260831
    Tela refeita em HTML/CSS real. Não usa print de fundo. Os cliques ficam nos campos de verdade. */
-.work-page{padding:0!important;background:#fff!important;overflow:hidden!important;}
+.work-page{padding:0!important;background:#fff!important;overflow:auto!important;}
 .page.work-page{min-height:calc(100vh - 191px)!important;}
-.jairo-old-real-form{height:calc(100vh - 191px);min-height:720px;display:flex;flex-direction:column;margin:0;padding:0;background:#fff;color:#26354a;font-family:"Segoe UI",Tahoma,Arial,sans-serif;font-size:16px;overflow:hidden;}
+.jairo-old-real-form{height:calc(100vh - 191px);min-height:735px;display:flex;flex-direction:column;margin:0;padding:0;background:#fff;color:#26354a;font-family:"Segoe UI",Tahoma,Arial,sans-serif;font-size:16px;overflow:hidden;}
 .jairo-old-real-form *{box-sizing:border-box;}
 .jairo-old-real-form button,.jairo-old-real-form input,.jairo-old-real-form select,.jairo-old-real-form textarea{font-family:"Segoe UI",Tahoma,Arial,sans-serif;font-size:16px;color:#1f2d40;}
 .jairo-old-real-form input,.jairo-old-real-form select{height:40px;border:1px solid #dfe4e8;border-radius:4px;background:#fff;box-shadow:inset 0 1px 2px rgba(0,0,0,.035);padding:5px 9px;outline:none;}
@@ -28,8 +32,8 @@
 .jairo-old-real-form .hidden-helper{display:none!important;}
 .jairo-old-real-form #clienteResultados{position:absolute;left:8px;right:8px;top:116px;z-index:50;background:#fff;border-radius:4px;max-height:190px;overflow:auto;}
 /* Veículo */
-.jairo-old-real-form .fs-veiculo{height:235px;flex:0 0 235px;}
-.jairo-old-real-form .vehicle-grid{display:grid;grid-template-columns:585px 640px 1fr;grid-template-rows:43px 43px 43px 43px 43px 28px;align-items:center;column-gap:20px;row-gap:0;}
+.jairo-old-real-form .fs-veiculo{height:255px;flex:0 0 255px;padding-bottom:10px;}
+.jairo-old-real-form .vehicle-grid{display:grid;grid-template-columns:585px 640px 1fr;grid-template-rows:44px 44px 44px 44px 44px 32px;align-items:center;column-gap:20px;row-gap:2px;}
 .jairo-old-real-form .vehicle-left{grid-template-columns:278px 306px;}
 .jairo-old-real-form .vehicle-right{grid-template-columns:255px 370px;}
 .jairo-old-real-form .marca-line{grid-column:1;grid-row:1;}
@@ -43,15 +47,15 @@
 .jairo-old-real-form .hint-correia{grid-column:2;grid-row:4;font-size:15px;color:#26354a;align-self:center;}
 .jairo-old-real-form .correia-feita-line{grid-column:1;grid-row:5;grid-template-columns:278px 156px;}
 .jairo-old-real-form .correia-proxima-line{grid-column:2;grid-row:5;grid-template-columns:255px 156px;}
-.jairo-old-real-form .proxima-line{grid-column:1/3;grid-row:6;font-size:16px;font-weight:500;color:#26354a;align-self:start;}
+.jairo-old-real-form .proxima-line{grid-column:1/3;grid-row:6;font-size:16px;font-weight:500;color:#26354a;align-self:center;padding-top:2px;}
 /* KM apenas registro */
-.jairo-old-real-form .fs-km{height:56px;flex:0 0 56px;padding-top:18px;}
+.jairo-old-real-form .fs-km{margin-top:4px;height:62px;flex:0 0 62px;padding-top:18px;}
 .jairo-old-real-form .km-row{display:flex;align-items:center;gap:8px;height:32px;}
 .jairo-old-real-form .km-reg{display:grid;grid-template-columns:82px 128px;align-items:center;column-gap:7px;}
 .jairo-old-real-form .km-reg input{height:34px;}
 .jairo-old-real-form .km-note{font-size:15px;color:#26354a;}
 /* Serviço */
-.jairo-old-real-form .fs-servico{flex:1 1 auto;min-height:305px;padding:0 8px 7px;overflow:hidden;}
+.jairo-old-real-form .fs-servico{margin-top:4px;flex:1 1 auto;min-height:305px;padding:0 8px 7px;overflow:hidden;}
 .jairo-old-real-form .fs-servico legend{position:relative;top:8px;z-index:2;background:#fff;}
 .jairo-old-real-form .service-tabs{height:65px;margin:0 -8px;background:#e8e8e8;border-bottom:1px solid #dfe2e6;display:flex;align-items:flex-end;justify-content:center;}
 .jairo-old-real-form .service-tabs button{height:60px;width:165px;border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;background:transparent;color:#26354a;cursor:pointer;}
