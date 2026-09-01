@@ -1,3 +1,4 @@
+// MSG_ITEM_ADICIONADO_FECHAR_BUSCA_20260901
 // CORRIGE_BUSCA_ITEM_PAROU_20260831
 // REMOVER_ITEM_SELECIONADO_20260831
 // FLUXO_SELECIONAR_QTD_ADICIONAR_20260831
@@ -101,7 +102,24 @@ async function searchEstoque(q){
     box.innerHTML = `<div class="empty error-box">Não consegui buscar no estoque. Erro: ${escapeHtml(err.message || err)}. Veja os logs do Coolify.</div>`;
   }
 }
+
+function hideItemAddedNoticeOldReal(){
+  const notice = document.getElementById('itemAddedNotice');
+  if(notice) notice.classList.remove('show');
+}
+function showItemAddedNoticeOldReal(nome){
+  const texto = `✅ Item adicionado: ${nome}. Se não quiser adicionar mais, só apertar em Fechar busca.`;
+  const notice = document.getElementById('itemAddedNotice');
+  const noticeText = document.getElementById('itemAddedNoticeText');
+  if(noticeText) noticeText.textContent = texto;
+  if(notice) notice.classList.add('show');
+  const label = document.getElementById('selectedItemLabel');
+  if(label) label.textContent = 'Item adicionado. Pode escolher outro ou fechar a busca.';
+  const status = document.getElementById('estoqueStatus');
+  if(status) status.textContent = 'Item adicionado na OS. Para parar, clique em Fechar busca.';
+}
 function pickEstoque(r){
+  hideItemAddedNoticeOldReal();
   // FLUXO_SELECIONAR_QTD_ADICIONAR_20260831
   // Primeiro seleciona o item; depois o usuário informa quantidade e clica em Adicionar item.
   const cat = r.categoria || 'Outros';
@@ -135,6 +153,7 @@ function addItemFromInputs(){
   document.getElementById('itemQtde').value='1';
   document.getElementById('estoqueBusca').value='';
   document.getElementById('estoqueResultados').innerHTML='';
+  showItemAddedNoticeOldReal(nome);
 }
 function addMaoObra(){
   const desc = prompt('Descrição da mão de obra:', 'Mão de obra');

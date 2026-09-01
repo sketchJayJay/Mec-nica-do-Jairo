@@ -187,6 +187,13 @@
 .jairo-old-real-form .picker-search{width:100%!important;height:52px!important;font-size:21px!important;font-weight:600!important;border:2px solid #9ac8ed!important;border-radius:7px!important;padding:8px 92px 8px 14px!important;}
 .jairo-old-real-form .picker-clear-btn{position:absolute;right:10px;top:8px;height:36px;min-height:36px;padding:0 16px;border:0;background:#e7f1ff;color:#145da0;border-radius:999px;cursor:pointer;font-weight:800;font-size:15px;}
 .jairo-old-real-form .estoque-status{font-size:15px;font-weight:800;color:#145da0;background:#eef7ff;border:1px solid #cde5fa;padding:9px 12px;border-radius:7px;margin-bottom:10px;}
+/* MSG_ITEM_ADICIONADO_FECHAR_BUSCA_20260901 */
+.jairo-old-real-form .item-added-notice{display:none;align-items:center;justify-content:space-between;gap:10px;background:#ecfdf5;border:1px solid #9ee6ca;color:#064e3b;border-radius:8px;padding:10px 12px;margin:0 0 9px 0;font-size:14px;font-weight:800;box-shadow:0 6px 18px rgba(6,78,59,.10);}
+.jairo-old-real-form .item-added-notice.show{display:flex;}
+.jairo-old-real-form .item-added-notice-text{display:flex;align-items:center;gap:8px;line-height:1.25;}
+.jairo-old-real-form .item-added-notice .notice-close-btn{background:#0f766e;color:#fff;border:0;border-radius:7px;padding:8px 12px;font-weight:800;cursor:pointer;white-space:nowrap;}
+.jairo-old-real-form .item-added-notice .notice-close-btn:hover{filter:brightness(.96);}
+
 .jairo-old-real-form #estoqueResultados{max-height:none!important;height:100%!important;overflow-y:auto!important;border:1px solid #dbe8f4!important;background:#f7fbff!important;border-radius:8px!important;padding:10px!important;}
 .jairo-old-real-form .result-item-card{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;text-align:left;background:#fff;border:1px solid #d7e3ed;border-radius:9px;padding:13px 16px;margin-bottom:9px;cursor:pointer;}
 .jairo-old-real-form .result-item-card:hover{border-color:#1683d8;background:#f8fcff;}
@@ -490,6 +497,10 @@
           <button class="picker-clear-btn" type="button" onclick="clearEstoqueBuscaOldReal()">Limpar</button>
         </div>
         <div id="estoqueStatus" class="estoque-status">Mostrando itens do estoque</div>
+        <div id="itemAddedNotice" class="item-added-notice" aria-live="polite">
+          <span id="itemAddedNoticeText" class="item-added-notice-text">✅ Item adicionado. Se não quiser adicionar mais, só apertar em Fechar busca.</span>
+          <button class="notice-close-btn" type="button" onclick="toggleStockPickerOldReal()">Fechar busca</button>
+        </div>
         <div id="estoqueResultados" class="results-list"></div>
         <div class="manual-item-line selected-stock-panel" id="selectedStockPanel">
           <label>Categoria
@@ -579,13 +590,34 @@ function toggleStockPickerOldReal(){
   }
 }
 function clearEstoqueBuscaOldReal(){
+  hideItemAddedNoticeOldReal();
   const busca = document.getElementById('estoqueBusca');
   if(busca){ busca.value=''; busca.focus(); }
   searchEstoque('');
 }
+
+function hideItemAddedNoticeOldReal(){
+  const notice = document.getElementById('itemAddedNotice');
+  if(notice) notice.classList.remove('show');
+}
+function showItemAddedNoticeOldReal(nome){
+  const texto = `✅ Item adicionado: ${nome}. Se não quiser adicionar mais, só apertar em Fechar busca.`;
+  const notice = document.getElementById('itemAddedNotice');
+  const noticeText = document.getElementById('itemAddedNoticeText');
+  if(noticeText) noticeText.textContent = texto;
+  if(notice){
+    notice.classList.add('show');
+    notice.scrollIntoView({block:'nearest', behavior:'smooth'});
+  }
+  const label = document.getElementById('selectedItemLabel');
+  if(label) label.textContent = 'Item adicionado. Pode escolher outro ou fechar a busca.';
+  const status = document.getElementById('estoqueStatus');
+  if(status) status.textContent = 'Item adicionado na OS. Para parar, clique em Fechar busca.';
+}
 window.pickEstoque = function(r){
   // FLUXO_SELECIONAR_QTD_ADICIONAR_20260831
   // Clicar em Usar apenas seleciona. Depois informa quantidade e clica em Adicionar item.
+  hideItemAddedNoticeOldReal();
   const cat = r.categoria || 'Outros';
   const nome = r.item || '';
   const valor = Number(r.preco || 0).toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2});
@@ -606,6 +638,7 @@ window.pickEstoque = function(r){
   if(q){ q.focus(); q.select?.(); }
 };
 function clearSelectedStockOldReal(){
+  hideItemAddedNoticeOldReal();
   ['itemCategoria','itemNome','itemValor'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
   const q = document.getElementById('itemQtde'); if(q) q.value='1';
   const baixa = document.getElementById('itemBaixa'); if(baixa) baixa.value='1';
@@ -631,9 +664,8 @@ function addSelectedItemOldReal(){
   const q = document.getElementById('itemQtde'); if(q) q.value='1';
   const b = document.getElementById('estoqueBusca'); if(b) b.value='';
   const r = document.getElementById('estoqueResultados'); if(r) r.innerHTML='';
-  const label = document.getElementById('selectedItemLabel'); if(label) label.textContent='Item adicionado. Pode escolher outro.';
-  const status = document.getElementById('estoqueStatus'); if(status) status.textContent='Item adicionado na OS. Escolha outro item ou feche a busca.';
   const panel = document.getElementById('selectedStockPanel'); if(panel) panel.classList.remove('selected-stock-active');
+  showItemAddedNoticeOldReal(nome);
 }
 function addItemRowOldReal(cat,nome,qtde,valor,baixa){
   const tbody = document.querySelector('#itensTable tbody');
