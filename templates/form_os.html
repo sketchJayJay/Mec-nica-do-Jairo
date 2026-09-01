@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<!-- MSG_ITEM_MELHOR_VOLTA_IMPRIMIR_ESTOQUE_20260901 -->
 <!-- CADASTRO_AREAS_MENORES_20260831 -->
 <!-- CORRIGE_BUSCA_ITEM_PAROU_20260831 -->
 <!-- EXCLUIR_ITEM_LINHA_EDITAR_OS_20260831 -->
@@ -188,11 +189,18 @@
 .jairo-old-real-form .picker-clear-btn{position:absolute;right:10px;top:8px;height:36px;min-height:36px;padding:0 16px;border:0;background:#e7f1ff;color:#145da0;border-radius:999px;cursor:pointer;font-weight:800;font-size:15px;}
 .jairo-old-real-form .estoque-status{font-size:15px;font-weight:800;color:#145da0;background:#eef7ff;border:1px solid #cde5fa;padding:9px 12px;border-radius:7px;margin-bottom:10px;}
 /* MSG_ITEM_ADICIONADO_FECHAR_BUSCA_20260901 */
-.jairo-old-real-form .item-added-notice{display:none;align-items:center;justify-content:space-between;gap:10px;background:#ecfdf5;border:1px solid #9ee6ca;color:#064e3b;border-radius:8px;padding:10px 12px;margin:0 0 9px 0;font-size:14px;font-weight:800;box-shadow:0 6px 18px rgba(6,78,59,.10);}
+/* MSG_ITEM_MELHOR_VOLTA_IMPRIMIR_ESTOQUE_20260901 */
+.jairo-old-real-form .item-added-notice{display:none;align-items:center;justify-content:space-between;gap:12px;background:#f0fdfa;border:1px solid #7dd3c7;color:#123f3a;border-radius:10px;padding:10px 12px;margin:0 0 9px 0;font-size:13px;font-weight:700;box-shadow:0 8px 22px rgba(15,118,110,.12);}
 .jairo-old-real-form .item-added-notice.show{display:flex;}
-.jairo-old-real-form .item-added-notice-text{display:flex;align-items:center;gap:8px;line-height:1.25;}
-.jairo-old-real-form .item-added-notice .notice-close-btn{background:#0f766e;color:#fff;border:0;border-radius:7px;padding:8px 12px;font-weight:800;cursor:pointer;white-space:nowrap;}
-.jairo-old-real-form .item-added-notice .notice-close-btn:hover{filter:brightness(.96);}
+.jairo-old-real-form .item-added-notice-left{display:flex;align-items:center;gap:10px;min-width:0;}
+.jairo-old-real-form .item-added-icon{width:30px;height:30px;border-radius:50%;background:#0f766e;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:900;flex:0 0 auto;}
+.jairo-old-real-form .item-added-notice-text{display:block;line-height:1.25;}
+.jairo-old-real-form .item-added-notice-title{font-size:14px;font-weight:900;color:#064e3b;display:block;}
+.jairo-old-real-form .item-added-notice-sub{font-size:12px;font-weight:700;color:#315d59;display:block;margin-top:2px;}
+.jairo-old-real-form .item-added-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto;}
+.jairo-old-real-form .item-added-notice .notice-another-btn{background:#fff;color:#0f4c81;border:1px solid #b9d8f1;border-radius:8px;padding:8px 11px;font-weight:900;cursor:pointer;white-space:nowrap;}
+.jairo-old-real-form .item-added-notice .notice-close-btn{background:#0f766e;color:#fff;border:0;border-radius:8px;padding:8px 12px;font-weight:900;cursor:pointer;white-space:nowrap;}
+.jairo-old-real-form .item-added-notice .notice-close-btn:hover,.jairo-old-real-form .item-added-notice .notice-another-btn:hover{filter:brightness(.97);}
 
 .jairo-old-real-form #estoqueResultados{max-height:none!important;height:100%!important;overflow-y:auto!important;border:1px solid #dbe8f4!important;background:#f7fbff!important;border-radius:8px!important;padding:10px!important;}
 .jairo-old-real-form .result-item-card{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;text-align:left;background:#fff;border:1px solid #d7e3ed;border-radius:9px;padding:13px 16px;margin-bottom:9px;cursor:pointer;}
@@ -498,8 +506,17 @@
         </div>
         <div id="estoqueStatus" class="estoque-status">Mostrando itens do estoque</div>
         <div id="itemAddedNotice" class="item-added-notice" aria-live="polite">
-          <span id="itemAddedNoticeText" class="item-added-notice-text">✅ Item adicionado. Se não quiser adicionar mais, só apertar em Fechar busca.</span>
-          <button class="notice-close-btn" type="button" onclick="toggleStockPickerOldReal()">Fechar busca</button>
+          <div class="item-added-notice-left">
+            <span class="item-added-icon">✓</span>
+            <span id="itemAddedNoticeText" class="item-added-notice-text">
+              <span class="item-added-notice-title">Item adicionado com sucesso.</span>
+              <span class="item-added-notice-sub">Pode escolher outro item ou clicar em Fechar busca para voltar para a OS.</span>
+            </span>
+          </div>
+          <div class="item-added-actions">
+            <button class="notice-another-btn" type="button" onclick="focusSearchAfterAddOldReal()">Adicionar outro</button>
+            <button class="notice-close-btn" type="button" onclick="toggleStockPickerOldReal()">Fechar busca</button>
+          </div>
         </div>
         <div id="estoqueResultados" class="results-list"></div>
         <div class="manual-item-line selected-stock-panel" id="selectedStockPanel">
@@ -600,7 +617,25 @@ function hideItemAddedNoticeOldReal(){
   const notice = document.getElementById('itemAddedNotice');
   if(notice) notice.classList.remove('show');
 }
+function focusSearchAfterAddOldReal(){
+  hideItemAddedNoticeOldReal();
+  const busca = document.getElementById('estoqueBusca');
+  if(busca){ busca.focus(); busca.select?.(); }
+}
 function showItemAddedNoticeOldReal(nome){
+  const notice = document.getElementById('itemAddedNotice');
+  const noticeText = document.getElementById('itemAddedNoticeText');
+  if(noticeText){
+    noticeText.innerHTML = `<span class="item-added-notice-title">${escapeHtml(nome)} adicionado na OS.</span><span class="item-added-notice-sub">Pode escolher outro item ou clicar em Fechar busca para voltar para a OS.</span>`;
+  }
+  if(notice) notice.classList.add('show');
+  const label = document.getElementById('selectedItemLabel');
+  if(label) label.textContent = `${nome} adicionado. Pode adicionar outro.`;
+  const status = document.getElementById('estoqueStatus');
+  if(status) status.textContent = 'Item adicionado. A busca continua aberta para escolher outro.';
+}
+
+function showItemAddedNoticeOldReal_OLD(nome){
   const texto = `✅ Item adicionado: ${nome}. Se não quiser adicionar mais, só apertar em Fechar busca.`;
   const notice = document.getElementById('itemAddedNotice');
   const noticeText = document.getElementById('itemAddedNoticeText');
@@ -662,10 +697,9 @@ function addSelectedItemOldReal(){
   );
   ['itemCategoria','itemNome','itemValor'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
   const q = document.getElementById('itemQtde'); if(q) q.value='1';
-  const b = document.getElementById('estoqueBusca'); if(b) b.value='';
-  const r = document.getElementById('estoqueResultados'); if(r) r.innerHTML='';
   const panel = document.getElementById('selectedStockPanel'); if(panel) panel.classList.remove('selected-stock-active');
   showItemAddedNoticeOldReal(nome);
+  const busca = document.getElementById('estoqueBusca'); if(busca) busca.focus();
 }
 function addItemRowOldReal(cat,nome,qtde,valor,baixa){
   const tbody = document.querySelector('#itensTable tbody');

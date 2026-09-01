@@ -1,3 +1,4 @@
+// MSG_ITEM_MELHOR_VOLTA_IMPRIMIR_ESTOQUE_20260901
 // MSG_ITEM_ADICIONADO_FECHAR_BUSCA_20260901
 // CORRIGE_BUSCA_ITEM_PAROU_20260831
 // REMOVER_ITEM_SELECIONADO_20260831
@@ -107,16 +108,22 @@ function hideItemAddedNoticeOldReal(){
   const notice = document.getElementById('itemAddedNotice');
   if(notice) notice.classList.remove('show');
 }
+function focusSearchAfterAddOldReal(){
+  hideItemAddedNoticeOldReal();
+  const busca = document.getElementById('estoqueBusca');
+  if(busca){ busca.focus(); busca.select?.(); }
+}
 function showItemAddedNoticeOldReal(nome){
-  const texto = `✅ Item adicionado: ${nome}. Se não quiser adicionar mais, só apertar em Fechar busca.`;
   const notice = document.getElementById('itemAddedNotice');
   const noticeText = document.getElementById('itemAddedNoticeText');
-  if(noticeText) noticeText.textContent = texto;
+  if(noticeText){
+    noticeText.innerHTML = `<span class="item-added-notice-title">${escapeHtml(nome)} adicionado na OS.</span><span class="item-added-notice-sub">Pode escolher outro item ou clicar em Fechar busca para voltar para a OS.</span>`;
+  }
   if(notice) notice.classList.add('show');
   const label = document.getElementById('selectedItemLabel');
-  if(label) label.textContent = 'Item adicionado. Pode escolher outro ou fechar a busca.';
+  if(label) label.textContent = `${nome} adicionado. Pode adicionar outro.`;
   const status = document.getElementById('estoqueStatus');
-  if(status) status.textContent = 'Item adicionado na OS. Para parar, clique em Fechar busca.';
+  if(status) status.textContent = 'Item adicionado. A busca continua aberta para escolher outro.';
 }
 function pickEstoque(r){
   hideItemAddedNoticeOldReal();
@@ -151,9 +158,8 @@ function addItemFromInputs(){
   addItemRow(cat,nome,qtde,valor,baixa);
   ['itemNome','itemValor'].forEach(id => document.getElementById(id).value='');
   document.getElementById('itemQtde').value='1';
-  document.getElementById('estoqueBusca').value='';
-  document.getElementById('estoqueResultados').innerHTML='';
   showItemAddedNoticeOldReal(nome);
+  const busca = document.getElementById('estoqueBusca'); if(busca) busca.focus();
 }
 function addMaoObra(){
   const desc = prompt('Descrição da mão de obra:', 'Mão de obra');

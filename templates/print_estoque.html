@@ -1,2 +1,72 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Estoque</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
-<body class="print-page" onload="window.print()"><section class="print-sheet"><h1>Estoque da Oficina do Jairo</h1><p>Lista de itens e preços{% if q %} • filtro: {{ q }}{% endif %}</p><table><thead><tr><th>Categoria</th><th>Item</th><th>Qtd</th><th>Preço</th></tr></thead><tbody>{% for r in rows %}<tr><td>{{ r.categoria }}</td><td>{{ r.item }}</td><td>{{ br_int(r.qtde) }}</td><td>{{ br_money(r.preco) }}</td></tr>{% endfor %}</tbody></table></section></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    /* MSG_ITEM_MELHOR_VOLTA_IMPRIMIR_ESTOQUE_20260901 */
+    @page { margin: 0; }
+    body.print-page { padding: 12mm; background:#fff; }
+    .estoque-print-toolbar {
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: 14px;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
+      background: rgba(255,255,255,.96);
+      border: 1px solid #d9e2ec;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+    }
+    .estoque-print-toolbar a,
+    .estoque-print-toolbar button {
+      height: 38px;
+      padding: 0 16px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #1f2937;
+      font: 700 14px Arial, Helvetica, sans-serif;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .estoque-print-toolbar .primary {
+      background:#0f766e;
+      border-color:#0f766e;
+      color:#fff;
+    }
+    .print-sheet { margin-bottom: 72px; }
+    @media print {
+      .estoque-print-toolbar { display:none!important; }
+      body.print-page { padding: 12mm; }
+      .print-sheet { margin-bottom:0!important; }
+    }
+  </style>
+</head>
+<body class="print-page" onload="window.print()">
+  <section class="print-sheet">
+    <h1>Estoque da Oficina do Jairo</h1>
+    <p>Lista de itens e preços{% if q %} • filtro: {{ q }}{% endif %}</p>
+    <table>
+      <thead><tr><th>Categoria</th><th>Item</th><th>Qtd</th><th>Preço</th></tr></thead>
+      <tbody>
+        {% for r in rows %}
+        <tr><td>{{ r.categoria }}</td><td>{{ r.item }}</td><td>{{ br_int(r.qtde) }}</td><td>{{ br_money(r.preco) }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  <div class="estoque-print-toolbar">
+    <a class="primary" href="{{ url_for('estoque', q=q) }}">← Voltar ao sistema</a>
+    <button type="button" onclick="window.print()">Imprimir novamente</button>
+  </div>
+</body>
+</html>
