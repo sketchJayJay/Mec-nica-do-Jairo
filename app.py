@@ -1,3 +1,4 @@
+# MODELO_OUTROS_INPUT_20260901
 # CORRIGE_ERRO_CATALOGO_MARCAS_20260901
 # MARCA_SELECT_MAIS_MODELOS_20260901
 # MSG_ITEM_MELHOR_VOLTA_IMPRIMIR_ESTOQUE_20260901
@@ -452,6 +453,9 @@ def save_os_from_form(form, servico_id=None):
     telefone = (form.get("telefone") or "").strip()
     marca = (form.get("marca") or "").strip()
     modelo = (form.get("modelo") or "").strip()
+    modelo_outro = (form.get("modelo_outro") or "").strip()
+    if modelo == "__OUTROS__":
+        modelo = modelo_outro or "Modelo não listado"
     placa = (form.get("placa") or "").strip().upper()
     ano = (form.get("ano") or "").strip()
     km_atual = parse_number(form.get("km_atual"), 0)

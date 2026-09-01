@@ -412,6 +412,8 @@
 /* MARCA_SELECT_MAIS_MODELOS_20260901: marca/modelo agora são listas fechadas para não travar no texto digitado. */
 .jairo-old-real-form #marca,
 .jairo-old-real-form #modelo{cursor:pointer;}
+.jairo-old-real-form #modeloOutroWrap{display:none;}
+.jairo-old-real-form #modeloOutroWrap.modelo-outro-show{display:flex;}
 
 </style>
 <form method="post" class="jairo-old-real-form" id="osForm">
@@ -431,6 +433,7 @@
   </div>
   {% endif %}
   <!-- MARCA_SELECT_MAIS_MODELOS_20260901 -->
+  <!-- MODELO_OUTROS_INPUT_20260901 -->
 
   <fieldset class="fs-cliente">
     <legend>Cliente</legend>
@@ -463,6 +466,9 @@
         <select name="modelo" id="modelo" data-current-modelo="{{ os.modelo if os else '' }}">
           <option value="">Selecione a marca primeiro</option>
         </select>
+      </label>
+      <label class="field-inline vehicle-right modelo-outro-line" id="modeloOutroWrap"><span>Modelo:</span>
+        <input name="modelo_outro" id="modelo_outro" placeholder="Digite o modelo" value="">
       </label>
       <label class="field-inline vehicle-left placa-line"><span>Placa:</span><input name="placa" id="placa" value="{{ os.placa if os else '' }}" style="text-transform:uppercase"></label>
       <label class="field-inline vehicle-right ano-line"><span>Ano:</span><input name="ano" id="ano" value="{{ os.ano if os else '' }}"></label>

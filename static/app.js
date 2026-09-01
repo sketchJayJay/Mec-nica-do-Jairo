@@ -1,3 +1,4 @@
+// MODELO_OUTROS_INPUT_20260901
 // MARCA_SELECT_MAIS_MODELOS_20260901
 // MSG_ITEM_MELHOR_VOLTA_IMPRIMIR_ESTOQUE_20260901
 // MSG_ITEM_ADICIONADO_FECHAR_BUSCA_20260901
@@ -32,28 +33,44 @@ function moneyBR(n){
   return (n || 0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 }
 function setupVehicleOptions(){
-  // MARCA_SELECT_MAIS_MODELOS_20260901
-  // Marca e modelo viraram SELECT. Assim não fica preso no texto digitado do datalist.
+  // MODELO_OUTROS_INPUT_20260901
+  // Marca segue fechada em SELECT, mas Modelo ganhou "Outros" com caixinha para digitar.
   const marca = document.getElementById('marca');
   const modelo = document.getElementById('modelo');
+  const modeloOutroWrap = document.getElementById('modeloOutroWrap');
+  const modeloOutro = document.getElementById('modelo_outro');
   if(!marca || !modelo) return;
   const escapeAttr = (s) => String(s || '').replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
   const hasBrand = (b) => !!(window.BRANDS && Object.prototype.hasOwnProperty.call(window.BRANDS, b));
+  function toggleOutro(){
+    const isOutro = modelo.value === '__OUTROS__';
+    if(modeloOutroWrap){ modeloOutroWrap.classList.toggle('modelo-outro-show', isOutro); }
+    if(isOutro && modeloOutro){ setTimeout(() => modeloOutro.focus(), 40); }
+  }
   function fill(preserve=false){
     const marcaAtual = marca.value || '';
     const list = (window.BRANDS && window.BRANDS[marcaAtual]) || [];
     const atual = preserve ? (modelo.dataset.currentModelo || modelo.value || '') : '';
     let html = '<option value="">Selecione o modelo</option>';
     html += list.map(x => `<option value="${escapeAttr(x)}">${escapeHtml(x)}</option>`).join('');
-    if(atual && !list.includes(atual)){
-      html += `<option value="${escapeAttr(atual)}">${escapeHtml(atual)}</option>`;
-    }
+    html += '<option value="__OUTROS__">Outros / digitar modelo</option>';
     modelo.innerHTML = html;
-    modelo.value = atual && (list.includes(atual) || !list.length || !hasBrand(marcaAtual)) ? atual : '';
+    if(atual && list.includes(atual)){
+      modelo.value = atual;
+      if(modeloOutro){ modeloOutro.value = ''; }
+    } else if(atual && (hasBrand(marcaAtual) || !list.includes(atual))){
+      modelo.value = '__OUTROS__';
+      if(modeloOutro){ modeloOutro.value = atual; }
+    } else {
+      modelo.value = '';
+      if(modeloOutro){ modeloOutro.value = ''; }
+    }
     modelo.dataset.currentModelo = '';
+    toggleOutro();
   }
   if(marca.dataset.vehicleSetup !== '1'){
     marca.addEventListener('change', () => fill(false));
+    modelo.addEventListener('change', toggleOutro);
     marca.dataset.vehicleSetup = '1';
   }
   fill(true);
@@ -225,7 +242,14 @@ function fillCliente(r){
   const modeloEl = document.getElementById('modelo');
   if(modeloEl){ modeloEl.dataset.currentModelo = r.modelo || ''; }
   setupVehicleOptions();
-  set('modelo', r.modelo);
+  const marcaEl = document.getElementById('marca');
+  const modelos = (window.BRANDS && marcaEl && window.BRANDS[marcaEl.value]) || [];
+  const modeloOutro = document.getElementById('modelo_outro');
+  if(modeloEl && r.modelo && !modelos.includes(r.modelo)){
+    modeloEl.value = '__OUTROS__';
+    if(modeloOutro){ modeloOutro.value = r.modelo || ''; }
+    modeloEl.dispatchEvent(new Event('change'));
+  }
   set('km_troca_corr', r.km_troca_corr); set('km_corr_trocada', r.km_corr_trocada); set('km_corr_proxima', r.km_corr_proxima);
   document.getElementById('clienteResultados').innerHTML='';
 }
