@@ -1,3 +1,4 @@
+# CORRIGE_EXCLUIR_OS_PRONTA_20260901
 # MODELO_OUTROS_INPUT_20260901
 # CORRIGE_ERRO_CATALOGO_MARCAS_20260901
 # MARCA_SELECT_MAIS_MODELOS_20260901
@@ -385,12 +386,46 @@ def upsert_veiculo(con, cliente_id, marca, modelo, placa, ano, km_atual, km_troc
     return cur.lastrowid
 
 
+def db_table_exists(con, table):
+    try:
+        row = con.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table,)).fetchone()
+        return bool(row)
+    except Exception:
+        return False
+
+
+def db_columns(con, table):
+    try:
+        return {r[1] for r in con.execute(f"PRAGMA table_info({table})").fetchall()}
+    except Exception:
+        return set()
+
+
 def reverse_stock_movements(con, servico_id):
-    rows = con.execute("SELECT * FROM estoque_movimentos WHERE servico_id = ? AND tipo = 'baixa'", (servico_id,)).fetchall()
-    for r in rows:
-        if r["estoque_id"]:
-            con.execute("UPDATE estoque SET qtde = qtde + ?, updated_at=? WHERE id = ?", (r["qtde"] or 0, now_str(), r["estoque_id"]))
-    con.execute("DELETE FROM estoque_movimentos WHERE servico_id = ?", (servico_id,))
+    # CORRIGE_EXCLUIR_OS_PRONTA_20260901
+    # Mais defensivo para banco antigo: se alguma coluna/tabela estiver diferente,
+    # a exclusão da OS não derruba a página inteira.
+    if not db_table_exists(con, "estoque_movimentos"):
+        return
+    mov_cols = db_columns(con, "estoque_movimentos")
+    needed = {"servico_id", "estoque_id", "qtde"}
+    if needed.issubset(mov_cols) and db_table_exists(con, "estoque"):
+        where = "servico_id = ?"
+        if "tipo" in mov_cols:
+            where += " AND (tipo = 'baixa' OR tipo IS NULL OR tipo = '')"
+        rows = con.execute(f"SELECT * FROM estoque_movimentos WHERE {where}", (servico_id,)).fetchall()
+        est_cols = db_columns(con, "estoque")
+        can_update_stock = {"id", "qtde"}.issubset(est_cols)
+        for r in rows:
+            estoque_id = r["estoque_id"] if "estoque_id" in r.keys() else None
+            qtde = r["qtde"] if "qtde" in r.keys() else 0
+            if estoque_id and can_update_stock:
+                if "updated_at" in est_cols:
+                    con.execute("UPDATE estoque SET qtde = qtde + ?, updated_at=? WHERE id = ?", (qtde or 0, now_str(), estoque_id))
+                else:
+                    con.execute("UPDATE estoque SET qtde = qtde + ? WHERE id = ?", (qtde or 0, estoque_id))
+    if "servico_id" in mov_cols:
+        con.execute("DELETE FROM estoque_movimentos WHERE servico_id = ?", (servico_id,))
 
 
 def apply_stock_for_items(con, servico_id, items):
@@ -608,13 +643,30 @@ def editar_os(sid):
 
 
 # EXCLUIR_NOTA_LISTA_OS_20260831
-@app.post("/os/<int:sid>/excluir")
+# CORRIGE_EXCLUIR_OS_PRONTA_20260901
+@app.route("/os/<int:sid>/excluir", methods=["POST", "GET"])
 def excluir_os(sid):
-    with connect_db() as con:
-        reverse_stock_movements(con, sid)
-        con.execute("DELETE FROM servicos WHERE id = ?", (sid,))
-        con.commit()
-    flash(f"OS #{sid} excluída e estoque revertido.", "success")
+    try:
+        with connect_db() as con:
+            existe = con.execute("SELECT id FROM servicos WHERE id = ?", (sid,)).fetchone()
+            if not existe:
+                flash(f"OS #{sid} não encontrada ou já foi excluída.", "warning")
+                return redirect(url_for("listar_os"))
+
+            # Primeiro devolve o estoque vinculado aos movimentos da OS.
+            reverse_stock_movements(con, sid)
+
+            # Depois remove os itens manualmente também, para não depender só do CASCADE
+            # em bancos antigos que foram migrados ao longo das versões.
+            if db_table_exists(con, "itens_servico") and "servico_id" in db_columns(con, "itens_servico"):
+                con.execute("DELETE FROM itens_servico WHERE servico_id = ?", (sid,))
+
+            con.execute("DELETE FROM servicos WHERE id = ?", (sid,))
+            con.commit()
+        flash(f"OS #{sid} excluída e estoque revertido.", "success")
+    except Exception as e:
+        app.logger.exception("Erro ao excluir OS %s", sid)
+        flash(f"Não consegui excluir a OS #{sid}. Erro: {e}", "danger")
     return redirect(url_for("listar_os"))
 
 
