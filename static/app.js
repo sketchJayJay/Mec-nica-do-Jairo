@@ -1,3 +1,4 @@
+// MARCA_SELECT_MAIS_MODELOS_20260901
 // MSG_ITEM_MELHOR_VOLTA_IMPRIMIR_ESTOQUE_20260901
 // MSG_ITEM_ADICIONADO_FECHAR_BUSCA_20260901
 // CORRIGE_BUSCA_ITEM_PAROU_20260831
@@ -31,18 +32,31 @@ function moneyBR(n){
   return (n || 0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 }
 function setupVehicleOptions(){
+  // MARCA_SELECT_MAIS_MODELOS_20260901
+  // Marca e modelo viraram SELECT. Assim não fica preso no texto digitado do datalist.
   const marca = document.getElementById('marca');
   const modelo = document.getElementById('modelo');
-  const modelosList = document.getElementById('modelosList');
-  if(!marca || !modelo || !modelosList) return;
-  function fill(suggest=false){
-    const list = (window.BRANDS && window.BRANDS[marca.value]) || (window.BRANDS && window.BRANDS['Outros']) || [];
-    modelosList.innerHTML = list.map(x => `<option value="${String(x).replaceAll('"','&quot;')}">`).join('');
-    if(suggest && !modelo.value && list.length) modelo.value = list[0];
+  if(!marca || !modelo) return;
+  const escapeAttr = (s) => String(s || '').replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+  const hasBrand = (b) => !!(window.BRANDS && Object.prototype.hasOwnProperty.call(window.BRANDS, b));
+  function fill(preserve=false){
+    const marcaAtual = marca.value || '';
+    const list = (window.BRANDS && window.BRANDS[marcaAtual]) || [];
+    const atual = preserve ? (modelo.dataset.currentModelo || modelo.value || '') : '';
+    let html = '<option value="">Selecione o modelo</option>';
+    html += list.map(x => `<option value="${escapeAttr(x)}">${escapeHtml(x)}</option>`).join('');
+    if(atual && !list.includes(atual)){
+      html += `<option value="${escapeAttr(atual)}">${escapeHtml(atual)}</option>`;
+    }
+    modelo.innerHTML = html;
+    modelo.value = atual && (list.includes(atual) || !list.length || !hasBrand(marcaAtual)) ? atual : '';
+    modelo.dataset.currentModelo = '';
   }
-  marca.addEventListener('input', () => fill(false));
-  marca.addEventListener('change', () => fill(true));
-  fill(false);
+  if(marca.dataset.vehicleSetup !== '1'){
+    marca.addEventListener('change', () => fill(false));
+    marca.dataset.vehicleSetup = '1';
+  }
+  fill(true);
 }
 function setupCalculations(){
   const km = document.getElementById('km_atual');
@@ -207,9 +221,12 @@ async function buscarClientes(){
 }
 function fillCliente(r){
   const set = (id,v) => { const el=document.getElementById(id); if(el) el.value = v || ''; };
-  set('nome', r.nome); set('telefone', r.telefone); set('marca', r.marca); set('modelo', r.modelo); set('placa', r.placa); set('ano', r.ano); set('km_atual', r.km_atual);
-  set('km_troca_corr', r.km_troca_corr); set('km_corr_trocada', r.km_corr_trocada); set('km_corr_proxima', r.km_corr_proxima);
+  set('nome', r.nome); set('telefone', r.telefone); set('marca', r.marca); set('placa', r.placa); set('ano', r.ano); set('km_atual', r.km_atual);
+  const modeloEl = document.getElementById('modelo');
+  if(modeloEl){ modeloEl.dataset.currentModelo = r.modelo || ''; }
   setupVehicleOptions();
+  set('modelo', r.modelo);
+  set('km_troca_corr', r.km_troca_corr); set('km_corr_trocada', r.km_corr_trocada); set('km_corr_proxima', r.km_corr_proxima);
   document.getElementById('clienteResultados').innerHTML='';
 }
 
